@@ -145,41 +145,108 @@ body{background:#12102a;color:#f7f3e8}
   .animal-card .card-scrim{padding:18px 5px 6px}
 }
 
-/* Signs tab — same gold-rim night language; name + motion on dark scrim */
+/* Signs tab — list of word tiles + large one-sign detail (no jumble overlay) */
 .signs-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
 .signs-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
   text-shadow:0 2px 0 rgba(0,0,0,.35);flex-shrink:0}
-.signs-grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+.signs-list-pane{flex:1;display:flex;flex-direction:column;min-height:0;gap:8px}
+.signs-list-pane[hidden],.signs-detail-pane[hidden]{display:none !important}
+.signs-list{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
   overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 2px 10px;align-content:start}
-.sign-card{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.6);border-radius:22px;
-  background:linear-gradient(180deg,rgba(40,28,72,.72),rgba(18,12,40,.85));color:#fff6e8;
-  padding:6px;display:flex;flex-direction:column;align-items:stretch;gap:0;cursor:pointer;
+.sign-tile{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.6);border-radius:22px;
+  background:linear-gradient(180deg,rgba(40,28,72,.78),rgba(18,12,40,.9));color:#fff6e8;
+  padding:14px 12px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;
   box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 22px rgba(0,0,0,.28);touch-action:manipulation;font-family:inherit;
-  min-height:0;overflow:visible}
-.sign-card:active{transform:translateY(2px)}
-.sign-card .card-frame{position:relative;width:100%;aspect-ratio:1/1;flex:0 0 auto;overflow:hidden;
-  border-radius:16px;background:rgba(10,8,24,.45);min-height:0}
-.sign-card .card-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  border-radius:0;pointer-events:none;display:block}
-.sign-card .card-scrim{position:absolute;left:0;right:0;bottom:0;z-index:2;pointer-events:none;
-  padding:40px 8px 11px;background:linear-gradient(180deg,rgba(10,8,24,0) 0%,rgba(10,8,24,.88) 48%,rgba(10,8,24,.95) 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px}
-.sign-card .sign-name{font-size:clamp(1.2rem,4.6vw,1.45rem);font-weight:900;text-align:center;line-height:1.12;
-  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.55);flex-shrink:0;min-height:1.35em;width:100%}
-.sign-card .sign-motion{font-size:clamp(.9rem,3.3vw,1.08rem);font-weight:700;text-align:center;line-height:1.22;
-  color:#ffe9a0;text-shadow:0 1px 0 rgba(0,0,0,.55);padding:0 2px;flex-shrink:0;min-height:1.3em;width:100%}
+  min-height:108px}
+.sign-tile:active{transform:translateY(2px)}
+.sign-tile-thumb{width:64px;height:64px;border-radius:18px;overflow:hidden;flex:0 0 auto;
+  background:rgba(10,8,24,.45);display:flex;align-items:center;justify-content:center;
+  border:2px solid rgba(240,215,138,.35)}
+.sign-tile-thumb img{width:100%;height:100%;object-fit:cover;object-position:center;pointer-events:none;display:block}
+.sign-tile-name{font-size:clamp(1.25rem,5vw,1.55rem);font-weight:900;text-align:center;line-height:1.15;
+  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.45);flex-shrink:0;min-height:1.4em;width:100%;padding:0 4px}
+.signs-detail-pane{flex:1;display:flex;flex-direction:column;min-height:0;gap:8px}
+.signs-back{appearance:none;-webkit-appearance:none;align-self:flex-start;border:3px solid rgba(240,215,138,.65);
+  border-radius:999px;background:linear-gradient(180deg,rgba(60,42,98,.95),rgba(28,18,56,.95));
+  color:#fff6d8;font:inherit;font-weight:900;font-size:clamp(1rem,3.4vw,1.2rem);padding:12px 18px;
+  min-height:56px;cursor:pointer;touch-action:manipulation;
+  box-shadow:0 4px 0 rgba(0,0,0,.35);flex-shrink:0}
+.signs-back:active{transform:translateY(2px)}
+.signs-detail-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.signs-detail-pic-wrap{position:relative;flex:1 1 auto;min-height:0;border:3px solid rgba(240,215,138,.6);
+  border-radius:24px;background:rgba(10,8,24,.55);overflow:hidden;
+  box-shadow:0 8px 0 rgba(0,0,0,.3),0 14px 28px rgba(0,0,0,.28);
+  display:flex;align-items:center;justify-content:center}
+.signs-detail-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
+  display:block;pointer-events:none;transform-origin:center center}
+.signs-detail-pic-wrap.is-tappable{cursor:pointer}
+.signs-motion-cue{position:absolute;inset:0;pointer-events:none;z-index:2}
+.signs-motion-cue .cue-arrow,.signs-motion-cue .cue-dot,.signs-motion-cue .cue-ring{
+  position:absolute;pointer-events:none}
+.signs-motion-cue .cue-arrow{width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
+  border-top:22px solid #ffe9a0;filter:drop-shadow(0 2px 4px rgba(0,0,0,.45));opacity:.95}
+.signs-motion-cue .cue-arrow.up{border-top:0;border-bottom:22px solid #ffe9a0}
+.signs-motion-cue .cue-arrow.left{border-top:14px solid transparent;border-bottom:14px solid transparent;
+  border-right:22px solid #ffe9a0;border-left:0}
+.signs-motion-cue .cue-arrow.right{border-top:14px solid transparent;border-bottom:14px solid transparent;
+  border-left:22px solid #ffe9a0;border-right:0}
+.signs-motion-cue .cue-dot{width:18px;height:18px;border-radius:50%;background:#ffe9a0;
+  box-shadow:0 0 0 4px rgba(255,233,160,.35),0 2px 6px rgba(0,0,0,.4)}
+.signs-motion-cue .cue-ring{width:72px;height:72px;border-radius:50%;border:4px solid rgba(255,233,160,.85);
+  box-shadow:0 0 12px rgba(255,233,160,.35)}
+.signs-detail-copy{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:4px 6px 2px;text-align:center}
+.signs-detail-name{font-size:clamp(1.55rem,6vw,2.1rem);font-weight:900;color:#fff6d8;
+  text-shadow:0 2px 0 rgba(0,0,0,.45);line-height:1.1;min-height:1.2em}
+.signs-detail-hint{font-size:clamp(1.05rem,3.6vw,1.3rem);font-weight:700;color:#ffe9a0;
+  text-shadow:0 1px 0 rgba(0,0,0,.4);line-height:1.3;max-width:34rem;min-height:1.4em;padding:0 4px}
+.signs-detail-speak{appearance:none;-webkit-appearance:none;margin-top:4px;border:3px solid rgba(240,215,138,.55);
+  border-radius:999px;background:linear-gradient(180deg,rgba(70,48,110,.95),rgba(30,20,60,.95));
+  color:#fff6d8;font:inherit;font-weight:900;font-size:clamp(1rem,3.2vw,1.15rem);padding:12px 20px;
+  min-height:54px;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 0 rgba(0,0,0,.3)}
+.signs-detail-speak:active{transform:translateY(2px)}
+/* Gentle motion demos — hand-only may transform; face signs stay still */
+@keyframes signSqueeze{0%,100%{transform:scale(1)}50%{transform:scale(.94)}}
+@keyframes signTap{0%,100%{transform:scale(1)}40%{transform:scale(.97) translateY(2px)}70%{transform:scale(1.02)}}
+@keyframes signOpen{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.03) rotate(-1deg)}}
+@keyframes signStack{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+@keyframes cueBob{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(10px);opacity:1}}
+@keyframes cueBobUp{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(-10px);opacity:1}}
+@keyframes cueSlideOut{0%,100%{transform:translateX(0);opacity:.85}50%{transform:translateX(14px);opacity:1}}
+@keyframes cuePulse{0%,100%{transform:scale(.85);opacity:.55}50%{transform:scale(1.08);opacity:1}}
+@keyframes cueSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes cueTapDots{0%,100%{transform:scale(1)}50%{transform:scale(.82)}}
+.signs-detail-img.anim-squeeze{animation:signSqueeze 1.5s ease-in-out infinite}
+.signs-detail-img.anim-tap{animation:signTap 1.35s ease-in-out infinite}
+.signs-detail-img.anim-open{animation:signOpen 1.8s ease-in-out infinite}
+.signs-detail-img.anim-stack{animation:signStack 1.5s ease-in-out infinite}
+.signs-motion-cue[data-kind="chin"] .cue-arrow{left:50%;top:58%;margin-left:-14px;animation:cueBob 1.4s ease-in-out infinite}
+.signs-motion-cue[data-kind="forehead"] .cue-arrow.up{left:50%;top:18%;margin-left:-14px;animation:cueBobUp 1.4s ease-in-out infinite}
+.signs-motion-cue[data-kind="mouth"] .cue-arrow{left:50%;top:48%;margin-left:-14px;animation:cueBob 1.35s ease-in-out infinite}
+.signs-motion-cue[data-kind="tip"] .cue-arrow.left{right:18%;top:42%;animation:cueSlideOut 1.5s ease-in-out infinite}
+.signs-motion-cue[data-kind="circle"] .cue-ring{left:50%;top:52%;margin-left:-36px;margin-top:-36px;animation:cueSpin 2.8s linear infinite}
+.signs-motion-cue[data-kind="out"] .cue-arrow.right{left:58%;top:36%;animation:cueSlideOut 1.45s ease-in-out infinite}
+.signs-motion-cue[data-kind="tap"] .cue-dot.a{left:42%;top:48%;animation:cueTapDots 1.1s ease-in-out infinite}
+.signs-motion-cue[data-kind="tap"] .cue-dot.b{left:54%;top:48%;animation:cueTapDots 1.1s ease-in-out infinite .15s}
+.signs-motion-cue[data-kind="squeeze"] .cue-ring{left:50%;top:50%;margin-left:-36px;margin-top:-36px;animation:cuePulse 1.3s ease-in-out infinite}
 @media (orientation:landscape){
-  .signs-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-  .sign-card{padding:5px}
-  .sign-card .sign-name{font-size:clamp(1.05rem,2.4vw,1.25rem)}
-  .sign-card .sign-motion{font-size:clamp(.85rem,2vw,1rem)}
-  .sign-card .card-scrim{padding:26px 6px 8px}
+  .signs-list{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .sign-tile{min-height:100px;padding:10px 8px;gap:8px}
+  .sign-tile-thumb{width:56px;height:56px;border-radius:16px}
+  .sign-tile-name{font-size:clamp(1.05rem,2.3vw,1.25rem)}
+  .signs-detail-body{flex-direction:row;align-items:stretch;gap:14px}
+  .signs-detail-pic-wrap{flex:1.35 1 0;min-width:0}
+  .signs-detail-copy{flex:0 0 34%;max-width:320px;justify-content:center;align-items:flex-start;text-align:left;padding:8px 4px}
+  .signs-detail-name,.signs-detail-hint{text-align:left}
+  .signs-detail-speak{align-self:flex-start}
 }
 @media (orientation:landscape) and (max-height:520px){
   .signs-hint{font-size:.85rem}
-  .sign-card .sign-name{font-size:.92rem}
-  .sign-card .sign-motion{font-size:.72rem}
-  .sign-card .card-scrim{padding:20px 5px 6px}
+  .sign-tile{min-height:88px;gap:6px;padding:8px}
+  .sign-tile-thumb{width:48px;height:48px}
+  .signs-back{min-height:48px;padding:8px 14px;font-size:.95rem}
+  .signs-detail-name{font-size:1.35rem}
+  .signs-detail-hint{font-size:.95rem}
 }
 /* Flyer Press 1920×1080 plates. Night-sky CSS stays behind them if a file is missing. */
 .screen > .art-plate{position:absolute;inset:0;z-index:2;pointer-events:none;
@@ -867,8 +934,24 @@ body{background:#12102a;color:#f7f3e8}
       <button class="btn btn-speak" id="signsSpeak" aria-label="Repeat">🔊</button>
     </div>
     <div class="signs-wrap">
-      <div class="signs-hint">Tap a sign to hear its name 🤟</div>
-      <div class="signs-grid" id="signsGrid" role="list"></div>
+      <div class="signs-list-pane" id="signsListPane">
+        <div class="signs-hint">Tap a sign to learn it 🤟</div>
+        <div class="signs-list" id="signsGrid" role="list"></div>
+      </div>
+      <div class="signs-detail-pane" id="signsDetailPane" hidden>
+        <button type="button" class="signs-back" id="signsBackList" aria-label="Back to all signs">← All signs</button>
+        <div class="signs-detail-body">
+          <div class="signs-detail-pic-wrap is-tappable" id="signsDetailPic" role="button" tabindex="0" aria-label="Say the sign again">
+            <img class="signs-detail-img" id="signsDetailImg" alt="" decoding="async">
+            <div class="signs-motion-cue" id="signsMotionCue" aria-hidden="true"></div>
+          </div>
+          <div class="signs-detail-copy">
+            <div class="signs-detail-name" id="signsDetailName"></div>
+            <div class="signs-detail-hint" id="signsDetailHint"></div>
+            <button type="button" class="signs-detail-speak" id="signsDetailSpeak" aria-label="Say it again">🔊 Say it again</button>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </div>
@@ -2056,26 +2139,107 @@ function renderAnimals(cue){
 }
 
 
-/* ---- Signs (baby signs) ---- */
+/* ---- Signs (baby signs): list + large one-sign detail ---- */
 var SIGNS = [
-  {id:'milk', file:'milk.png', label:'Milk', hint:'Squeeze your fist.', say:'Milk.'},
-  {id:'more', file:'more.png', label:'More', hint:'Tap your fingertips together.', say:'More.'},
-  {id:'all-done', file:'all-done.png', label:'All done', hint:'Show both open hands.', say:'All done.'},
-  {id:'mommy', file:'mommy.png', label:'Mommy', hint:'Put your thumb on your chin.', say:'Mommy.'},
-  {id:'daddy', file:'daddy.png', label:'Daddy', hint:'Put your thumb on your forehead.', say:'Daddy.'},
-  {id:'eat', file:'eat.png', label:'Eat', hint:'Bring your fingertips to your mouth.', say:'Eat.'},
-  {id:'drink', file:'drink.png', label:'Drink', hint:'Tip a C-shaped hand at your mouth.', say:'Drink.'},
-  {id:'please', file:'please.png', label:'Please', hint:'Rub your chest in a circle.', say:'Please.'},
-  {id:'thank-you', file:'thank-you.png', label:'Thank you', hint:'Move your hand out from your chin.', say:'Thank you.'},
-  {id:'help', file:'help.png', label:'Help', hint:'Set a fist on your open hand.', say:'Help.'}
+  {id:'milk', file:'milk.png', label:'Milk', hint:'Squeeze your fist.', say:'Milk.', motion:'squeeze', faceSafe:false},
+  {id:'more', file:'more.png', label:'More', hint:'Tap your fingertips together.', say:'More.', motion:'tap', faceSafe:false},
+  {id:'all-done', file:'all-done.png', label:'All done', hint:'Show both open hands.', say:'All done.', motion:'open', faceSafe:false},
+  {id:'mommy', file:'mommy.png', label:'Mommy', hint:'Put your thumb on your chin.', say:'Mommy.', motion:'chin', faceSafe:true},
+  {id:'daddy', file:'daddy.png', label:'Daddy', hint:'Put your thumb on your forehead.', say:'Daddy.', motion:'forehead', faceSafe:true},
+  {id:'eat', file:'eat.png', label:'Eat', hint:'Bring your fingertips to your mouth.', say:'Eat.', motion:'mouth', faceSafe:true},
+  {id:'drink', file:'drink.png', label:'Drink', hint:'Tip a C-shaped hand at your mouth.', say:'Drink.', motion:'tip', faceSafe:true},
+  {id:'please', file:'please.png', label:'Please', hint:'Rub your chest in a circle.', say:'Please.', motion:'circle', faceSafe:true},
+  {id:'thank-you', file:'thank-you.png', label:'Thank you', hint:'Move your hand out from your chin.', say:'Thank you.', motion:'out', faceSafe:true},
+  {id:'help', file:'help.png', label:'Help', hint:'Set a fist on your open hand.', say:'Help.', motion:'stack', faceSafe:false}
 ];
 var signsBuilt = false;
 var lastSignSay = 'Signs.';
+var currentSign = null;
 
-function playSignTap(sign){
+function speakSignWord(sign){
+  if(!sign) return;
   lastSignSay = sign.say;
   lastParts = [sign.say];
   speakParts([sign.say], [sign.say]);
+}
+
+function clearSignMotion(){
+  var img = document.getElementById('signsDetailImg');
+  var cue = document.getElementById('signsMotionCue');
+  if(img){
+    img.className = 'signs-detail-img';
+  }
+  if(cue){
+    cue.innerHTML = '';
+    cue.removeAttribute('data-kind');
+  }
+}
+
+function applySignMotion(sign){
+  clearSignMotion();
+  var img = document.getElementById('signsDetailImg');
+  var cue = document.getElementById('signsMotionCue');
+  if(!img || !cue || !sign) return;
+  var kind = sign.motion || '';
+  /* Face paintings stay still — only non-creepy overlays. Hand-only may pulse gently. */
+  if(!sign.faceSafe){
+    if(kind === 'squeeze') img.classList.add('anim-squeeze');
+    else if(kind === 'tap') img.classList.add('anim-tap');
+    else if(kind === 'open') img.classList.add('anim-open');
+    else if(kind === 'stack') img.classList.add('anim-stack');
+  }
+  cue.setAttribute('data-kind', kind);
+  if(kind === 'chin'){
+    var a = document.createElement('span'); a.className = 'cue-arrow'; cue.appendChild(a);
+  } else if(kind === 'forehead'){
+    var a2 = document.createElement('span'); a2.className = 'cue-arrow up'; cue.appendChild(a2);
+  } else if(kind === 'mouth'){
+    var a3 = document.createElement('span'); a3.className = 'cue-arrow'; cue.appendChild(a3);
+  } else if(kind === 'tip'){
+    var a4 = document.createElement('span'); a4.className = 'cue-arrow left'; cue.appendChild(a4);
+  } else if(kind === 'circle'){
+    var r = document.createElement('span'); r.className = 'cue-ring'; cue.appendChild(r);
+  } else if(kind === 'out'){
+    var a5 = document.createElement('span'); a5.className = 'cue-arrow right'; cue.appendChild(a5);
+  } else if(kind === 'tap'){
+    var d1 = document.createElement('span'); d1.className = 'cue-dot a';
+    var d2 = document.createElement('span'); d2.className = 'cue-dot b';
+    cue.appendChild(d1); cue.appendChild(d2);
+  } else if(kind === 'squeeze'){
+    var r2 = document.createElement('span'); r2.className = 'cue-ring'; cue.appendChild(r2);
+  }
+}
+
+function showSignsList(){
+  currentSign = null;
+  clearSignMotion();
+  var list = document.getElementById('signsListPane');
+  var detail = document.getElementById('signsDetailPane');
+  if(list) list.hidden = false;
+  if(detail) detail.hidden = true;
+  var prog = document.getElementById('signsProgress');
+  if(prog) prog.textContent = 'Signs';
+}
+
+function openSignDetail(sign){
+  currentSign = sign;
+  var list = document.getElementById('signsListPane');
+  var detail = document.getElementById('signsDetailPane');
+  var img = document.getElementById('signsDetailImg');
+  var name = document.getElementById('signsDetailName');
+  var hint = document.getElementById('signsDetailHint');
+  if(list) list.hidden = true;
+  if(detail) detail.hidden = false;
+  if(img){
+    img.src = 'art/signs/' + sign.file;
+    img.alt = sign.label;
+  }
+  if(name) name.textContent = sign.label;
+  if(hint) hint.textContent = sign.hint;
+  var prog = document.getElementById('signsProgress');
+  if(prog) prog.textContent = sign.label;
+  applySignMotion(sign);
+  speakSignWord(sign);
 }
 
 function renderSigns(cue){
@@ -2086,38 +2250,49 @@ function renderSigns(cue){
     SIGNS.forEach(function(sign){
       var btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'sign-card';
+      btn.className = 'sign-tile';
       btn.setAttribute('role', 'listitem');
       btn.setAttribute('aria-label', sign.label + '. ' + sign.hint);
-      var frame = document.createElement('span');
-      frame.className = 'card-frame';
+      var thumb = document.createElement('span');
+      thumb.className = 'sign-tile-thumb';
       var img = document.createElement('img');
       img.src = 'art/signs/' + sign.file;
       img.alt = '';
       img.decoding = 'async';
       img.loading = 'eager';
-      var scrim = document.createElement('span');
-      scrim.className = 'card-scrim';
+      thumb.appendChild(img);
       var name = document.createElement('span');
-      name.className = 'sign-name';
+      name.className = 'sign-tile-name';
       name.textContent = sign.label;
-      var motion = document.createElement('span');
-      motion.className = 'sign-motion';
-      motion.textContent = sign.hint;
-      scrim.appendChild(name);
-      scrim.appendChild(motion);
-      frame.appendChild(img);
-      frame.appendChild(scrim);
-      btn.appendChild(frame);
-      btn.addEventListener('click', function(){ playSignTap(sign); });
+      btn.appendChild(thumb);
+      btn.appendChild(name);
+      btn.addEventListener('click', function(){ openSignDetail(sign); });
       grid.appendChild(btn);
     });
     signsBuilt = true;
     var speakBtn = document.getElementById('signsSpeak');
-    if(speakBtn) speakBtn.addEventListener('click', function(){ speakParts([lastSignSay]); });
+    if(speakBtn) speakBtn.addEventListener('click', function(){
+      if(currentSign) speakSignWord(currentSign);
+      else speakParts([lastSignSay]);
+    });
+    var backBtn = document.getElementById('signsBackList');
+    if(backBtn) backBtn.addEventListener('click', function(){
+      showSignsList();
+      lastSignSay = 'Signs.';
+    });
+    var detailSpeak = document.getElementById('signsDetailSpeak');
+    if(detailSpeak) detailSpeak.addEventListener('click', function(){
+      if(currentSign) speakSignWord(currentSign);
+    });
+    var pic = document.getElementById('signsDetailPic');
+    if(pic){
+      pic.addEventListener('click', function(){ if(currentSign) speakSignWord(currentSign); });
+      pic.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); if(currentSign) speakSignWord(currentSign); }
+      });
+    }
   }
-  var prog = document.getElementById('signsProgress');
-  if(prog) prog.textContent = 'Signs';
+  showSignsList();
   lastSignSay = cue || 'Signs.';
   speakParts([cue || 'Signs.']);
 }
