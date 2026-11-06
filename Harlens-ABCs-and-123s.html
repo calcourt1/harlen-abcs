@@ -352,6 +352,54 @@ body{background:#12102a;color:#f7f3e8}
 #memory .level-dots{position:relative;z-index:5}
 #memory .memory-actions{position:absolute;left:0;right:0;bottom:10px;z-index:6}
 
+/* Short landscape (and wide short windows): use the width, shrink chrome, keep 44px targets. */
+@media (orientation:landscape), (max-height:520px) and (min-width:700px){
+  .topbar{padding:6px 10px}
+  .topbar .btn{min-width:48px;min-height:48px;padding:8px 10px}
+  .home-wrap{padding:6px 12px 8px;gap:6px;justify-content:center}
+  .home-title{font-size:clamp(1.25rem,5vh,1.8rem)}
+  .home-sub{font-size:.85rem}
+  .activity-grid{grid-template-columns:repeat(4,minmax(0,1fr));max-width:980px;gap:8px}
+  .activity-tile{min-height:64px;padding:6px 4px}
+  .activity-tile .emoji{font-size:1.7rem}
+  .activity-tile .title{font-size:.95rem}
+  .parent-note{margin-top:2px;padding:6px 10px;font-size:.68rem;max-width:720px}
+  #letters.screen{padding:0;align-items:stretch;justify-content:stretch}
+  .letter-frame{width:100%;height:auto;flex:1 1 auto;min-height:0;max-height:none;aspect-ratio:auto;
+    background-size:cover;background-position:center}
+  .rim-home,.rim-prev,.rim-next{min-width:48px;min-height:48px;width:max(48px,12vh)}
+  .rim-repeat,.rim-more{min-width:44px;min-height:44px;width:max(44px,10vh)}
+  .sound-pill{min-height:44px;padding:6px 12px;font-size:1rem}
+  .word-chip{font-size:1rem;padding:.28em .7em;min-height:44px}
+  .letter-progress{font-size:.75rem;top:2%}
+  .card{max-width:920px;padding:10px 14px}
+  .quiz-prompt{font-size:1.05rem;margin-bottom:2px}
+  .quiz-target{font-size:clamp(2.2rem,16vh,4.2rem);margin:2px 0 8px}
+  .choices{grid-template-columns:repeat(4,minmax(0,1fr));max-width:760px;gap:8px}
+  .choice{min-height:56px;font-size:clamp(1.5rem,8vh,2.2rem)}
+  .feedback{margin-top:4px;min-height:1.1em;font-size:1.05rem}
+  .scene-stage{max-width:none}
+  .num-hero{font-size:clamp(2.6rem,14vh,4.5rem);top:22%}
+  .num-board{top:42%;transform:translate(-50%,0);max-width:70%}
+  .pip-tile{width:clamp(40px,12vh,68px);height:clamp(40px,12vh,68px)}
+  .pip-tile.tall{height:clamp(52px,16vh,84px)}
+  .theme-bar{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
+  .theme-btn{min-height:44px;flex:0 0 auto}
+  .level-dot{width:44px;height:44px;min-width:44px;min-height:44px}
+  #memory .memory-board{top:56%;height:min(200px,48%);width:min(900px,82%)}
+  .mem-card{min-height:44px}
+  #trace .trace-tabs{position:absolute;top:52px;left:0;right:0;margin:0}
+  #trace .trace-hint{position:absolute;top:96px;left:0;right:0;margin:0}
+  #trace .trace-picker{position:absolute;left:8px;right:8px;bottom:4px;max-width:none;max-height:48px;
+    flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start}
+  .trace-pick{width:44px;height:44px;min-width:44px}
+  .trace-tab{min-height:44px;padding:6px 12px}
+  #paint .paint-canvas-box{top:32%;height:30%;left:37%;width:26%}
+  #paint .paint-dock{max-height:32%;overflow:auto;gap:4px;padding:4px 6px 6px}
+  .swatch,.size-dot{width:40px;height:40px;min-width:40px;min-height:40px}
+  .stamp{width:44px;height:44px;min-width:44px}
+}
+
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
 .confetti span{position:absolute;width:12px;height:12px;border-radius:3px;animation:fall 1.2s ease-out forwards}
 @keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:1}
@@ -681,8 +729,8 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
 /* Calm adult talking voice — like a person on a phone call, never sing-song */
 var preferredVoice = null;
 var CREEPY_VOICE = /zarvox|whisper|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|organ|superstar|trinoids|wobble|pipe organ|princess|junior|kathy|trinoid|nicky|whisper/i;
-/* Prefer plain adult US/English speakers first (Aaron/Alex are less musical on iOS than phoneme-singing voices). */
-var VOICE_PREFERENCE = ['aaron','alex','allison','samantha','ava','susan','karen','moira','tessa','google us english','salli','joanna','kendra','kimberly'];
+/* Warm adult English first. Aaron and Alex are last-resort only so they cannot win on iPhone when Samantha, Ava, Zoe, Allison, or Susan exist. */
+var VOICE_PREFERENCE = ['samantha','ava','zoe','allison','susan','karen','moira','tessa','serena','victoria','google us english','salli','joanna','kendra','kimberly','aaron','alex'];
 
 function pickFriendlyVoice(){
   preferredVoice = null;
@@ -699,12 +747,18 @@ function pickFriendlyVoice(){
     }
     for(j=0;j<VOICE_PREFERENCE.length;j++){
       var want = VOICE_PREFERENCE[j];
+      var fallback = null;
       for(i=0;i<english.length;i++){
-        if((english[i].name || '').toLowerCase().indexOf(want) !== -1){
+        var vname = (english[i].name || '').toLowerCase();
+        if(vname.indexOf(want) === -1) continue;
+        var vlang = (english[i].lang || '').toLowerCase();
+        if(vlang.indexOf('en-us') === 0 || vlang.indexOf('en_us') === 0){
           preferredVoice = english[i];
           return;
         }
+        if(!fallback) fallback = english[i];
       }
+      if(fallback){ preferredVoice = fallback; return; }
     }
     // Do NOT fall back to voices[0] (iOS can return odd novelty voices).
   }catch(e){ preferredVoice = null; }
@@ -720,7 +774,7 @@ if(typeof window !== 'undefined' && window.speechSynthesis){
 var lastUtterance = '';
 var lastParts = [];
 var speakGen = 0;
-var PHONEME_TTS = /^(ah|aw|buh|kuh|duh|eh|fuh|guh|huh|ih|juh|luh|muh|nuh|puh|kwuh|ruh|sss|tuh|uh|vuh|wuh|ks|yuh|zuh)$/i;
+var PHONEME_TTS = /^(ah|aw|ay|ey|buh|kuh|duh|eh|fuh|guh|huh|ih|juh|luh|muh|nuh|puh|kwuh|ruh|sss|tuh|uh|vuh|wuh|ks|yuh|zuh)$/i;
 
 function isUnsafeUtterance(text){
   var t = String(text == null ? '' : text).trim().replace(/[.!?]+$/,'');
@@ -741,26 +795,40 @@ function cleanParts(parts){
   return out;
 }
 
+function joinSpeech(parts){
+  var s = '';
+  var i;
+  for(i=0;i<parts.length;i++){
+    var bit = parts[i];
+    if(!s){ s = bit; continue; }
+    if(!/[.!?]$/.test(s)) s += '.';
+    s += ' ' + bit;
+  }
+  return s;
+}
+
 function speakParts(parts, remember){
   var say = cleanParts(parts);
   if(!say.length) return;
   var mem = cleanParts(remember || say);
   if(!mem.length) mem = say.slice();
-  lastParts = mem.slice();
-  lastUtterance = lastParts[0];
+  /* One utterance. Queued clips on iOS Safari sound choppy or sung. */
+  var line = joinSpeech(say);
+  var remembered = joinSpeech(mem);
+  if(isUnsafeUtterance(line)) return;
+  lastParts = [remembered];
+  lastUtterance = remembered;
   speakGen++;
   try{
     if(!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    for(var i=0;i<say.length;i++){
-      var u = new SpeechSynthesisUtterance(say[i]);
-      u.lang = 'en-US';
-      u.rate = 1.0; // normal talking speed — slower rates can sound sung
-      u.pitch = 1.0; // never raise — raised pitch sounds creepy on Safari
-      u.volume = 1;
-      if(preferredVoice) u.voice = preferredVoice;
-      window.speechSynthesis.speak(u);
-    }
+    var u = new SpeechSynthesisUtterance(line);
+    u.lang = 'en-US';
+    u.rate = 1.0; // normal talking speed — slower rates can sound sung
+    u.pitch = 1.0; // never raise — raised pitch sounds creepy on Safari
+    u.volume = 1;
+    if(preferredVoice) u.voice = preferredVoice;
+    window.speechSynthesis.speak(u);
   }catch(e){}
 }
 
@@ -827,9 +895,9 @@ function exampleWordFor(letter, pics){
   return prefer[0] || 'this';
 }
 
-/* Spoken letter NAMES (ey, bee, see…) — never the raw letter. A is "ey", like the vowel in "hey". */
+/* Spoken letter names. A uses the real word "hey" (the vowel at the end of hey). Never "ey", "ay", or a raw "A". */
 var LETTER_NAMES = {
-  A:'ey', B:'bee', C:'see', D:'dee', E:'ee', F:'eff', G:'jee',
+  A:'hey', B:'bee', C:'see', D:'dee', E:'ee', F:'eff', G:'jee',
   H:'aych', I:'eye', J:'jay', K:'kay', L:'ell', M:'em', N:'en',
   O:'oh', P:'pee', Q:'cue', R:'ar', S:'ess', T:'tee', U:'you',
   V:'vee', W:'double you', X:'ex', Y:'why', Z:'zee'
@@ -841,51 +909,46 @@ function letterNameSay(letter){
   return name;
 }
 
-function wordBeat(word){
-  var w = String(word || '');
-  if(!w) return '';
-  return w.charAt(0).toUpperCase() + w.slice(1) + '.';
-}
-
-/** "This is ey, like apple." plus a clear "Apple." so the onset is heard in the word. */
-function lessonParts(letter, pics){
+/** One sentence. A: "This is hey, like apple." No second queued word. */
+function lessonSentence(letter, pics){
   var up = String(letter).toUpperCase();
   var name = letterNameSay(up);
-  if(!name) return [];
-  var word = exampleWordFor(up, pics);
-  return ['This is ' + name + ', like ' + String(word).toLowerCase() + '.', wordBeat(word)];
+  if(!name) return '';
+  var word = String(exampleWordFor(up, pics)).toLowerCase();
+  return 'This is ' + name + ', like ' + word + '.';
 }
 
 function speakLetterLesson(letter, pics, prefix){
-  var parts = lessonParts(letter, pics);
-  if(!parts.length) return;
-  var say = prefix ? [prefix].concat(parts) : parts;
-  speakParts(say, parts);
+  var line = lessonSentence(letter, pics);
+  if(!line) return;
+  if(prefix) speakParts([prefix, line], [line]);
+  else speak(line);
 }
 
-/** "ey is for apple." — sound button. On-screen label stays "A is for apple". */
+/** "Hey is for apple." On-screen label stays "A is for apple". */
 function speakSoundFor(letter){
   var up = String(letter).toUpperCase();
   var name = letterNameSay(up);
   if(!name) return;
   var wordSay = String(exampleWordFor(up, null)).toLowerCase();
-  speak(name + ' is for ' + wordSay + '.');
+  var said = name.charAt(0).toUpperCase() + name.slice(1);
+  speak(said + ' is for ' + wordSay + '.');
 }
 
-/** "Find ey." */
+/** "Find hey." */
 function findPrompt(letter){
   var name = letterNameSay(letter);
   if(!name) return '';
   return 'Find ' + name + '.';
 }
 
-/** "Yes! ey, like apple." */
+/** "Yes, hey, like apple." */
 function yesLikePrompt(letter, pics){
   var up = String(letter).toUpperCase();
   var name = letterNameSay(up);
   if(!name) return '';
   var wordSay = String(exampleWordFor(up, pics)).toLowerCase();
-  return 'Yes! ' + name + ', like ' + wordSay + '.';
+  return 'Yes, ' + name + ', like ' + wordSay + '.';
 }
 
 function soundButtonText(letter){
@@ -1490,7 +1553,9 @@ function renderMemory(){
 function memoryFlipLine(card){
   var name = letterNameSay(card.letter);
   if(!name) return '';
-  if(card.type === 'pic') return name + '. ' + wordBeat(card.word);
+  var word = String(card.word || '').toLowerCase();
+  if(card.type === 'pic' && word) return name + ', like ' + word + '.';
+  if(String(card.letter).toUpperCase() === 'A') return 'Hey, like ' + (word || 'apple') + '.';
   return name;
 }
 
@@ -1508,28 +1573,26 @@ function flipMemory(idx){
   }
   var a = memoryDeck[memoryOpen[0]];
   var b = memoryDeck[memoryOpen[1]];
-  var second = memoryFlipLine(b);
   var open = memoryOpen.slice();
   memoryOpen = [];
   if(a.pair === b.pair){
     a.matched = true;
     b.matched = true;
-    var yes = 'Yes! ' + letterNameSay(a.letter) + ', like ' + String(exampleWordFor(a.letter, null)).toLowerCase() + '.';
+    var yes = yesLikePrompt(a.letter, null);
     var done = memoryDeck.every(function(c){ return c.matched; });
     if(done){
-      speakParts([second, yes, 'You found them all!'], ['You found them all!']);
+      speak(yes.replace(/\.\s*$/, '') + '. You found them all!');
       document.getElementById('memoryWin').hidden = false;
       document.getElementById('memoryNext').hidden = memoryLevel >= MEMORY_LEVELS.length - 1;
       burst();
     } else {
-      speakParts([second, yes], [yes]);
+      speak(yes);
       burst();
     }
     renderMemory();
     return;
   }
-  if(second) speakParts([second, 'Try again.'], ['Try again.']);
-  else speakParts(['Try again.']);
+  speak('Try again.');
   memoryLock = true;
   var round = memoryRound;
   memoryTimer = setTimeout(function(){
