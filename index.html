@@ -147,37 +147,71 @@ body{background:#12102a;color:#f7f3e8}
 #letters.screen{align-items:center;justify-content:center}
 #letters .hill,#letters .moon,#letters .mountains,#letters .cloud-soft,#letters .stars{display:none}
 #letters .sky{background:#100c24}
-.letter-frame{position:relative;z-index:3;aspect-ratio:16/9;
-  width:min(100%, calc(100vh * 16 / 9));
-  width:min(100%, calc(100dvh * 16 / 9));
-  max-height:100vh;max-height:100dvh;overflow:hidden;
+/* Full-screen stage. The painting box (.letter-art) keeps 16:9 and is cover-fitted, so the word chip
+   and tap zone sit on the painting itself, never in empty bars. Portrait zooms the painting around the
+   painted letters and continues the night sky above and grass below (see portrait rules). */
+#letters.screen{padding:0}
+#letters .letter-frame{position:absolute;inset:0;z-index:3;overflow:hidden;background:#100c24}
+.letter-art{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);aspect-ratio:16/9;
+  width:max(100vw, calc(100vh * 16 / 9));
+  width:max(100vw, calc(100dvh * 16 / 9));
   background:#100c24 url("art/letters.png") center/cover no-repeat}
-#letters.show-a .letter-frame{background-image:url("art/letters-a.png")}
-#letters.show-b .letter-frame{background-image:url("art/letters-b.png")}
-#letters.show-c .letter-frame{background-image:url("art/letters-c.png")}
-#letters.show-d .letter-frame{background-image:url("art/letters-d.png")}
-#letters.show-e .letter-frame{background-image:url("art/letters-e.png")}
-#letters.show-f .letter-frame{background-image:url("art/letters-f.png")}
-#letters.show-g .letter-frame{background-image:url("art/letters-g.png")}
-#letters.show-h .letter-frame{background-image:url("art/letters-h.png")}
-#letters.show-i .letter-frame{background-image:url("art/letters-i.png")}
-#letters.show-j .letter-frame{background-image:url("art/letters-j.png")}
-#letters.show-k .letter-frame{background-image:url("art/letters-k.png")}
-#letters.show-l .letter-frame{background-image:url("art/letters-l.png")}
-#letters.show-m .letter-frame{background-image:url("art/letters-m.png")}
-#letters.show-n .letter-frame{background-image:url("art/letters-n.png")}
-#letters.show-o .letter-frame{background-image:url("art/letters-o.png")}
-#letters.show-p .letter-frame{background-image:url("art/letters-p.png")}
-#letters.show-q .letter-frame{background-image:url("art/letters-q.png")}
-#letters.show-r .letter-frame{background-image:url("art/letters-r.png")}
-#letters.show-s .letter-frame{background-image:url("art/letters-s.png")}
-#letters.show-t .letter-frame{background-image:url("art/letters-t.png")}
-#letters.show-u .letter-frame{background-image:url("art/letters-u.png")}
-#letters.show-v .letter-frame{background-image:url("art/letters-v.png")}
-#letters.show-w .letter-frame{background-image:url("art/letters-w.png")}
-#letters.show-x .letter-frame{background-image:url("art/letters-x.png")}
-#letters.show-y .letter-frame{background-image:url("art/letters-y.png")}
-#letters.show-z .letter-frame{background-image:url("art/letters-z.png")}
+.letter-hit{position:absolute;left:calc((var(--cx,.55) - var(--fit,.5) / 2) * 100%);top:14%;width:calc(var(--fit,.5) * 100%);height:64%;z-index:4;border:0;padding:0;margin:0;
+  background:transparent;cursor:pointer;touch-action:manipulation;display:none}
+#letters.has-scene .letter-hit{display:block}
+#letters.show-a .letter-art{background-image:url("art/letters-a.png")}
+#letters.show-b .letter-art{background-image:url("art/letters-b.png")}
+#letters.show-c .letter-art{background-image:url("art/letters-c.png")}
+#letters.show-d .letter-art{background-image:url("art/letters-d.png")}
+#letters.show-e .letter-art{background-image:url("art/letters-e.png")}
+#letters.show-f .letter-art{background-image:url("art/letters-f.png")}
+#letters.show-g .letter-art{background-image:url("art/letters-g.png")}
+#letters.show-h .letter-art{background-image:url("art/letters-h.png")}
+#letters.show-i .letter-art{background-image:url("art/letters-i.png")}
+#letters.show-j .letter-art{background-image:url("art/letters-j.png")}
+#letters.show-k .letter-art{background-image:url("art/letters-k.png")}
+#letters.show-l .letter-art{background-image:url("art/letters-l.png")}
+#letters.show-m .letter-art{background-image:url("art/letters-m.png")}
+#letters.show-n .letter-art{background-image:url("art/letters-n.png")}
+#letters.show-o .letter-art{background-image:url("art/letters-o.png")}
+#letters.show-p .letter-art{background-image:url("art/letters-p.png")}
+#letters.show-q .letter-art{background-image:url("art/letters-q.png")}
+#letters.show-r .letter-art{background-image:url("art/letters-r.png")}
+#letters.show-s .letter-art{background-image:url("art/letters-s.png")}
+#letters.show-t .letter-art{background-image:url("art/letters-t.png")}
+#letters.show-u .letter-art{background-image:url("art/letters-u.png")}
+#letters.show-v .letter-art{background-image:url("art/letters-v.png")}
+#letters.show-w .letter-art{background-image:url("art/letters-w.png")}
+#letters.show-x .letter-art{background-image:url("art/letters-x.png")}
+#letters.show-y .letter-art{background-image:url("art/letters-y.png")}
+#letters.show-z .letter-art{background-image:url("art/letters-z.png")}
+/* Where the painted letters sit in each plate (center x, share of width), used to frame portrait. */
+#letters.show-a{--cx:0.557;--fit:0.550}
+#letters.show-b{--cx:0.549;--fit:0.562}
+#letters.show-c{--cx:0.552;--fit:0.556}
+#letters.show-d{--cx:0.555;--fit:0.545}
+#letters.show-e{--cx:0.561;--fit:0.533}
+#letters.show-f{--cx:0.542;--fit:0.477}
+#letters.show-g{--cx:0.562;--fit:0.581}
+#letters.show-h{--cx:0.580;--fit:0.545}
+#letters.show-i{--cx:0.502;--fit:0.510}
+#letters.show-j{--cx:0.512;--fit:0.472}
+#letters.show-k{--cx:0.569;--fit:0.539}
+#letters.show-l{--cx:0.555;--fit:0.466}
+#letters.show-m{--cx:0.592;--fit:0.643}
+#letters.show-n{--cx:0.576;--fit:0.570}
+#letters.show-o{--cx:0.571;--fit:0.593}
+#letters.show-p{--cx:0.580;--fit:0.550}
+#letters.show-q{--cx:0.566;--fit:0.583}
+#letters.show-r{--cx:0.577;--fit:0.552}
+#letters.show-s{--cx:0.576;--fit:0.537}
+#letters.show-t{--cx:0.550;--fit:0.506}
+#letters.show-u{--cx:0.581;--fit:0.572}
+#letters.show-v{--cx:0.577;--fit:0.539}
+#letters.show-w{--cx:0.585;--fit:0.622}
+#letters.show-x{--cx:0.579;--fit:0.556}
+#letters.show-y{--cx:0.578;--fit:0.533}
+#letters.show-z{--cx:0.581;--fit:0.548}
 #letters .glow-pair{top:58%}
 #letters .glow-pair .upper{font-size:clamp(4.4rem,16vw,10.5rem)}
 #letters .glow-pair .lower{font-size:clamp(3.4rem,12vw,8rem);opacity:1}
@@ -199,23 +233,28 @@ body{background:#12102a;color:#f7f3e8}
 .rim-prev{left:6.2%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
 .rim-next{left:93.8%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
 .rim-btn:active{filter:brightness(1.08)}
-.word-chip{position:absolute;left:4.2%;top:70%;z-index:6;min-width:14%;max-width:28%;
-  display:flex;align-items:center;justify-content:center;padding:.4em .9em;
+/* Word chip sits on the painted grass, bottom center, below the big letters. */
+.word-chip{position:absolute;left:calc(var(--cx,.5) * 100%);top:84%;transform:translate(-50%,-50%);z-index:6;min-width:14%;max-width:40%;
+  min-height:44px;white-space:nowrap;display:flex;align-items:center;justify-content:center;padding:.4em .9em;
   background:#3a2c86;color:#f7f1e6;font-weight:900;
   font-size:clamp(1.05rem,2.3vw,1.7rem);border:none;border-radius:16px;cursor:pointer;
   border:3px solid #f0d48a;box-shadow:0 5px 0 rgba(0,0,0,.25);
   font-family:inherit}
-.sound-pill{position:absolute;left:50%;top:10.5%;transform:translate(-50%,-50%);z-index:6;
-  display:flex;align-items:center;gap:8px;min-height:52px;padding:8px 16px;border-radius:999px;
-  border:4px solid #f0d48a;background:#2e2468;color:#f7f1e6;font-weight:900;
-  font-size:clamp(.95rem,1.8vw,1.2rem);font-family:inherit;cursor:pointer;
-  box-shadow:0 5px 0 rgba(0,0,0,.28);white-space:nowrap}
-@media (orientation:portrait) and (max-width:520px){
-  .rim-home,.rim-prev{left:9%;width:48px;min-width:48px;min-height:48px}
-  .rim-prev,.rim-next{top:82%}
-  .rim-next{left:91%;width:48px;min-width:48px;min-height:48px}
-  .word-chip{top:48%;max-width:46%}
-  .sound-pill{top:16%;font-size:.9rem;max-width:70%;min-height:44px;padding:6px 12px}
+/* Portrait phone/tablet: no thin 16:9 strip. Zoom the painting so the painted letters fill the width,
+   fade its edges into a continued night sky (top) and dark grass (bottom). */
+@media (orientation:portrait){
+  #letters .letter-frame{background:linear-gradient(180deg,#05062e 0%,#000125 30%,#000125 66%,#0c1f22 76%,#10291c 88%,#0b1d12 100%)}
+  #letters .letter-frame .stars{display:block;z-index:1}
+  #letters .letter-art{--artw:max(100vw, min(calc(100vw / var(--fit,.6)), calc(62vh * 16 / 9)));
+    width:var(--artw);left:calc(50% - var(--artw) * var(--cx,.55));top:57%;transform:translateY(-50%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%);
+    mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%)}
+  #letters .word-chip{top:87%;font-size:1.2rem;padding:.3em .9em;max-width:44%}
+  .rim-home,.rim-prev,.rim-next{width:64px;min-width:64px;min-height:64px}
+  .rim-home{left:calc(env(safe-area-inset-left) + 44px);top:calc(env(safe-area-inset-top) + 44px)}
+  .rim-prev{left:calc(env(safe-area-inset-left) + 44px);top:calc(100% - env(safe-area-inset-bottom) - 56px)}
+  .rim-next{left:calc(100% - env(safe-area-inset-right) - 44px);top:calc(100% - env(safe-area-inset-bottom) - 56px)}
+  .letter-progress{top:calc(env(safe-area-inset-top) + 34px);font-size:.95rem}
 }
 #letters .scene-hint{bottom:16%;color:rgba(255,248,230,.8)}
 .scene-hint{position:absolute;left:50%;bottom:1%;transform:translateX(-50%);font-size:.75rem;font-weight:700;
@@ -348,9 +387,18 @@ body{background:#12102a;color:#f7f3e8}
   min-height:0;margin:6px 0;z-index:4;pointer-events:auto;
   background:rgba(8,12,28,.62);border-color:rgba(240,212,138,.7);border-width:4px;border-radius:28px}
 #trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6);margin:2px 0}
-#trace .trace-picker{max-width:none;max-height:68px;margin-top:4px;flex-wrap:nowrap;overflow-x:auto;
-  justify-content:flex-start;-webkit-overflow-scrolling:touch}
-#trace .trace-pick{width:56px;height:56px;min-width:56px;font-size:1.35rem}
+/* Trace picker: one swipeable row on iPhone/iPad. Own horizontal scroller (pan-x), chips never shrink,
+   and it sits outside the canvas box, so the canvas touch-action:none / touch handlers never see these swipes. */
+#trace .trace-picker-wrap{position:relative;flex-shrink:0;width:100%;margin-top:4px;pointer-events:auto;z-index:5}
+#trace .trace-picker-wrap::before,#trace .trace-picker-wrap::after{content:"";position:absolute;top:0;bottom:0;width:26px;
+  pointer-events:none;z-index:2}
+#trace .trace-picker-wrap::before{left:0;background:linear-gradient(90deg,rgba(12,10,32,.9),rgba(12,10,32,0))}
+#trace .trace-picker-wrap::after{right:0;background:linear-gradient(270deg,rgba(12,10,32,.9),rgba(12,10,32,0))}
+#trace .trace-picker{display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:8px;width:100%;max-width:none;
+  max-height:none;margin:0;padding:4px 24px;overflow-x:scroll;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+  touch-action:pan-x;overscroll-behavior-x:contain;scrollbar-width:none}
+#trace .trace-picker::-webkit-scrollbar{display:none}
+#trace .trace-pick{flex:0 0 auto;flex-shrink:0;width:56px;height:56px;min-width:56px;font-size:1.35rem;touch-action:pan-x}
 #paint .paint-wrap{position:static}
 #paint .paint-canvas-box{position:absolute;left:40.6%;top:39.5%;width:18.8%;height:27.5%;z-index:4;
   background:#f3eee4;border-radius:4px;border:none;box-shadow:none}
@@ -373,12 +421,8 @@ body{background:#12102a;color:#f7f3e8}
   .activity-tile .emoji{font-size:1.7rem}
   .activity-tile .title{font-size:.95rem}
   .parent-note{margin-top:2px;padding:6px 10px;font-size:.68rem;max-width:720px}
-  #letters.screen{padding:0;align-items:stretch;justify-content:stretch}
-  .letter-frame{width:100%;height:auto;flex:1 1 auto;min-height:0;max-height:none;aspect-ratio:auto;
-    background-size:cover;background-position:center}
   .rim-home,.rim-prev,.rim-next{min-width:48px;min-height:48px;width:max(48px,12vh)}
-  .sound-pill{min-height:44px;padding:6px 12px;font-size:1rem}
-  .word-chip{font-size:1rem;padding:.28em .7em;min-height:44px}
+  .word-chip{font-size:1.05rem;padding:.28em .8em;min-height:44px}
   .letter-progress{font-size:.75rem;top:2%}
   .card{max-width:920px;padding:10px 14px}
   .quiz-prompt{font-size:1.05rem;margin-bottom:2px}
@@ -399,8 +443,7 @@ body{background:#12102a;color:#f7f3e8}
   #trace .trace-wrap{padding:0 10px 6px}
   #trace .trace-tabs,#trace .trace-hint,#trace .trace-picker{position:relative;top:auto;bottom:auto;left:auto;right:auto}
   #trace .trace-canvas-box{position:relative;left:auto;top:auto;width:100%;height:auto;flex:1 1 auto;min-height:0}
-  #trace .trace-picker{max-height:64px;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start}
-  .trace-pick{width:52px;height:52px;min-width:52px}
+  #trace .trace-picker{padding:2px 24px}
   .trace-tab{min-height:44px;padding:6px 12px}
   #paint .paint-canvas-box{top:32%;height:30%;left:37%;width:26%}
   #paint .paint-dock{max-height:32%;overflow:auto;gap:4px;padding:4px 6px 6px}
@@ -448,27 +491,27 @@ body{background:#12102a;color:#f7f3e8}
   <section id="letters" class="screen show-a has-scene">
     <div class="sky"></div>
     <div class="letter-frame" id="letterStage">
-      <div class="glow-pair" id="letterPair">
-        <span class="upper" id="letterUpper">A</span>
-        <span class="lower" id="letterLower">a</span>
+      <div class="stars" id="starsLetters"></div>
+      <div class="letter-art" id="letterArt">
+        <div class="glow-pair" id="letterPair">
+          <span class="upper" id="letterUpper">A</span>
+          <span class="lower" id="letterLower">a</span>
+        </div>
+        <div id="letterSceneObjs"></div>
+        <button type="button" class="letter-hit" id="letterHit" aria-label="Hear the letter"></button>
+        <button type="button" class="word-chip" id="letterWord">Apple</button>
+        <div class="scene-hint" id="letterPicHint">tap a picture · 1 of 3</div>
       </div>
-      <div id="letterSceneObjs"></div>
       <div class="letter-progress" id="letterProgress">Aa · 1 of 26</div>
       <button type="button" class="rim-btn rim-home" data-go="home" aria-label="Home">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M32 6 8 28h8v28h12V38h8v18h12V28h8z"/></svg>
       </button>
-      <button type="button" class="word-chip" id="letterWord">Apple</button>
       <button type="button" class="rim-btn rim-prev" id="letterPrev" aria-label="Previous">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
       </button>
       <button type="button" class="rim-btn rim-next" id="letterNext" aria-label="Next">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
       </button>
-      <button type="button" class="sound-pill" id="letterSoundBtn" aria-label="Hear letter sound">
-        <span class="snd-ico" aria-hidden="true">🔊</span>
-        <span class="snd-txt" id="letterSoundLabel">A is for apple</span>
-      </button>
-      <div class="scene-hint" id="letterPicHint">tap a picture · 1 of 3</div>
     </div>
   </section>
 
@@ -596,7 +639,7 @@ body{background:#12102a;color:#f7f3e8}
       <div class="trace-canvas-box">
         <canvas id="traceCanvas"></canvas>
       </div>
-      <div class="trace-picker" id="tracePicker"></div>
+      <div class="trace-picker-wrap"><div class="trace-picker" id="tracePicker"></div></div>
     </div>
   </section>
 
@@ -713,7 +756,7 @@ function showScreen(id, cue){
   if(el) el.classList.add('active');
   if(id==='home'){
     speakGen++;
-    try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){}
+    stopVoice();
     return;
   }
   if(id==='letters'){ renderLetter(); teachCurrentLetter(cue); }
@@ -730,52 +773,11 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
   });
 });
 
-/* Calm adult talking voice — like a person on a phone call, never sing-song */
-var preferredVoice = null;
-var CREEPY_VOICE = /zarvox|whisper|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|organ|superstar|trinoids|wobble|pipe organ|princess|junior|kathy|trinoid|nicky|whisper/i;
-/* Warm adult English first. Aaron and Alex are last-resort only so they cannot win on iPhone when Samantha, Ava, Zoe, Allison, or Susan exist. */
-var VOICE_PREFERENCE = ['samantha','ava','zoe','allison','susan','karen','moira','tessa','serena','victoria','google us english','salli','joanna','kendra','kimberly','aaron','alex'];
-
-function pickFriendlyVoice(){
-  preferredVoice = null;
-  try{
-    if(!window.speechSynthesis) return;
-    var voices = window.speechSynthesis.getVoices() || [];
-    if(!voices.length) return;
-    var i, j, v, name, lang, english = [];
-    for(i=0;i<voices.length;i++){
-      v = voices[i]; name = v.name || ''; lang = (v.lang || '').toLowerCase();
-      if(CREEPY_VOICE.test(name)) continue;
-      if(!/^en([-_]|$)/i.test(lang) && !/english/i.test(name)) continue;
-      english.push(v);
-    }
-    for(j=0;j<VOICE_PREFERENCE.length;j++){
-      var want = VOICE_PREFERENCE[j];
-      var fallback = null;
-      for(i=0;i<english.length;i++){
-        var vname = (english[i].name || '').toLowerCase();
-        if(vname.indexOf(want) === -1) continue;
-        var vlang = (english[i].lang || '').toLowerCase();
-        if(vlang.indexOf('en-us') === 0 || vlang.indexOf('en_us') === 0){
-          preferredVoice = english[i];
-          return;
-        }
-        if(!fallback) fallback = english[i];
-      }
-      if(fallback){ preferredVoice = fallback; return; }
-    }
-    // Do NOT fall back to voices[0] (iOS can return odd novelty voices).
-  }catch(e){ preferredVoice = null; }
-}
-if(typeof window !== 'undefined' && window.speechSynthesis){
-  pickFriendlyVoice();
-  if(window.speechSynthesis.onvoiceschanged !== undefined){
-    window.speechSynthesis.onvoiceschanged = pickFriendlyVoice;
-  }
-}
-
-/* Last spoken lines. 🔊 repeats them. Never a raw letter or chopped phoneme. */
-var lastUtterance = '';
+/* Recorded voice: every kid-facing line is a pre-generated Kokoro-82M clip (voice af_bella) in audio/.
+   No system text-to-speech. A missing clip is logged and skipped, never read by the phone's voice. */
+var VOICE_DIR = 'audio/';
+var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"challenge-find-two-that-go-together":1,"easy-find-two-that-go-together":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-number":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"numbers":1,"paint":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"try-again":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1}/*END_VOICE_CLIPS*/;
+var voiceEl = null, voiceQueue = [];
 var lastParts = [];
 var speakGen = 0;
 var PHONEME_TTS = /^(ah|aw|ay|ey|buh|kuh|duh|eh|fuh|guh|huh|ih|juh|luh|muh|nuh|puh|kwuh|ruh|sss|tuh|uh|vuh|wuh|ks|yuh|zuh)$/i;
@@ -796,48 +798,69 @@ function cleanParts(parts){
   var out = [], i, bit;
   if(typeof parts === 'string') parts = [parts];
   for(i=0;i<(parts ? parts.length : 0);i++){
-    bit = String(parts[i] == null ? '' : parts[i]).trim();
+    if(typeof parts[i] !== 'string') continue; /* never speak an event object */
+    bit = parts[i].trim();
     if(!bit || isUnsafeUtterance(bit)) continue;
     out.push(bit);
   }
   return out;
 }
 
-function joinSpeech(parts){
-  var s = '';
-  var i;
-  for(i=0;i<parts.length;i++){
-    var bit = parts[i];
-    if(!s){ s = bit; continue; }
-    if(!/[.!?]$/.test(s)) s += '.';
-    s += ' ' + bit;
-  }
-  return s;
+/* "This is the letter A, like apple." -> "this-is-the-letter-a-like-apple" (audio/<slug>.mp3) */
+function clipSlug(text){
+  return String(text == null ? '' : text).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+function voiceLog(msg, extra){ try{ console.warn('[voice] ' + msg, extra || ''); }catch(e){} }
+
+function getVoiceEl(){
+  if(voiceEl) return voiceEl;
+  voiceEl = new Audio();
+  voiceEl.preload = 'auto';
+  voiceEl.setAttribute('playsinline', '');
+  voiceEl.addEventListener('ended', playNextClip);
+  voiceEl.addEventListener('error', function(){ voiceLog('clip failed to load', voiceEl.src); playNextClip(); });
+  return voiceEl;
+}
+
+/* One cue at a time: a new line always stops the one playing. */
+function stopVoice(){
+  voiceQueue = [];
+  if(voiceEl){ try{ voiceEl.pause(); }catch(e){} }
+}
+
+function playNextClip(){
+  if(!voiceQueue.length) return;
+  var slug = voiceQueue.shift();
+  var el = getVoiceEl();
+  el.src = VOICE_DIR + slug + '.mp3';
+  var p = null;
+  try{ p = el.play(); }catch(e){ voiceLog('play failed', slug); }
+  if(p && p.catch) p.catch(function(err){
+    if(err && err.name === 'AbortError') return;
+    voiceLog('play blocked', slug);
+  });
 }
 
 function speakParts(parts, remember){
   var say = cleanParts(parts);
+  /* Skip a home-tile cue the next line already starts with ("Memory" + "Memory. Find two…"). */
+  if(say.length > 1){
+    var s0 = clipSlug(say[0]), s1 = clipSlug(say[1]);
+    if(s1 === s0 || s1.indexOf(s0 + '-') === 0) say.shift();
+  }
   if(!say.length) return;
   var mem = cleanParts(remember || say);
   if(!mem.length) mem = say.slice();
-  /* One utterance. Queued clips on iOS Safari sound choppy or sung. */
-  var line = joinSpeech(say);
-  var remembered = joinSpeech(mem);
-  if(isUnsafeUtterance(line)) return;
-  lastParts = [remembered];
-  lastUtterance = remembered;
+  lastParts = mem.slice();
   speakGen++;
-  try{
-    if(!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(line);
-    u.lang = 'en-US';
-    u.rate = 1.0; // normal talking speed — slower rates can sound sung
-    u.pitch = 1.0; // never raise — raised pitch sounds creepy on Safari
-    u.volume = 1;
-    if(preferredVoice) u.voice = preferredVoice;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
+  stopVoice();
+  for(var i=0;i<say.length;i++){
+    var slug = clipSlug(say[i]);
+    if(VOICE_CLIPS[slug]) voiceQueue.push(slug);
+    else voiceLog('no recorded clip for', say[i]);
+  }
+  playNextClip();
 }
 
 function speak(text){
@@ -849,7 +872,9 @@ function repeatLastUtterance(){
   speakParts(lastParts.slice());
 }
 
-/* Prefer-words and author IPA notes only. No soundSay — chopped phonemes must never reach speechSynthesis. */
+document.addEventListener('visibilitychange', function(){ if(document.hidden) stopVoice(); });
+
+/* Prefer-words and author IPA notes only. No soundSay — chopped phonemes are never spoken. */
 var LETTER_META = {
   A:{ipa:'/eɪ/ /æ/', prefer:['Apple','Ant']},
   B:{ipa:'/biː/ /b/', prefer:['Ball','Bear','Bus']},
@@ -925,14 +950,6 @@ function speakLetterLesson(letter, pics, prefix){
   else speak(line);
 }
 
-/** "The letter A is for apple." On-screen label stays "A is for apple". */
-function speakSoundFor(letter){
-  var g = letterGlyph(letter);
-  if(!g) return;
-  var wordSay = String(exampleWordFor(g, null)).toLowerCase();
-  speak('The letter ' + g + ' is for ' + wordSay + '.');
-}
-
 /** "Find the letter A." */
 function findPrompt(letter){
   var g = letterGlyph(letter);
@@ -946,11 +963,6 @@ function yesLikePrompt(letter, pics){
   if(!g) return '';
   var wordSay = String(exampleWordFor(g, pics)).toLowerCase();
   return 'Yes, the letter ' + g + ', like ' + wordSay + '.';
-}
-
-function soundButtonText(letter){
-  var up = String(letter).toUpperCase();
-  return up + ' is for ' + String(exampleWordFor(up, null)).toLowerCase();
 }
 
 function burst(){
@@ -991,8 +1003,6 @@ function renderLetter(){
   board.classList.remove('show-a','show-b','show-c','show-d','show-e','show-f','show-g','show-h','show-i','show-j','show-k','show-l','show-m','show-n','show-o','show-p','show-q','show-r','show-s','show-t','show-u','show-v','show-w','show-x','show-y','show-z','show-fallback','has-scene');
   board.classList.add(sceneClass || 'show-fallback');
   if(sceneClass) board.classList.add('has-scene');
-  var sndLabel = document.getElementById('letterSoundLabel');
-  if(sndLabel) sndLabel.textContent = soundButtonText(up);
 
   var box = document.getElementById('letterSceneObjs');
   box.innerHTML = '';
@@ -1035,9 +1045,7 @@ document.getElementById('letterNext').addEventListener('click', function(){
   li = (li + 1) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
 });
 document.getElementById('letterWord').addEventListener('click', cyclePic);
-document.getElementById('letterSoundBtn').addEventListener('click', function(){
-  speakSoundFor(LETTERS[li].c);
-});
+document.getElementById('letterHit').addEventListener('click', function(){ teachCurrentLetter(); });
 document.getElementById('letterPair').addEventListener('click', function(){ teachCurrentLetter(); });
 document.getElementById('letterPair').setAttribute('role','button');
 document.getElementById('letterPair').setAttribute('aria-label','Hear letter name and sound');
@@ -1106,11 +1114,11 @@ function pickLetter(btn, c){
     document.getElementById('flFeedback').textContent = 'Try again';
     document.getElementById('flStars').textContent = '';
     document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
-    speak('Try again. ' + findPrompt(flAnswer));
+    speakParts(['Try again.', findPrompt(flAnswer)]);
     setTimeout(function(){ btn.classList.remove('wrong'); }, 450);
   }
 }
-document.getElementById('flNext').addEventListener('click', newLetterQuiz);
+document.getElementById('flNext').addEventListener('click', function(){ newLetterQuiz(); });
 document.getElementById('flSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 
 /* ========== NUMBERS ========== */
@@ -1227,7 +1235,7 @@ function pickNumber(btn, n){
     document.getElementById('fnFeedback').textContent = 'Try again';
     document.getElementById('fnStars').textContent = '';
     document.getElementById('fnProgress').textContent = 'Find ' + fnAnswer;
-    speak('Try again. Find ' + fnAnswer + '.');
+    speakParts(['Try again.', 'Find ' + fnAnswer + '.']);
     setTimeout(function(){ btn.classList.remove('wrong'); }, 450);
   }
 }
@@ -1244,21 +1252,31 @@ function traceItems(){
   if(traceSet === 'lower') return LETTERS.map(function(L){ return L.c.toLowerCase(); });
   return ['0','1','2','3','4','5','6','7','8','9'];
 }
+var tracePickerSet = '';
 function setupTracePicker(){
   var picker = document.getElementById('tracePicker');
-  picker.innerHTML = '';
   var items = traceItems();
   if(items.indexOf(traceChar)===-1) traceChar = items[0];
-  items.forEach(function(ch){
-    var b = document.createElement('button');
-    b.className = 'trace-pick' + (ch===traceChar?' active':'');
-    b.textContent = ch;
-    b.addEventListener('click', function(){
-      traceChar = ch;
-      document.getElementById('traceProgress').textContent = 'Trace ' + ch;
-      setupTracePicker(); drawGuide(); speakTrace();
+  /* Rebuild only when the set changes, so picking a letter does not snap the row back to the start. */
+  if(tracePickerSet !== traceSet || !picker.children.length){
+    tracePickerSet = traceSet;
+    picker.innerHTML = '';
+    picker.scrollLeft = 0;
+    items.forEach(function(ch){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'trace-pick';
+      b.textContent = ch;
+      b.setAttribute('data-ch', ch);
+      b.addEventListener('click', function(){
+        traceChar = ch;
+        setupTracePicker(); drawGuide(); speakTrace();
+      });
+      picker.appendChild(b);
     });
-    picker.appendChild(b);
+  }
+  Array.prototype.forEach.call(picker.children, function(b){
+    b.classList.toggle('active', b.getAttribute('data-ch') === traceChar);
   });
   document.getElementById('traceProgress').textContent = 'Trace ' + traceChar;
 }
@@ -1579,7 +1597,7 @@ function flipMemory(idx){
     var yes = yesLikePrompt(a.letter, null);
     var done = memoryDeck.every(function(c){ return c.matched; });
     if(done){
-      speak(yes.replace(/\.\s*$/, '') + '. You found them all!');
+      speakParts([yes, 'You found them all!']);
       document.getElementById('memoryWin').hidden = false;
       document.getElementById('memoryNext').hidden = memoryLevel >= MEMORY_LEVELS.length - 1;
       burst();
