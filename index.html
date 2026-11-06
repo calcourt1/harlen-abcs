@@ -147,6 +147,40 @@ body{background:#12102a;color:#f7f3e8}
   .animal-card .card-scrim{padding:18px 5px 6px}
 }
 
+
+/* Shapes tab — geometric tiles with card-frame + scrim names (iOS-safe) */
+.shapes-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
+.shapes-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
+  text-shadow:0 2px 0 rgba(0,0,0,.35);flex-shrink:0}
+.shapes-grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 2px 10px;align-content:start;align-items:start;
+  grid-auto-rows:max-content}
+.shape-card{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.6);border-radius:22px;
+  background:linear-gradient(180deg,rgba(40,28,72,.72),rgba(18,12,40,.85));color:#fff6e8;
+  padding:6px;display:flex;flex-direction:column;align-items:stretch;gap:0;cursor:pointer;
+  box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 22px rgba(0,0,0,.28);touch-action:manipulation;font-family:inherit;
+  min-height:auto;height:auto;align-self:start;overflow:visible}
+.shape-card:active{transform:translateY(2px)}
+.shape-card .card-frame{position:relative;width:100%;aspect-ratio:1/1;flex:0 0 auto;overflow:hidden;
+  border-radius:16px;background:rgba(10,8,24,.45);min-height:0;
+  display:flex;align-items:center;justify-content:center}
+.shape-card .shape-glyph{width:68%;height:68%;display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.shape-card .card-scrim{position:absolute;left:0;right:0;bottom:0;z-index:2;pointer-events:none;
+  padding:34px 8px 11px;background:linear-gradient(180deg,rgba(10,8,24,0) 0%,rgba(10,8,24,.88) 55%,rgba(10,8,24,.94) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px}
+.shape-card .shape-name{font-size:clamp(1.2rem,4.6vw,1.45rem);font-weight:900;text-align:center;line-height:1.12;
+  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.55);flex-shrink:0;min-height:1.35em;width:100%}
+@media (orientation:landscape){
+  .shapes-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .shape-card{padding:5px}
+  .shape-card .shape-name{font-size:clamp(1.05rem,2.4vw,1.25rem)}
+  .shape-card .card-scrim{padding:22px 6px 8px}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .shapes-hint{font-size:.85rem}
+  .shape-card .shape-name{font-size:.92rem}
+  .shape-card .card-scrim{padding:18px 5px 6px}
+}
 /* Signs tab — list of word tiles + large one-sign detail (no jumble overlay) */
 .signs-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
 .signs-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
@@ -471,11 +505,23 @@ body{background:#12102a;color:#f7f3e8}
   text-shadow:0 0 20px rgba(255,220,140,.7);margin:8px 0 16px}
 .quiz-case-tag{display:inline-block;font-size:.85rem;font-weight:800;color:#1a1440;background:#ffe9a0;
   border-radius:999px;padding:5px 14px;margin-bottom:4px}
-.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:100%;max-width:360px;margin:0 auto}
-.choice{min-height:92px;font-size:clamp(2.3rem,9vw,3.3rem);font-weight:900;border:none;border-radius:26px;
+.choices{display:grid;grid-template-columns:1fr;gap:14px;width:100%;max-width:420px;margin:0 auto}
+.choice{min-height:104px;font-size:clamp(2.5rem,10vw,3.6rem);font-weight:900;border:none;border-radius:26px;
   background:linear-gradient(180deg,#fff6e8,#ffe9c0);color:#1a1440;cursor:pointer;
   box-shadow:0 5px 0 rgba(0,0,0,.28),0 8px 18px rgba(0,0,0,.2);border:3px solid #ffe9a8;
-  transition:transform .08s,background .2s}
+  transition:transform .08s,background .2s;touch-action:manipulation;padding:10px 8px}
+.choice .pair{display:inline-flex;align-items:baseline;gap:.12em;line-height:1}
+.choice .pair .u{font-size:1em}
+.choice .pair .l{font-size:.78em;opacity:.95}
+.quiz-target.pair-target{display:flex;align-items:baseline;justify-content:center;gap:.14em;margin:4px 0 12px}
+.quiz-target.pair-target .u{font-size:1em}
+.quiz-target.pair-target .l{font-size:.78em}
+.fn-target-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin:4px 0 12px}
+.fn-target-wrap .quiz-target{margin:0}
+.fn-dots{display:flex;flex-direction:column;gap:8px;align-items:center;min-height:28px}
+.fn-dots .count-row{display:flex;gap:8px;justify-content:center;align-items:center}
+.fn-dots .count-sym.dot{width:clamp(16px,4.5vw,26px);height:clamp(16px,4.5vw,26px);border-radius:50%;font-size:0;
+  background:linear-gradient(145deg,#ffe9a0,#f0c14a);box-shadow:0 2px 0 rgba(0,0,0,.25);display:inline-block}
 .choice:active{transform:translateY(3px)}
 .choice.correct{background:linear-gradient(180deg,#c8f5a0,#7ed957);color:#fff;border-color:#b8ff90;animation:pop .35s ease}
 .choice.wrong{background:linear-gradient(180deg,#ffb0b0,#ff6b6b);color:#fff;border-color:#ffc0c0;animation:shake .35s ease}
@@ -628,9 +674,10 @@ body{background:#12102a;color:#f7f3e8}
   .letter-progress{font-size:.75rem;top:2%}
   .card{max-width:920px;padding:10px 14px}
   .quiz-prompt{font-size:1.05rem;margin-bottom:2px}
-  .quiz-target{font-size:clamp(2.2rem,16vh,4.2rem);margin:2px 0 8px}
-  .choices{grid-template-columns:repeat(4,minmax(0,1fr));max-width:760px;gap:8px}
-  .choice{min-height:56px;font-size:clamp(1.5rem,8vh,2.2rem)}
+  .quiz-target{font-size:clamp(2.6rem,18vh,4.8rem);margin:2px 0 8px}
+  .choices{grid-template-columns:repeat(3,minmax(0,1fr));max-width:760px;gap:12px}
+  .choice{min-height:88px;font-size:clamp(2rem,10vh,2.8rem)}
+  .fn-dots .count-sym.dot{width:clamp(12px,3.8vh,20px);height:clamp(12px,3.8vh,20px)}
   .feedback{margin-top:4px;min-height:1.1em;font-size:1.05rem}
   .scene-stage{max-width:none}
   .num-hero{font-size:clamp(2.4rem,12vh,4rem);top:18%}
@@ -698,6 +745,7 @@ body{background:#12102a;color:#f7f3e8}
           <div class="activity-grid">
             <button type="button" class="activity-tile" data-go="animals" data-cue="Animals"><span class="emoji">🦌</span><span class="title">Animals</span></button>
             <button type="button" class="activity-tile" data-go="signs" data-cue="Signs"><span class="emoji">🤟</span><span class="title">Signs</span></button>
+            <button type="button" class="activity-tile" data-go="shapes" data-cue="Shapes"><span class="emoji">⬡</span><span class="title">Shapes</span></button>
           </div>
         </div>
       </div>
@@ -751,14 +799,12 @@ body{background:#12102a;color:#f7f3e8}
     </div>
     <div class="content">
       <div class="card">
-        <div class="quiz-prompt">Find this letter:</div>
-        <div class="quiz-case-tag" id="flCaseTag">Big letter</div>
-        <div class="quiz-target" id="flTarget">D</div>
+        <div class="quiz-target pair-target" id="flTarget" aria-label="Letter"><span class="u">A</span><span class="l">a</span></div>
         <div class="choices" id="flChoices"></div>
         <div class="feedback" id="flFeedback"></div>
         <div class="stars" id="flStars"></div>
         <div class="dock" style="padding-top:10px">
-          <button class="btn btn-nextq" id="flNext">Next ▶</button>
+          <button class="btn btn-nextq" id="flNext" aria-label="Next">Next ▶</button>
         </div>
       </div>
     </div>
@@ -803,13 +849,15 @@ body{background:#12102a;color:#f7f3e8}
     </div>
     <div class="content">
       <div class="card">
-        <div class="quiz-prompt">Find this number:</div>
-        <div class="quiz-target" id="fnTarget" style="text-shadow:0 0 20px rgba(255,160,100,.7)">11</div>
+        <div class="fn-target-wrap">
+          <div class="quiz-target" id="fnTarget" style="text-shadow:0 0 20px rgba(255,160,100,.7)">3</div>
+          <div class="fn-dots" id="fnDots" aria-hidden="true"></div>
+        </div>
         <div class="choices" id="fnChoices"></div>
         <div class="feedback" id="fnFeedback"></div>
         <div class="stars" id="fnStars"></div>
         <div class="dock" style="padding-top:10px">
-          <button class="btn btn-nextq" id="fnNext">Next ▶</button>
+          <button class="btn btn-nextq" id="fnNext" aria-label="Next">Next ▶</button>
         </div>
       </div>
     </div>
@@ -956,6 +1004,25 @@ body{background:#12102a;color:#f7f3e8}
       </div>
     </div>
   </section>
+
+  <!-- SHAPES -->
+  <section id="shapes" class="screen">
+    <div class="sky"></div>
+    <div class="stars" id="starsShapes"></div>
+    <div class="cloud-soft" style="top:14%;left:16%"></div>
+    <div class="moon crescent" aria-hidden="true"></div>
+    <div class="mountains" aria-hidden="true"></div>
+    <div class="hill"></div>
+    <div class="topbar">
+      <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
+      <div class="progress" id="shapesProgress">Shapes</div>
+      <button class="btn btn-speak" id="shapesSpeak" aria-label="Repeat">🔊</button>
+    </div>
+    <div class="shapes-wrap">
+      <div class="shapes-hint">Tap a shape ✨</div>
+      <div class="shapes-grid" id="shapesGrid" role="list"></div>
+    </div>
+  </section>
 </div>
 <div class="confetti" id="confetti" aria-hidden="true"></div>
 
@@ -1009,7 +1076,7 @@ function sprinkleStars(id, count){
     box.appendChild(s);
   }
 }
-['starsHome','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint','starsAnimals','starsSigns'].forEach(function(id){
+['starsHome','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint','starsAnimals','starsSigns','starsShapes'].forEach(function(id){
   sprinkleStars(id, 28);
 });
 
@@ -1032,6 +1099,7 @@ function showScreen(id, cue){
   if(id==='paint'){ buildPaintUI(); resizePaint(); requestAnimationFrame(function(){ resizePaint(); }); speakParts([cue || 'Paint.']); }
   if(id==='animals'){ renderAnimals(cue); }
   if(id==='signs'){ renderSigns(cue); }
+  if(id==='shapes'){ renderShapes(cue); }
 }
 document.querySelectorAll('[data-go]').forEach(function(btn){
   btn.addEventListener('click', function(){
@@ -1042,7 +1110,7 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
 /* Recorded voice: every kid-facing line is a pre-generated Kokoro-82M clip (voice af_bella) in audio/.
    No system text-to-speech. A missing clip is logged and skipped, never read by the phone's voice. */
 var VOICE_DIR = 'audio/';
-var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"animals":1,"challenge-find-two-that-go-together":1,"easy-find-two-that-go-together":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-number":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"numbers":1,"paint":1,"signs":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-a-cardinal":1,"this-is-a-coyote":1,"this-is-a-lion":1,"this-is-a-monkey":1,"this-is-a-rabbit":1,"this-is-a-raccoon":1,"this-is-a-squirrel":1,"this-is-a-white-tailed-deer":1,"this-is-a-wild-turkey":1,"this-is-all-done":1,"this-is-an-elephant":1,"this-is-daddy":1,"this-is-drink":1,"this-is-eat":1,"this-is-help":1,"this-is-milk":1,"this-is-mommy":1,"this-is-more":1,"this-is-please":1,"this-is-thank-you":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"try-again":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1,"milk":1,"more":1,"all-done":1,"mommy":1,"daddy":1,"eat":1,"drink":1,"please":1,"thank-you":1,"help":1}/*END_VOICE_CLIPS*/;
+var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"all-done":1,"animals":1,"challenge-find-two-that-go-together":1,"circle":1,"crescent":1,"daddy":1,"diamond":1,"drink":1,"easy-find-two-that-go-together":1,"eat":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-a":1,"find-the-b":1,"find-the-c":1,"find-the-d":1,"find-the-e":1,"find-the-f":1,"find-the-g":1,"find-the-h":1,"find-the-i":1,"find-the-j":1,"find-the-k":1,"find-the-l":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-m":1,"find-the-n":1,"find-the-number":1,"find-the-o":1,"find-the-p":1,"find-the-q":1,"find-the-r":1,"find-the-s":1,"find-the-t":1,"find-the-u":1,"find-the-v":1,"find-the-w":1,"find-the-x":1,"find-the-y":1,"find-the-z":1,"heart":1,"help":1,"hexagon":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"milk":1,"mommy":1,"more":1,"numbers":1,"oval":1,"paint":1,"please":1,"rectangle":1,"shapes":1,"signs":1,"square":1,"star":1,"thank-you":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-a-cardinal":1,"this-is-a-coyote":1,"this-is-a-lion":1,"this-is-a-monkey":1,"this-is-a-rabbit":1,"this-is-a-raccoon":1,"this-is-a-squirrel":1,"this-is-a-white-tailed-deer":1,"this-is-a-wild-turkey":1,"this-is-all-done":1,"this-is-an-elephant":1,"this-is-daddy":1,"this-is-drink":1,"this-is-eat":1,"this-is-help":1,"this-is-milk":1,"this-is-mommy":1,"this-is-more":1,"this-is-please":1,"this-is-thank-you":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"triangle":1,"try-again":1,"yes":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1}/*END_VOICE_CLIPS*/;
 var voiceEl = null, voiceQueue = [];
 var lastParts = [];
 var speakGen = 0;
@@ -1216,11 +1284,11 @@ function speakLetterLesson(letter, pics, prefix){
   else speak(line);
 }
 
-/** "Find the letter A." */
+/** "Find the A!" */
 function findPrompt(letter){
   var g = letterGlyph(letter);
   if(!g) return '';
-  return 'Find the letter ' + g + '.';
+  return 'Find the ' + g + '!';
 }
 
 /** "Yes, the letter A, like apple." */
@@ -1365,43 +1433,75 @@ document.getElementById('letterPair').setAttribute('role','button');
 document.getElementById('letterPair').setAttribute('aria-label','Hear letter name and sound');
 
 /* ========== FIND LETTER ========== */
-var flAnswer = 'A', flStreak = 0, flLocked = false;
+var flAnswer = 'A', flStreak = 0, flLocked = false, flAdvanceTimer = null;
+var LOOKALIKE = {B:'D', D:'B', P:'Q', Q:'P'};
 function weightedLetterUpper(){
-  if(Math.random() < 0.75) return LETTERS[3 + Math.floor(Math.random()*23)].c;
-  return LETTERS[Math.floor(Math.random()*26)].c;
+  /* ~75% A–M (0..12), ~25% N–Z (13..25) */
+  if(Math.random() < 0.75) return LETTERS[Math.floor(Math.random()*13)].c;
+  return LETTERS[13 + Math.floor(Math.random()*13)].c;
+}
+function setPairTarget(el, upper){
+  el.innerHTML = '';
+  var u = document.createElement('span'); u.className = 'u'; u.textContent = upper;
+  var l = document.createElement('span'); l.className = 'l'; l.textContent = upper.toLowerCase();
+  el.appendChild(u); el.appendChild(l);
+}
+function makePairChoice(upper){
+  var span = document.createElement('span');
+  span.className = 'pair';
+  var u = document.createElement('span'); u.className = 'u'; u.textContent = upper;
+  var l = document.createElement('span'); l.className = 'l'; l.textContent = upper.toLowerCase();
+  span.appendChild(u); span.appendChild(l);
+  return span;
+}
+function pickLetterDistractors(answer){
+  var banned = {};
+  banned[answer] = 1;
+  var twin = LOOKALIKE[answer];
+  var pool = LETTERS.map(function(L){ return L.c; }).filter(function(c){ return !banned[c]; });
+  shuffle(pool);
+  var out = [];
+  var i, c;
+  for(i=0;i<pool.length && out.length < 2;i++){
+    c = pool[i];
+    if(twin && c === twin) continue; /* avoid look-alike as a distractor when possible */
+    if(out.length === 1 && LOOKALIKE[out[0]] === c) continue; /* avoid both distractors being a look-alike pair */
+    out.push(c);
+  }
+  /* Fallback if pool was too constrained */
+  for(i=0;i<pool.length && out.length < 2;i++){
+    c = pool[i];
+    if(out.indexOf(c) !== -1) continue;
+    out.push(c);
+  }
+  return out;
+}
+function clearFlAdvance(){
+  if(flAdvanceTimer){ clearTimeout(flAdvanceTimer); flAdvanceTimer = null; }
 }
 function newLetterQuiz(cue){
+  clearFlAdvance();
   flLocked = false;
-  var upper = weightedLetterUpper();
-  var useLower = Math.random() < 0.5;
-  flAnswer = useLower ? upper.toLowerCase() : upper;
-  document.getElementById('flTarget').textContent = flAnswer;
-  document.getElementById('flCaseTag').textContent = useLower ? 'Little letter' : 'Big letter';
+  flAnswer = weightedLetterUpper();
+  var tgt = document.getElementById('flTarget');
+  setPairTarget(tgt, flAnswer);
+  tgt.setAttribute('aria-label', 'Letter ' + flAnswer);
   document.getElementById('flFeedback').textContent = '';
-  document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
-  var opts = [flAnswer];
-  var guard = 0;
-  while(opts.length < 4 && guard < 80){
-    guard++;
-    var base = LETTERS[Math.floor(Math.random()*26)].c;
-    var sameCase = Math.random() < 0.75;
-    var c = sameCase ? (useLower ? base.toLowerCase() : base) : (useLower ? base : base.toLowerCase());
-    if(opts.indexOf(c) !== -1) continue;
-    if(c.toLowerCase() === flAnswer.toLowerCase()) continue;
-    opts.push(c);
-  }
-  while(opts.length < 4){
+  document.getElementById('flProgress').textContent = 'Find!';
+  var opts = [flAnswer].concat(pickLetterDistractors(flAnswer));
+  while(opts.length < 3){
     var b2 = LETTERS[Math.floor(Math.random()*26)].c;
-    var c2 = useLower ? b2.toLowerCase() : b2;
-    if(opts.indexOf(c2)===-1 && c2.toLowerCase()!==flAnswer.toLowerCase()) opts.push(c2);
+    if(opts.indexOf(b2)===-1) opts.push(b2);
   }
   shuffle(opts);
   var box = document.getElementById('flChoices');
   box.innerHTML = '';
   opts.forEach(function(c){
     var b = document.createElement('button');
+    b.type = 'button';
     b.className = 'choice';
-    b.textContent = c;
+    b.setAttribute('aria-label', 'Letter ' + c);
+    b.appendChild(makePairChoice(c));
     b.addEventListener('click', function(){ pickLetter(b, c); });
     box.appendChild(b);
   });
@@ -1411,24 +1511,22 @@ function newLetterQuiz(cue){
 }
 function pickLetter(btn, c){
   if(flLocked) return;
-  var Lquiz = LETTERS.filter(function(L){ return L.c === flAnswer.toUpperCase(); })[0];
-  var pics = Lquiz ? Lquiz.pics : [];
   if(c === flAnswer){
     flLocked = true;
     btn.classList.add('correct');
     flStreak++;
     document.getElementById('flFeedback').textContent = '🎉 Yes!';
     document.getElementById('flStars').textContent = '⭐'.repeat(Math.min(flStreak, 5));
-    document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
     burst();
-    speak(yesLikePrompt(flAnswer, pics));
+    speak('Yes!');
+    clearFlAdvance();
+    flAdvanceTimer = setTimeout(function(){ newLetterQuiz(); }, 1100);
   } else {
     btn.classList.add('wrong');
     flStreak = 0;
     document.getElementById('flFeedback').textContent = 'Try again';
     document.getElementById('flStars').textContent = '';
-    document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
-    speakParts(['Try again.', findPrompt(flAnswer)]);
+    speakParts(['Try again.']);
     setTimeout(function(){ btn.classList.remove('wrong'); }, 450);
   }
 }
@@ -1477,19 +1575,45 @@ document.getElementById('numNext').addEventListener('click', function(){ ni = (n
 document.getElementById('numSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 
 /* ========== FIND NUMBER ========== */
-var fnAnswer = 11, fnStreak = 0, fnLocked = false;
+var fnAnswer = 3, fnStreak = 0, fnLocked = false, fnAdvanceTimer = null;
 function weightedNumber(){
-  if(Math.random() < 0.75) return 11 + Math.floor(Math.random()*10);
-  return 1 + Math.floor(Math.random()*20);
+  /* ~75% 1–10, ~25% 11–20 */
+  if(Math.random() < 0.75) return 1 + Math.floor(Math.random()*10);
+  return 11 + Math.floor(Math.random()*10);
+}
+function renderFindDots(n){
+  var box = document.getElementById('fnDots');
+  if(!box) return;
+  box.innerHTML = '';
+  var shown = 0;
+  var rows = Math.max(1, Math.ceil(n / 5));
+  for(var r=0;r<rows;r++){
+    var row = document.createElement('div');
+    row.className = 'count-row';
+    var count = Math.min(5, n - shown);
+    for(var i=0;i<count;i++){
+      var d = document.createElement('span');
+      d.className = 'count-sym dot a'+(r%5);
+      d.setAttribute('aria-hidden','true');
+      row.appendChild(d);
+      shown++;
+    }
+    box.appendChild(row);
+  }
+}
+function clearFnAdvance(){
+  if(fnAdvanceTimer){ clearTimeout(fnAdvanceTimer); fnAdvanceTimer = null; }
 }
 function newNumberQuiz(cue){
+  clearFnAdvance();
   fnLocked = false;
   fnAnswer = weightedNumber();
   document.getElementById('fnTarget').textContent = String(fnAnswer);
+  renderFindDots(fnAnswer);
   document.getElementById('fnFeedback').textContent = '';
-  document.getElementById('fnProgress').textContent = 'Find ' + fnAnswer;
+  document.getElementById('fnProgress').textContent = 'Find!';
   var opts = [fnAnswer];
-  while(opts.length < 4){
+  while(opts.length < 3){
     var n = 1 + Math.floor(Math.random()*20);
     if(opts.indexOf(n)===-1) opts.push(n);
   }
@@ -1498,12 +1622,14 @@ function newNumberQuiz(cue){
   box.innerHTML = '';
   opts.forEach(function(n){
     var b = document.createElement('button');
+    b.type = 'button';
     b.className = 'choice';
     b.textContent = String(n);
+    b.setAttribute('aria-label', 'Number ' + n);
     b.addEventListener('click', function(){ pickNumber(b, n); });
     box.appendChild(b);
   });
-  var line = 'Find ' + fnAnswer + '.';
+  var line = 'Find ' + fnAnswer + '!';
   if(cue) speakParts([cue, line], [line]);
   else speakParts([line]);
 }
@@ -1515,16 +1641,16 @@ function pickNumber(btn, n){
     fnStreak++;
     document.getElementById('fnFeedback').textContent = '🎉 Yes!';
     document.getElementById('fnStars').textContent = '⭐'.repeat(Math.min(fnStreak, 5));
-    document.getElementById('fnProgress').textContent = 'Find ' + fnAnswer;
     burst();
-    speak('Yes! ' + n + '.');
+    speak('Yes!');
+    clearFnAdvance();
+    fnAdvanceTimer = setTimeout(function(){ newNumberQuiz(); }, 1100);
   } else {
     btn.classList.add('wrong');
     fnStreak = 0;
     document.getElementById('fnFeedback').textContent = 'Try again';
     document.getElementById('fnStars').textContent = '';
-    document.getElementById('fnProgress').textContent = 'Find ' + fnAnswer;
-    speakParts(['Try again.', 'Find ' + fnAnswer + '.']);
+    speakParts(['Try again.']);
     setTimeout(function(){ btn.classList.remove('wrong'); }, 450);
   }
 }
@@ -2307,6 +2433,74 @@ function renderSigns(cue){
   showSignsList();
   lastSignSay = cue || 'Signs.';
   speakParts([cue || 'Signs.']);
+}
+
+
+/* ---- Shapes (CSS/SVG geometry; name-only tap) ---- */
+var SHAPES = [
+  {id:'circle', label:'Circle', say:'Circle.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="38" fill="#7ec8ff" stroke="#fff6d8" stroke-width="4"/></svg>'},
+  {id:'square', label:'Square', say:'Square.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><rect x="18" y="18" width="64" height="64" rx="6" fill="#ffe07a" stroke="#fff6d8" stroke-width="4"/></svg>'},
+  {id:'triangle', label:'Triangle', say:'Triangle.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,14 88,82 12,82" fill="#9dffb0" stroke="#fff6d8" stroke-width="4" stroke-linejoin="round"/></svg>'},
+  {id:'rectangle', label:'Rectangle', say:'Rectangle.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><rect x="10" y="28" width="80" height="44" rx="6" fill="#ffb347" stroke="#fff6d8" stroke-width="4"/></svg>'},
+  {id:'oval', label:'Oval', say:'Oval.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="50" rx="28" ry="40" fill="#d4a5ff" stroke="#fff6d8" stroke-width="4"/></svg>'},
+  {id:'star', label:'Star', say:'Star.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,10 61,38 92,38 67,56 76,86 50,68 24,86 33,56 8,38 39,38" fill="#ffe66d" stroke="#fff6d8" stroke-width="3" stroke-linejoin="round"/></svg>'},
+  {id:'heart', label:'Heart', say:'Heart.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 86 C20 64 8 48 8 32 C8 18 18 10 30 10 C40 10 47 16 50 24 C53 16 60 10 70 10 C82 10 92 18 92 32 C92 48 80 64 50 86 Z" fill="#ff7aa2" stroke="#fff6d8" stroke-width="3"/></svg>'},
+  {id:'diamond', label:'Diamond', say:'Diamond.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,10 88,50 50,90 12,50" fill="#6ed3ff" stroke="#fff6d8" stroke-width="4" stroke-linejoin="round"/></svg>'},
+  {id:'crescent', label:'Crescent', say:'Crescent.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><path d="M62 14 A40 40 0 1 0 62 86 A30 30 0 1 1 62 14 Z" fill="#f0e6a8" stroke="#fff6d8" stroke-width="3"/></svg>'},
+  {id:'hexagon', label:'Hexagon', say:'Hexagon.',
+    svg:'<svg class="shape-glyph" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,10 86,30 86,70 50,90 14,70 14,30" fill="#8affc1" stroke="#fff6d8" stroke-width="4" stroke-linejoin="round"/></svg>'}
+];
+var shapesBuilt = false;
+var lastShapeSay = 'Shapes.';
+
+function playShapeTap(shape){
+  lastShapeSay = shape.say;
+  lastParts = [shape.say];
+  speakParts([shape.say], [shape.say]);
+}
+
+function renderShapes(cue){
+  var grid = document.getElementById('shapesGrid');
+  if(!grid) return;
+  if(!shapesBuilt){
+    grid.innerHTML = '';
+    SHAPES.forEach(function(shape){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'shape-card';
+      btn.setAttribute('role', 'listitem');
+      btn.setAttribute('aria-label', shape.label);
+      var frame = document.createElement('span');
+      frame.className = 'card-frame';
+      frame.innerHTML = shape.svg;
+      var scrim = document.createElement('span');
+      scrim.className = 'card-scrim';
+      var name = document.createElement('span');
+      name.className = 'shape-name';
+      name.textContent = shape.label;
+      scrim.appendChild(name);
+      frame.appendChild(scrim);
+      btn.appendChild(frame);
+      btn.addEventListener('click', function(){ playShapeTap(shape); });
+      grid.appendChild(btn);
+    });
+    shapesBuilt = true;
+    var speakBtn = document.getElementById('shapesSpeak');
+    if(speakBtn) speakBtn.addEventListener('click', function(){ speakParts([lastShapeSay]); });
+  }
+  var prog = document.getElementById('shapesProgress');
+  if(prog) prog.textContent = 'Shapes';
+  lastShapeSay = cue || 'Shapes.';
+  speakParts([cue || 'Shapes.']);
 }
 
 
