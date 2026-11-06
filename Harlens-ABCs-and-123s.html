@@ -337,11 +337,16 @@ body{background:#12102a;color:#f7f3e8}
 .memory-actions[hidden]{display:none}
 
 /* Trace, paint, and memory sit on the Flyer Press scenes. The painted slate, easel, and table are scenery. */
-#trace .trace-wrap{position:static;pointer-events:none}
-#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker{pointer-events:auto;position:relative;z-index:4}
-#trace .trace-canvas-box{position:absolute;left:17%;top:59%;width:64%;height:20%;max-width:none;z-index:4;
-  pointer-events:auto;background:rgba(18,24,40,.42);border-color:rgba(240,212,138,.45)}
-#trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+#trace .trace-wrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0;width:100%;
+  pointer-events:none;padding:0 12px 8px;z-index:3}
+#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker{pointer-events:auto;position:relative;z-index:5;flex-shrink:0}
+#trace .trace-canvas-box{position:relative;left:auto;top:auto;flex:1 1 auto;width:100%;max-width:none;height:auto;
+  min-height:0;margin:6px 0;z-index:4;pointer-events:auto;
+  background:rgba(8,12,28,.62);border-color:rgba(240,212,138,.7);border-width:4px;border-radius:28px}
+#trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6);margin:2px 0}
+#trace .trace-picker{max-width:none;max-height:68px;margin-top:4px;flex-wrap:nowrap;overflow-x:auto;
+  justify-content:flex-start;-webkit-overflow-scrolling:touch}
+#trace .trace-pick{width:56px;height:56px;min-width:56px;font-size:1.35rem}
 #paint .paint-wrap{position:static}
 #paint .paint-canvas-box{position:absolute;left:40.6%;top:39.5%;width:18.8%;height:27.5%;z-index:4;
   background:#f3eee4;border-radius:4px;border:none;box-shadow:none}
@@ -388,11 +393,11 @@ body{background:#12102a;color:#f7f3e8}
   .level-dot{width:44px;height:44px;min-width:44px;min-height:44px}
   #memory .memory-board{top:56%;height:min(200px,48%);width:min(900px,82%)}
   .mem-card{min-height:44px}
-  #trace .trace-tabs{position:absolute;top:52px;left:0;right:0;margin:0}
-  #trace .trace-hint{position:absolute;top:96px;left:0;right:0;margin:0}
-  #trace .trace-picker{position:absolute;left:8px;right:8px;bottom:4px;max-width:none;max-height:48px;
-    flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start}
-  .trace-pick{width:44px;height:44px;min-width:44px}
+  #trace .trace-wrap{padding:0 10px 6px}
+  #trace .trace-tabs,#trace .trace-hint,#trace .trace-picker{position:relative;top:auto;bottom:auto;left:auto;right:auto}
+  #trace .trace-canvas-box{position:relative;left:auto;top:auto;width:100%;height:auto;flex:1 1 auto;min-height:0}
+  #trace .trace-picker{max-height:64px;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start}
+  .trace-pick{width:52px;height:52px;min-width:52px}
   .trace-tab{min-height:44px;padding:6px 12px}
   #paint .paint-canvas-box{top:32%;height:30%;left:37%;width:26%}
   #paint .paint-dock{max-height:32%;overflow:auto;gap:4px;padding:4px 6px 6px}
@@ -776,11 +781,15 @@ var lastParts = [];
 var speakGen = 0;
 var PHONEME_TTS = /^(ah|aw|ay|ey|buh|kuh|duh|eh|fuh|guh|huh|ih|juh|luh|muh|nuh|puh|kwuh|ruh|sss|tuh|uh|vuh|wuh|ks|yuh|zuh)$/i;
 
+/* Whole utterance only. "The letter A" is allowed; a bare "A", "hey", or "ay" is not. */
+var FAKE_LETTER_NAME = /^(hey|hay|day|ey|ay|bee|cee|see|dee|ee|eff|jee|aych|eye|jay|kay|ell|em|en|oh|pee|cue|ar|ess|tee|you|vee|ex|why|zee|zed|double you)$/i;
+
 function isUnsafeUtterance(text){
   var t = String(text == null ? '' : text).trim().replace(/[.!?]+$/,'');
   if(!t) return true;
   if(/^[A-Za-z]$/.test(t)) return true;
   if(PHONEME_TTS.test(t)) return true;
+  if(FAKE_LETTER_NAME.test(t)) return true;
   return false;
 }
 
@@ -895,27 +904,19 @@ function exampleWordFor(letter, pics){
   return prefer[0] || 'this';
 }
 
-/* Spoken letter names. A uses the real word "hey" (the vowel at the end of hey). Never "ey", "ay", or a raw "A". */
-var LETTER_NAMES = {
-  A:'hey', B:'bee', C:'see', D:'dee', E:'ee', F:'eff', G:'jee',
-  H:'aych', I:'eye', J:'jay', K:'kay', L:'ell', M:'em', N:'en',
-  O:'oh', P:'pee', Q:'cue', R:'ar', S:'ess', T:'tee', U:'you',
-  V:'vee', W:'double you', X:'ex', Y:'why', Z:'zee'
-};
-function letterNameSay(letter){
+/* The glyph only. Spoken lines always wrap it as "the letter A" so iOS uses the American name. */
+function letterGlyph(letter){
   var up = String(letter || '').toUpperCase();
-  var name = LETTER_NAMES[up];
-  if(!name || name.length < 2) return '';
-  return name;
+  if(!/^[A-Z]$/.test(up)) return '';
+  return up;
 }
 
-/** One sentence. A: "This is hey, like apple." No second queued word. */
+/** "This is the letter A, like apple." One sentence, no respelling. */
 function lessonSentence(letter, pics){
-  var up = String(letter).toUpperCase();
-  var name = letterNameSay(up);
-  if(!name) return '';
-  var word = String(exampleWordFor(up, pics)).toLowerCase();
-  return 'This is ' + name + ', like ' + word + '.';
+  var g = letterGlyph(letter);
+  if(!g) return '';
+  var word = String(exampleWordFor(g, pics)).toLowerCase();
+  return 'This is the letter ' + g + ', like ' + word + '.';
 }
 
 function speakLetterLesson(letter, pics, prefix){
@@ -925,30 +926,27 @@ function speakLetterLesson(letter, pics, prefix){
   else speak(line);
 }
 
-/** "Hey is for apple." On-screen label stays "A is for apple". */
+/** "The letter A is for apple." On-screen label stays "A is for apple". */
 function speakSoundFor(letter){
-  var up = String(letter).toUpperCase();
-  var name = letterNameSay(up);
-  if(!name) return;
-  var wordSay = String(exampleWordFor(up, null)).toLowerCase();
-  var said = name.charAt(0).toUpperCase() + name.slice(1);
-  speak(said + ' is for ' + wordSay + '.');
+  var g = letterGlyph(letter);
+  if(!g) return;
+  var wordSay = String(exampleWordFor(g, null)).toLowerCase();
+  speak('The letter ' + g + ' is for ' + wordSay + '.');
 }
 
-/** "Find hey." */
+/** "Find the letter A." */
 function findPrompt(letter){
-  var name = letterNameSay(letter);
-  if(!name) return '';
-  return 'Find ' + name + '.';
+  var g = letterGlyph(letter);
+  if(!g) return '';
+  return 'Find the letter ' + g + '.';
 }
 
-/** "Yes, hey, like apple." */
+/** "Yes, the letter A, like apple." */
 function yesLikePrompt(letter, pics){
-  var up = String(letter).toUpperCase();
-  var name = letterNameSay(up);
-  if(!name) return '';
-  var wordSay = String(exampleWordFor(up, pics)).toLowerCase();
-  return 'Yes, ' + name + ', like ' + wordSay + '.';
+  var g = letterGlyph(letter);
+  if(!g) return '';
+  var wordSay = String(exampleWordFor(g, pics)).toLowerCase();
+  return 'Yes, the letter ' + g + ', like ' + wordSay + '.';
 }
 
 function soundButtonText(letter){
@@ -1275,8 +1273,9 @@ function setTraceTab(setName, firstChar){
   setupTracePicker(); drawGuide(); speakTrace();
 }
 function speakTrace(prefix){
-  var name = (/^[A-Za-z]$/.test(traceChar)) ? letterNameSay(traceChar) : String(traceChar);
-  var line = name ? ('Trace ' + name + '.') : 'Trace.';
+  var line = 'Trace.';
+  if(/^[A-Za-z]$/.test(traceChar)) line = 'Trace the letter ' + String(traceChar).toUpperCase() + '.';
+  else if(traceChar) line = 'Trace ' + String(traceChar) + '.';
   if(prefix) speakParts([prefix, line], [line]);
   else speakParts([line]);
 }
@@ -1292,24 +1291,26 @@ function resizeTrace(){
   canvas.width = Math.floor(w*dpr); canvas.height = Math.floor(h*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
 }
+function traceChalkWidth(){
+  var box = canvas.parentElement;
+  var w = box ? box.clientWidth : 0;
+  var h = box ? box.clientHeight : 0;
+  return Math.max(18, Math.floor(Math.min(w, h) * 0.055));
+}
 function drawGuide(){
   var w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
   if(w<10||h<10) return;
   ctx.clearRect(0,0,w,h);
   ctx.save();
-  ctx.fillStyle = 'rgba(255,244,214,0.34)';
-  ctx.strokeStyle = 'rgba(255,244,214,0.45)';
-  ctx.lineWidth = 3;
-  ctx.font = 'bold '+Math.floor(Math.min(w,h)*0.72)+'px system-ui,sans-serif';
+  var size = Math.floor(Math.min(w, h) * 0.9);
+  ctx.fillStyle = 'rgba(255,246,220,0.55)';
+  ctx.strokeStyle = 'rgba(255,246,220,0.95)';
+  ctx.lineWidth = Math.max(8, Math.floor(size * 0.045));
+  ctx.lineJoin = 'round';
+  ctx.font = 'bold '+size+'px system-ui,sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(traceChar, w/2, h/2+4);
-  ctx.strokeText(traceChar, w/2, h/2+4);
-  ctx.setLineDash([8,8]);
-  ctx.strokeStyle = 'rgba(0,0,0,0.06)'; ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(w*0.15,h/2); ctx.lineTo(w*0.85,h/2);
-  ctx.moveTo(w/2,h*0.12); ctx.lineTo(w/2,h*0.88);
-  ctx.stroke();
+  ctx.strokeText(traceChar, w/2, h/2);
+  ctx.fillText(traceChar, w/2, h/2);
   ctx.restore();
 }
 function getPos(e, el){
@@ -1320,14 +1321,15 @@ function getPos(e, el){
 function startDraw(e){
   e.preventDefault(); tracing = true;
   var p = getPos(e, canvas); lastX = p.x; lastY = p.y;
-  ctx.beginPath(); ctx.arc(lastX,lastY,4,0,Math.PI*2);
-  ctx.fillStyle = '#f7f1e4'; ctx.fill();
+  var chalk = traceChalkWidth();
+  ctx.beginPath(); ctx.arc(lastX,lastY,chalk/2,0,Math.PI*2);
+  ctx.fillStyle = '#fff6dc'; ctx.fill();
 }
 function moveDraw(e){
   if(!tracing) return; e.preventDefault();
   var p = getPos(e, canvas);
   ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y);
-  ctx.strokeStyle = '#f7f1e4'; ctx.lineWidth = 10; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  ctx.strokeStyle = '#fff6dc'; ctx.lineWidth = traceChalkWidth(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
   lastX = p.x; lastY = p.y;
 }
 function endDraw(e){ if(e) e.preventDefault(); tracing = false; }
@@ -1551,12 +1553,11 @@ function renderMemory(){
 }
 
 function memoryFlipLine(card){
-  var name = letterNameSay(card.letter);
-  if(!name) return '';
-  var word = String(card.word || '').toLowerCase();
-  if(card.type === 'pic' && word) return name + ', like ' + word + '.';
-  if(String(card.letter).toUpperCase() === 'A') return 'Hey, like ' + (word || 'apple') + '.';
-  return name;
+  var g = letterGlyph(card.letter);
+  if(!g) return '';
+  var word = String(card.word || exampleWordFor(g, null) || '').toLowerCase();
+  if(card.type === 'pic' && word) return 'The letter ' + g + ', like ' + word + '.';
+  return 'The letter ' + g + '.';
 }
 
 function flipMemory(idx){
