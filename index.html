@@ -112,59 +112,74 @@ body{background:#12102a;color:#f7f3e8}
   .activity-tile{min-height:88px}
 }
 
-/* Animals tab */
+/* Animals tab — image frame + dark-scrim name so iOS cannot clip labels */
 .animals-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
 .animals-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
-  text-shadow:0 2px 0 rgba(0,0,0,.35)}
+  text-shadow:0 2px 0 rgba(0,0,0,.35);flex-shrink:0}
 .animals-grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
   overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 2px 10px;align-content:start}
 .animal-card{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.6);border-radius:22px;
   background:linear-gradient(180deg,rgba(40,28,72,.72),rgba(18,12,40,.85));color:#fff6e8;
-  padding:8px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;
+  padding:6px;display:flex;flex-direction:column;align-items:stretch;gap:0;cursor:pointer;
   box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 22px rgba(0,0,0,.28);touch-action:manipulation;font-family:inherit;
-  min-height:148px}
+  min-height:0;overflow:visible}
 .animal-card:active{transform:translateY(2px)}
-.animal-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;
-  background:rgba(10,8,24,.45);pointer-events:none}
-.animal-card .animal-name{font-size:clamp(.92rem,3.2vw,1.12rem);font-weight:900;text-align:center;line-height:1.15;
-  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.animal-card .card-frame{position:relative;width:100%;aspect-ratio:1/1;flex:0 0 auto;overflow:hidden;
+  border-radius:16px;background:rgba(10,8,24,.45);min-height:0}
+.animal-card .card-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  border-radius:0;pointer-events:none;display:block}
+.animal-card .card-scrim{position:absolute;left:0;right:0;bottom:0;z-index:2;pointer-events:none;
+  padding:34px 8px 11px;background:linear-gradient(180deg,rgba(10,8,24,0) 0%,rgba(10,8,24,.88) 55%,rgba(10,8,24,.94) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px}
+.animal-card .animal-name{font-size:clamp(1.2rem,4.6vw,1.45rem);font-weight:900;text-align:center;line-height:1.12;
+  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.55);flex-shrink:0;min-height:1.35em;width:100%}
 @media (orientation:landscape){
   .animals-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-  .animal-card{min-height:120px;padding:6px 6px 8px}
-  .animal-card .animal-name{font-size:.95rem}
+  .animal-card{padding:5px}
+  .animal-card .animal-name{font-size:clamp(1.05rem,2.4vw,1.25rem)}
+  .animal-card .card-scrim{padding:22px 6px 8px}
 }
 @media (orientation:landscape) and (max-height:520px){
   .animals-hint{font-size:.85rem}
-  .animal-card{min-height:96px;gap:4px}
+  .animal-card .animal-name{font-size:.92rem}
+  .animal-card .card-scrim{padding:18px 5px 6px}
 }
 
-/* Signs tab (baby signs) — same gold-rim night language as Animals */
+/* Signs tab — same gold-rim night language; name + motion on dark scrim */
 .signs-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
 .signs-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
-  text-shadow:0 2px 0 rgba(0,0,0,.35)}
+  text-shadow:0 2px 0 rgba(0,0,0,.35);flex-shrink:0}
 .signs-grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
   overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 2px 10px;align-content:start}
 .sign-card{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.6);border-radius:22px;
   background:linear-gradient(180deg,rgba(40,28,72,.72),rgba(18,12,40,.85));color:#fff6e8;
-  padding:8px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  padding:6px;display:flex;flex-direction:column;align-items:stretch;gap:0;cursor:pointer;
   box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 22px rgba(0,0,0,.28);touch-action:manipulation;font-family:inherit;
-  min-height:168px}
+  min-height:0;overflow:visible}
 .sign-card:active{transform:translateY(2px)}
-.sign-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;
-  background:rgba(10,8,24,.45);pointer-events:none}
-.sign-card .sign-name{font-size:clamp(.92rem,3.2vw,1.12rem);font-weight:900;text-align:center;line-height:1.15;
-  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.35)}
-.sign-card .sign-motion{font-size:clamp(.72rem,2.6vw,.92rem);font-weight:700;text-align:center;line-height:1.25;
-  color:#d9c7ff;text-shadow:0 1px 0 rgba(0,0,0,.35);padding:0 2px}
+.sign-card .card-frame{position:relative;width:100%;aspect-ratio:1/1;flex:0 0 auto;overflow:hidden;
+  border-radius:16px;background:rgba(10,8,24,.45);min-height:0}
+.sign-card .card-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  border-radius:0;pointer-events:none;display:block}
+.sign-card .card-scrim{position:absolute;left:0;right:0;bottom:0;z-index:2;pointer-events:none;
+  padding:40px 8px 11px;background:linear-gradient(180deg,rgba(10,8,24,0) 0%,rgba(10,8,24,.88) 48%,rgba(10,8,24,.95) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px}
+.sign-card .sign-name{font-size:clamp(1.2rem,4.6vw,1.45rem);font-weight:900;text-align:center;line-height:1.12;
+  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.55);flex-shrink:0;min-height:1.35em;width:100%}
+.sign-card .sign-motion{font-size:clamp(.9rem,3.3vw,1.08rem);font-weight:700;text-align:center;line-height:1.22;
+  color:#ffe9a0;text-shadow:0 1px 0 rgba(0,0,0,.55);padding:0 2px;flex-shrink:0;min-height:1.3em;width:100%}
 @media (orientation:landscape){
   .signs-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-  .sign-card{min-height:140px;padding:6px 6px 8px;gap:4px}
-  .sign-card .sign-name{font-size:.95rem}
-  .sign-card .sign-motion{font-size:.78rem}
+  .sign-card{padding:5px}
+  .sign-card .sign-name{font-size:clamp(1.05rem,2.4vw,1.25rem)}
+  .sign-card .sign-motion{font-size:clamp(.85rem,2vw,1rem)}
+  .sign-card .card-scrim{padding:26px 6px 8px}
 }
 @media (orientation:landscape) and (max-height:520px){
   .signs-hint{font-size:.85rem}
-  .sign-card{min-height:110px;gap:3px}
+  .sign-card .sign-name{font-size:.92rem}
+  .sign-card .sign-motion{font-size:.72rem}
+  .sign-card .card-scrim{padding:20px 5px 6px}
 }
 /* Flyer Press 1920×1080 plates. Night-sky CSS stays behind them if a file is missing. */
 .screen > .art-plate{position:absolute;inset:0;z-index:2;pointer-events:none;
@@ -942,7 +957,7 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
 /* Recorded voice: every kid-facing line is a pre-generated Kokoro-82M clip (voice af_bella) in audio/.
    No system text-to-speech. A missing clip is logged and skipped, never read by the phone's voice. */
 var VOICE_DIR = 'audio/';
-var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"animals":1,"challenge-find-two-that-go-together":1,"easy-find-two-that-go-together":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-number":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"numbers":1,"paint":1,"signs":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-a-cardinal":1,"this-is-a-coyote":1,"this-is-a-lion":1,"this-is-a-monkey":1,"this-is-a-rabbit":1,"this-is-a-raccoon":1,"this-is-a-squirrel":1,"this-is-a-white-tailed-deer":1,"this-is-a-wild-turkey":1,"this-is-all-done":1,"this-is-an-elephant":1,"this-is-daddy":1,"this-is-drink":1,"this-is-eat":1,"this-is-help":1,"this-is-milk":1,"this-is-mommy":1,"this-is-more":1,"this-is-please":1,"this-is-thank-you":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"try-again":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1}/*END_VOICE_CLIPS*/;
+var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"animals":1,"challenge-find-two-that-go-together":1,"easy-find-two-that-go-together":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-number":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"numbers":1,"paint":1,"signs":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-a-cardinal":1,"this-is-a-coyote":1,"this-is-a-lion":1,"this-is-a-monkey":1,"this-is-a-rabbit":1,"this-is-a-raccoon":1,"this-is-a-squirrel":1,"this-is-a-white-tailed-deer":1,"this-is-a-wild-turkey":1,"this-is-all-done":1,"this-is-an-elephant":1,"this-is-daddy":1,"this-is-drink":1,"this-is-eat":1,"this-is-help":1,"this-is-milk":1,"this-is-mommy":1,"this-is-more":1,"this-is-please":1,"this-is-thank-you":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"try-again":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1,"milk":1,"more":1,"all-done":1,"mommy":1,"daddy":1,"eat":1,"drink":1,"please":1,"thank-you":1,"help":1}/*END_VOICE_CLIPS*/;
 var voiceEl = null, voiceQueue = [];
 var lastParts = [];
 var speakGen = 0;
@@ -1961,16 +1976,15 @@ renderNumber();
 
 /* ---- Animals ---- */
 var ANIMALS = [
-  {id:'white-tailed-deer', file:'white-tailed-deer.png', label:'White-tailed deer', sound:'deer.mp3', say:'This is a white-tailed deer.'},
-  {id:'raccoon', file:'raccoon.png', label:'Raccoon', sound:'raccoon.mp3', say:'This is a raccoon.'},
-  {id:'coyote', file:'coyote.png', label:'Coyote', sound:'coyote.mp3', say:'This is a coyote.'},
-  {id:'cardinal', file:'northern-cardinal.png', label:'Cardinal', sound:'cardinal.mp3', say:'This is a cardinal.'},
-  {id:'squirrel', file:'squirrel.png', label:'Squirrel', sound:'squirrel.mp3', say:'This is a squirrel.'},
-  {id:'rabbit', file:'rabbit.png', label:'Rabbit', sound:'rabbit.mp3', say:'This is a rabbit.'},
-  {id:'wild-turkey', file:'wild-turkey.png', label:'Wild turkey', sound:'turkey.mp3', say:'This is a wild turkey.'},
-  {id:'elephant', file:'elephant.png', label:'Elephant', sound:'elephant.mp3', say:'This is an elephant.'},
-  {id:'lion', file:'lion.png', label:'Lion', sound:'lion.mp3', say:'This is a lion.'},
-  {id:'monkey', file:'monkey.png', label:'Monkey', sound:'monkey.mp3', say:'This is a monkey.'}
+  {id:'raccoon', file:'raccoon.png', label:'Raccoon', sound:'raccoon.mp3'},
+  {id:'coyote', file:'coyote.png', label:'Coyote', sound:'coyote.mp3'},
+  {id:'cardinal', file:'northern-cardinal.png', label:'Cardinal', sound:'cardinal.mp3'},
+  {id:'squirrel', file:'squirrel.png', label:'Squirrel', sound:'squirrel.mp3'},
+  {id:'rabbit', file:'rabbit.png', label:'Rabbit', sound:'rabbit.mp3'},
+  {id:'wild-turkey', file:'wild-turkey.png', label:'Wild turkey', sound:'turkey.mp3'},
+  {id:'elephant', file:'elephant.png', label:'Elephant', sound:'elephant.mp3'},
+  {id:'lion', file:'lion.png', label:'Lion', sound:'lion.mp3'},
+  {id:'monkey', file:'monkey.png', label:'Monkey', sound:'monkey.mp3'}
 ];
 var animalSfxEl = null;
 var animalsBuilt = false;
@@ -1989,28 +2003,16 @@ function stopAnimalSfx(){
 }
 
 function playAnimalTap(animal){
-  lastAnimalSay = animal.say;
-  lastParts = [animal.say];
+  /* Tap = animal sound ONLY. Name is on the card; no "This is a…" line. */
+  lastAnimalSay = 'Animals.';
   speakGen++;
   stopVoice();
   stopAnimalSfx();
   var el = getAnimalSfxEl();
-  var finished = false;
-  function afterSound(){
-    if(finished) return;
-    finished = true;
-    el.removeEventListener('ended', afterSound);
-    el.removeEventListener('error', afterSound);
-    speakParts([animal.say], [animal.say]);
-  }
   el.src = 'audio/animals/' + animal.sound;
-  el.addEventListener('ended', afterSound);
-  el.addEventListener('error', afterSound);
   var p = null;
-  try{ p = el.play(); }catch(e){ afterSound(); }
-  if(p && p.catch) p.catch(function(){ afterSound(); });
-  /* Safety: if a clip hangs, still say the name after 3.2s. */
-  setTimeout(afterSound, 3200);
+  try{ p = el.play(); }catch(e){}
+  if(p && p.catch) p.catch(function(){});
 }
 
 function renderAnimals(cue){
@@ -2024,16 +2026,22 @@ function renderAnimals(cue){
       btn.className = 'animal-card';
       btn.setAttribute('role', 'listitem');
       btn.setAttribute('aria-label', animal.label);
+      var frame = document.createElement('span');
+      frame.className = 'card-frame';
       var img = document.createElement('img');
       img.src = 'art/animals/' + animal.file;
       img.alt = '';
       img.decoding = 'async';
       img.loading = 'eager';
+      var scrim = document.createElement('span');
+      scrim.className = 'card-scrim';
       var name = document.createElement('span');
       name.className = 'animal-name';
       name.textContent = animal.label;
-      btn.appendChild(img);
-      btn.appendChild(name);
+      scrim.appendChild(name);
+      frame.appendChild(img);
+      frame.appendChild(scrim);
+      btn.appendChild(frame);
       btn.addEventListener('click', function(){ playAnimalTap(animal); });
       grid.appendChild(btn);
     });
@@ -2050,16 +2058,16 @@ function renderAnimals(cue){
 
 /* ---- Signs (baby signs) ---- */
 var SIGNS = [
-  {id:'milk', file:'milk.png', label:'Milk', hint:'Squeeze your fist.', say:'This is milk.'},
-  {id:'more', file:'more.png', label:'More', hint:'Tap your fingertips together.', say:'This is more.'},
-  {id:'all-done', file:'all-done.png', label:'All done', hint:'Show both open hands.', say:'This is all done.'},
-  {id:'mommy', file:'mommy.png', label:'Mommy', hint:'Put your thumb on your chin.', say:'This is mommy.'},
-  {id:'daddy', file:'daddy.png', label:'Daddy', hint:'Put your thumb on your forehead.', say:'This is daddy.'},
-  {id:'eat', file:'eat.png', label:'Eat', hint:'Bring your fingertips to your mouth.', say:'This is eat.'},
-  {id:'drink', file:'drink.png', label:'Drink', hint:'Tip a C-shaped hand at your mouth.', say:'This is drink.'},
-  {id:'please', file:'please.png', label:'Please', hint:'Rub your chest in a circle.', say:'This is please.'},
-  {id:'thank-you', file:'thank-you.png', label:'Thank you', hint:'Move your hand out from your chin.', say:'This is thank you.'},
-  {id:'help', file:'help.png', label:'Help', hint:'Set a fist on your open hand.', say:'This is help.'}
+  {id:'milk', file:'milk.png', label:'Milk', hint:'Squeeze your fist.', say:'Milk.'},
+  {id:'more', file:'more.png', label:'More', hint:'Tap your fingertips together.', say:'More.'},
+  {id:'all-done', file:'all-done.png', label:'All done', hint:'Show both open hands.', say:'All done.'},
+  {id:'mommy', file:'mommy.png', label:'Mommy', hint:'Put your thumb on your chin.', say:'Mommy.'},
+  {id:'daddy', file:'daddy.png', label:'Daddy', hint:'Put your thumb on your forehead.', say:'Daddy.'},
+  {id:'eat', file:'eat.png', label:'Eat', hint:'Bring your fingertips to your mouth.', say:'Eat.'},
+  {id:'drink', file:'drink.png', label:'Drink', hint:'Tip a C-shaped hand at your mouth.', say:'Drink.'},
+  {id:'please', file:'please.png', label:'Please', hint:'Rub your chest in a circle.', say:'Please.'},
+  {id:'thank-you', file:'thank-you.png', label:'Thank you', hint:'Move your hand out from your chin.', say:'Thank you.'},
+  {id:'help', file:'help.png', label:'Help', hint:'Set a fist on your open hand.', say:'Help.'}
 ];
 var signsBuilt = false;
 var lastSignSay = 'Signs.';
@@ -2081,20 +2089,26 @@ function renderSigns(cue){
       btn.className = 'sign-card';
       btn.setAttribute('role', 'listitem');
       btn.setAttribute('aria-label', sign.label + '. ' + sign.hint);
+      var frame = document.createElement('span');
+      frame.className = 'card-frame';
       var img = document.createElement('img');
       img.src = 'art/signs/' + sign.file;
       img.alt = '';
       img.decoding = 'async';
       img.loading = 'eager';
+      var scrim = document.createElement('span');
+      scrim.className = 'card-scrim';
       var name = document.createElement('span');
       name.className = 'sign-name';
       name.textContent = sign.label;
       var motion = document.createElement('span');
       motion.className = 'sign-motion';
       motion.textContent = sign.hint;
-      btn.appendChild(img);
-      btn.appendChild(name);
-      btn.appendChild(motion);
+      scrim.appendChild(name);
+      scrim.appendChild(motion);
+      frame.appendChild(img);
+      frame.appendChild(scrim);
+      btn.appendChild(frame);
       btn.addEventListener('click', function(){ playSignTap(sign); });
       grid.appendChild(btn);
     });
