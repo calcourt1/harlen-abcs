@@ -1,0 +1,211 @@
+[
+  {
+    "letter": "A",
+    "word": "Apple",
+    "sentence": "Harlen reaches for a red apple on the low branch.",
+    "wash": "#f8d0c8",
+    "accent": "#d63c2e",
+    "deep": "#6e2218"
+  },
+  {
+    "letter": "B",
+    "word": "Balloon",
+    "sentence": "A blue balloon tugs the string in Harlen's hand.",
+    "wash": "#d5e7fb",
+    "accent": "#2f6fbe",
+    "deep": "#163a66"
+  },
+  {
+    "letter": "C",
+    "word": "Cloud",
+    "sentence": "Harlen finds a cloud that looks just like a duck.",
+    "wash": "#e4edf6",
+    "accent": "#7f97b3",
+    "deep": "#3e5166"
+  },
+  {
+    "letter": "D",
+    "word": "Drum",
+    "sentence": "Harlen taps a steady beat on a little drum.",
+    "wash": "#f6e2c4",
+    "accent": "#e09a2b",
+    "deep": "#6a4a10"
+  },
+  {
+    "letter": "E",
+    "word": "Elephant",
+    "sentence": "A careful elephant gives Harlen a ride around the yard.",
+    "wash": "#e6e9ef",
+    "accent": "#8d97a6",
+    "deep": "#3c4450"
+  },
+  {
+    "letter": "F",
+    "word": "Firefly",
+    "sentence": "Fireflies write tiny lights in the grass by Harlen's feet.",
+    "wash": "#e4ecd4",
+    "accent": "#c6d94a",
+    "deep": "#3f4d12"
+  },
+  {
+    "letter": "G",
+    "word": "Garden",
+    "sentence": "Harlen gives every plant in the garden a drink.",
+    "wash": "#dcecd8",
+    "accent": "#3e8f4a",
+    "deep": "#1d4a28"
+  },
+  {
+    "letter": "H",
+    "word": "Harlen",
+    "sentence": "Harlen is kind and brave, and right here.",
+    "wash": "#f8e7c2",
+    "accent": "#e2a322",
+    "deep": "#6a4c0e"
+  },
+  {
+    "letter": "I",
+    "word": "Island",
+    "sentence": "Harlen builds a small island out of sand and shells.",
+    "wash": "#d4efe9",
+    "accent": "#2a9d8f",
+    "deep": "#0f4e48"
+  },
+  {
+    "letter": "J",
+    "word": "Jelly",
+    "sentence": "Harlen likes toast with a thick stripe of berry jelly.",
+    "wash": "#fde0ea",
+    "accent": "#e25b8c",
+    "deep": "#7a2348"
+  },
+  {
+    "letter": "K",
+    "word": "Kite",
+    "sentence": "Harlen's kite climbs until it ticks the clouds.",
+    "wash": "#dceaf8",
+    "accent": "#3d8fd4",
+    "deep": "#1a466e"
+  },
+  {
+    "letter": "L",
+    "word": "Lion",
+    "sentence": "A quiet lion lets Harlen count every whisker.",
+    "wash": "#f8e6c8",
+    "accent": "#c9842a",
+    "deep": "#5c3a10"
+  },
+  {
+    "letter": "M",
+    "word": "Moon",
+    "sentence": "The moon sits in the window while Harlen gets sleepy.",
+    "wash": "#e4e2f6",
+    "accent": "#6d63b8",
+    "deep": "#322d66"
+  },
+  {
+    "letter": "N",
+    "word": "Nest",
+    "sentence": "Harlen spots a nest with three speckled eggs.",
+    "wash": "#efe4d4",
+    "accent": "#a67c52",
+    "deep": "#5a3e28"
+  },
+  {
+    "letter": "O",
+    "word": "Ocean",
+    "sentence": "Harlen jumps the white edge of an ocean wave.",
+    "wash": "#d4eaf8",
+    "accent": "#1f7eb5",
+    "deep": "#0e3e5c"
+  },
+  {
+    "letter": "P",
+    "word": "Puppy",
+    "sentence": "A sleepy puppy fits in the circle of Harlen's arms.",
+    "wash": "#f8e0d4",
+    "accent": "#e07a4c",
+    "deep": "#6e3418"
+  },
+  {
+    "letter": "Q",
+    "word": "Quilt",
+    "sentence": "Harlen pulls a patchwork quilt up to one chin.",
+    "wash": "#f3e6f6",
+    "accent": "#b06bbf",
+    "deep": "#5c2e68"
+  },
+  {
+    "letter": "R",
+    "word": "Rain",
+    "sentence": "Harlen stands in warm rain and counts the drops.",
+    "wash": "#d9e6f6",
+    "accent": "#5b7ec4",
+    "deep": "#24385c"
+  },
+  {
+    "letter": "S",
+    "word": "Star",
+    "sentence": "The first star gets Harlen's wish.",
+    "wash": "#fff1c9",
+    "accent": "#e2b12a",
+    "deep": "#6a5410"
+  },
+  {
+    "letter": "T",
+    "word": "Train",
+    "sentence": "A red train rolls past, and Harlen waves at every window.",
+    "wash": "#f8dcd4",
+    "accent": "#d4533c",
+    "deep": "#6e2418"
+  },
+  {
+    "letter": "U",
+    "word": "Umbrella",
+    "sentence": "One yellow umbrella is big enough for Harlen and a friend.",
+    "wash": "#fff4cc",
+    "accent": "#e2b400",
+    "deep": "#6a5608"
+  },
+  {
+    "letter": "V",
+    "word": "Violin",
+    "sentence": "Harlen draws the bow and the violin answers.",
+    "wash": "#f6e4ef",
+    "accent": "#c45b8a",
+    "deep": "#6a2848"
+  },
+  {
+    "letter": "W",
+    "word": "Wagon",
+    "sentence": "Books, a ball, and one patient dog ride in Harlen's wagon.",
+    "wash": "#e7f0e0",
+    "accent": "#6a9a4a",
+    "deep": "#2c4a18"
+  },
+  {
+    "letter": "X",
+    "word": "Fox",
+    "kicker": "X hides in",
+    "sentence": "Harlen spots a fox at the edge of the trees.",
+    "wash": "#f8e8d8",
+    "accent": "#d4763a",
+    "deep": "#6a3818"
+  },
+  {
+    "letter": "Y",
+    "word": "Yo-yo",
+    "sentence": "Harlen's yo-yo sleeps in a pocket, then wakes up spinning.",
+    "wash": "#fde8ee",
+    "accent": "#e25d7a",
+    "deep": "#7a243c"
+  },
+  {
+    "letter": "Z",
+    "word": "Zebra",
+    "sentence": "A zebra shows Harlen how stripes can be a whole outfit.",
+    "wash": "#eeeaf8",
+    "accent": "#7a6bb8",
+    "deep": "#3a3260"
+  }
+]
