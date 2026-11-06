@@ -266,18 +266,15 @@ body{background:#12102a;color:#f7f3e8}
   font-size:clamp(6rem,24vw,10rem);font-weight:900;color:#fff6d0;line-height:1;
   text-shadow:0 0 18px rgba(150,200,255,.85),0 0 48px rgba(80,140,255,.45),0 6px 0 rgba(20,40,80,.3)}
 .num-board{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:4;
-  display:inline-flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;
-  max-width:92%;padding:12px 14px;border-radius:24px;
+  display:flex;flex-direction:column;gap:12px;justify-content:center;align-items:center;
+  max-width:94%;padding:12px 16px;border-radius:24px;
   background:rgba(16,20,48,.55);border:2px solid rgba(180,210,255,.25);backdrop-filter:blur(6px)}
-.pip-tile{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
-  width:clamp(68px,20vw,100px);height:clamp(68px,20vw,100px);gap:3px;padding:7px;
-  background:rgba(255,255,255,.12);border-radius:16px;border:2px solid rgba(255,220,140,.25)}
-.pip-tile.tall{grid-template-rows:repeat(4,1fr);height:clamp(84px,24vw,120px)}
-.pip-cell{display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}
-.count-sym{font-size:clamp(1.1rem,4vw,1.6rem);line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+.count-groups{display:flex;flex-direction:column;gap:14px;align-items:center}
+.count-row{display:flex;gap:12px;justify-content:center;align-items:center}
+.count-sym{font-size:clamp(1.55rem,6.2vw,2.4rem);line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
   display:inline-flex;align-items:center;justify-content:center}
 .count-sym.dash{width:20px;height:6px;border-radius:4px;background:linear-gradient(90deg,#ffe9a0,#f0c14a);font-size:0}
-.count-sym.dot{width:clamp(12px,3.6vw,20px);height:clamp(12px,3.6vw,20px);border-radius:50%;font-size:0;
+.count-sym.dot{width:clamp(22px,6vw,34px);height:clamp(22px,6vw,34px);border-radius:50%;font-size:0;
   background:linear-gradient(145deg,#ffe9a0,#f0c14a);box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .count-sym.dot.a1{background:linear-gradient(145deg,#ff8a8a,#ee5a24)}
 .count-sym.dot.a2{background:linear-gradient(145deg,#7dffc0,#10ac84)}
@@ -399,10 +396,12 @@ body{background:#12102a;color:#f7f3e8}
   touch-action:pan-x;overscroll-behavior-x:contain;scrollbar-width:none}
 #trace .trace-picker::-webkit-scrollbar{display:none}
 #trace .trace-pick{flex:0 0 auto;flex-shrink:0;width:56px;height:56px;min-width:56px;font-size:1.35rem;touch-action:pan-x}
-#paint .paint-wrap{position:static}
-#paint .paint-canvas-box{position:absolute;left:40.6%;top:39.5%;width:18.8%;height:27.5%;z-index:4;
-  background:#f3eee4;border-radius:4px;border:none;box-shadow:none}
-#paint .paint-dock{position:absolute;left:0;right:0;bottom:0;z-index:5;
+#paint .paint-wrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0;width:100%;
+  padding:0 12px 8px;z-index:3}
+#paint .paint-canvas-box{position:relative;left:auto;top:auto;flex:1 1 auto;width:100%;max-width:none;height:auto;
+  min-height:0;margin:6px 0;z-index:4;pointer-events:auto;
+  background:#fffaf0;border:4px solid rgba(240,212,138,.7);border-radius:28px;box-shadow:0 12px 36px rgba(0,0,0,.35)}
+#paint .paint-dock{position:relative;left:auto;right:auto;bottom:auto;flex-shrink:0;z-index:5;
   background:rgba(16,12,36,.55);padding:8px 8px 10px;pointer-events:auto}
 #memory .memory-board{position:absolute;left:50%;top:67%;transform:translate(-50%,-42%);
   width:min(680px,72%);height:min(300px,38%);z-index:4;margin:0}
@@ -431,10 +430,12 @@ body{background:#12102a;color:#f7f3e8}
   .choice{min-height:56px;font-size:clamp(1.5rem,8vh,2.2rem)}
   .feedback{margin-top:4px;min-height:1.1em;font-size:1.05rem}
   .scene-stage{max-width:none}
-  .num-hero{font-size:clamp(2.6rem,14vh,4.5rem);top:22%}
-  .num-board{top:42%;transform:translate(-50%,0);max-width:70%}
-  .pip-tile{width:clamp(40px,12vh,68px);height:clamp(40px,12vh,68px)}
-  .pip-tile.tall{height:clamp(52px,16vh,84px)}
+  .num-hero{font-size:clamp(2.4rem,12vh,4rem);top:18%}
+  .num-board{top:34%;transform:translate(-50%,0);max-width:86%;padding:8px 12px}
+  .count-groups{gap:5px}
+  .count-row{gap:8px}
+  .count-sym{font-size:clamp(1.05rem,7vh,1.7rem)}
+  .count-sym.dot{width:clamp(14px,4.6vh,22px);height:clamp(14px,4.6vh,22px)}
   .theme-bar{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
   .theme-btn{min-height:44px;flex:0 0 auto}
   .level-dot{width:44px;height:44px;min-width:44px;min-height:44px}
@@ -445,8 +446,9 @@ body{background:#12102a;color:#f7f3e8}
   #trace .trace-canvas-box{position:relative;left:auto;top:auto;width:100%;height:auto;flex:1 1 auto;min-height:0}
   #trace .trace-picker{padding:2px 24px}
   .trace-tab{min-height:44px;padding:6px 12px}
-  #paint .paint-canvas-box{top:32%;height:30%;left:37%;width:26%}
-  #paint .paint-dock{max-height:32%;overflow:auto;gap:4px;padding:4px 6px 6px}
+  #paint .paint-wrap{padding:0 10px 6px}
+  #paint .paint-canvas-box{position:relative;left:auto;top:auto;width:100%;height:auto;flex:1 1 auto;min-height:0}
+  #paint .paint-dock{position:relative;max-height:none;overflow:visible;flex-shrink:0;gap:4px;padding:4px 6px 6px}
   .swatch,.size-dot{width:40px;height:40px;min-width:40px;min-height:40px}
   .stamp{width:44px;height:44px;min-width:44px}
 }
@@ -561,7 +563,7 @@ body{background:#12102a;color:#f7f3e8}
         <div class="num-board" id="numDots" aria-label="counting symbols"></div>
       </div>
     </div>
-    <div class="theme-label" id="themeLabel">Count with: Dots (Mexican Train)</div>
+    <div class="theme-label" id="themeLabel">Count with: Dots</div>
     <div class="theme-bar" id="themeBar" role="group" aria-label="Counting theme"></div>
     <div class="dock">
       <button class="btn btn-nav" id="numPrev" aria-label="Previous">◀</button>
@@ -710,6 +712,7 @@ var LETTERS = [
 
 var COUNT_THEMES = [
   {id:'dots', name:'Dots', kind:'dot'},
+  {id:'apples', name:'Apples', kind:'emoji', emoji:'🍎'},
   {id:'dino', name:'Dinosaurs', kind:'emoji', emoji:'🦕'},
   {id:'spider', name:'Spiders', kind:'emoji', emoji:'🕷️'},
   {id:'stars', name:'Stars', kind:'emoji', emoji:'⭐'},
@@ -720,19 +723,6 @@ var COUNT_THEMES = [
   {id:'dashes', name:'Dashes', kind:'dash'}
 ];
 
-var PIP_MAPS = {
-  0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8],7:[0,2,3,4,5,6,8],8:'tall8',9:[0,1,2,3,4,5,6,7,8]
-};
-var TALL8 = [0,2,3,5,6,8,9,11];
-
-function splitFaces(n){
-  if(n<=0)return[]; if(n<=9)return[n];
-  if(n===10)return[5,5]; if(n===11)return[5,6]; if(n===12)return[6,6];
-  if(n===13)return[6,7]; if(n===14)return[7,7]; if(n===15)return[5,5,5];
-  if(n===16)return[8,8]; if(n===17)return[8,9]; if(n===18)return[9,9];
-  if(n===19)return[9,5,5]; if(n===20)return[5,5,5,5];
-  var faces=[]; while(n>9){faces.push(5);n-=5;} if(n)faces.push(n); return faces;
-}
 
 function sprinkleStars(id, count){
   var box = document.getElementById(id);
@@ -765,7 +755,7 @@ function showScreen(id, cue){
   if(id==='numbers') renderNumber(true, cue);
   if(id==='findNumber') newNumberQuiz(cue);
   if(id==='trace'){ setupTracePicker(); resizeTrace(); drawGuide(); speakTrace(cue); }
-  if(id==='paint'){ resizePaint(); buildPaintUI(); speakParts([cue || 'Paint.']); }
+  if(id==='paint'){ buildPaintUI(); resizePaint(); requestAnimationFrame(function(){ resizePaint(); }); speakParts([cue || 'Paint.']); }
 }
 document.querySelectorAll('[data-go]').forEach(function(btn){
   btn.addEventListener('click', function(){
@@ -1143,33 +1133,29 @@ function makeSym(theme, colorIdx){
   else { d.className = 'count-sym dot a'+(colorIdx%5); d.setAttribute('aria-hidden','true'); }
   return d;
 }
-function makePipTile(face, theme, colorBase){
-  var tile = document.createElement('div');
-  var isTall = (face === 8);
-  tile.className = 'pip-tile' + (isTall ? ' tall' : '');
-  var cells = isTall ? 12 : 9;
-  var map = isTall ? TALL8 : (PIP_MAPS[face] || []);
-  var occupied = {};
-  for(var m=0;m<map.length;m++) occupied[map[m]] = true;
-  var placed = 0;
-  for(var i=0;i<cells;i++){
-    var cell = document.createElement('div');
-    cell.className = 'pip-cell';
-    if(occupied[i]){ cell.appendChild(makeSym(theme, colorBase + placed)); placed++; }
-    tile.appendChild(cell);
-  }
-  return tile;
-}
 function renderNumber(doSpeak, cue){
   var n = ni + 1;
   var theme = COUNT_THEMES[themeIdx];
   document.getElementById('numChar').textContent = String(n);
   document.getElementById('numProgress').textContent = n + ' of 20';
-  document.getElementById('themeLabel').textContent = 'Count with: ' + (theme.kind==='dot' ? 'Dots (Mexican Train)' : theme.name);
+  document.getElementById('themeLabel').textContent = 'Count with: ' + theme.name;
   var box = document.getElementById('numDots');
   box.innerHTML = '';
-  var faces = splitFaces(n), colorBase = 0;
-  faces.forEach(function(face){ box.appendChild(makePipTile(face, theme, colorBase)); colorBase += face; });
+  var groups = document.createElement('div');
+  groups.className = 'count-groups';
+  var shown = 0;
+  var rows = Math.max(1, Math.ceil(n / 5));
+  for(var r=0;r<rows;r++){
+    var row = document.createElement('div');
+    row.className = 'count-row';
+    var count = Math.min(5, n - shown);
+    for(var i=0;i<count;i++){
+      row.appendChild(makeSym(theme, r));
+      shown++;
+    }
+    groups.appendChild(row);
+  }
+  box.appendChild(groups);
   document.querySelectorAll('#themeBar .theme-btn').forEach(function(b, idx){
     b.classList.toggle('active', idx === themeIdx);
   });
@@ -1436,11 +1422,13 @@ function resizePaint(){
   var dpr = Math.min(window.devicePixelRatio||1, 2);
   var w = box.clientWidth, h = box.clientHeight;
   if(w<10||h<10) return;
+  var needW = Math.floor(w*dpr), needH = Math.floor(h*dpr);
+  if(paintCanvas.width === needW && paintCanvas.height === needH) return;
   // preserve drawing
   var prev = null;
   try{ prev = paintCanvas.width ? pctx.getImageData(0,0,paintCanvas.width,paintCanvas.height) : null; }catch(e){}
   var oldW = paintCanvas.width, oldH = paintCanvas.height;
-  paintCanvas.width = Math.floor(w*dpr); paintCanvas.height = Math.floor(h*dpr);
+  paintCanvas.width = needW; paintCanvas.height = needH;
   pctx.setTransform(dpr,0,0,dpr,0,0);
   pctx.fillStyle = '#fffaf0';
   pctx.fillRect(0,0,w,h);
@@ -1507,6 +1495,11 @@ window.addEventListener('resize', function(){
   if(document.getElementById('trace').classList.contains('active')){ resizeTrace(); drawGuide(); }
   if(document.getElementById('paint').classList.contains('active')){ resizePaint(); }
 });
+if(window.ResizeObserver){
+  new ResizeObserver(function(){
+    if(document.getElementById('paint').classList.contains('active')) resizePaint();
+  }).observe(paintCanvas.parentElement);
+}
 
 /* ========== MEMORY (letter ↔ picture, no timer, no score) ========== */
 var MEMORY_LEVELS = [
