@@ -74,6 +74,12 @@ body{background:#12102a;color:#f7f3e8}
 .btn-case{font-size:1.3rem;min-width:70px}
 .btn-cycle{font-size:1.05rem;min-height:60px;padding:12px 20px}
 .btn-tool{min-width:56px;min-height:56px;font-size:1.25rem;padding:10px 14px}
+.btn-sound{min-width:min(92%,340px);min-height:64px;padding:12px 22px;font-size:clamp(1.05rem,3.8vw,1.25rem);
+  letter-spacing:.01em;gap:10px;flex:1 1 auto}
+.btn-sound .snd-ico{font-size:1.45rem}
+.btn-sound .snd-txt{font-weight:900}
+.glow-pair{cursor:pointer;touch-action:manipulation}
+.sound-dock{display:flex;justify-content:center;padding:0 14px 6px;z-index:5;flex-shrink:0}
 
 /* ---- home ---- */
 .home-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -236,7 +242,7 @@ body{background:#12102a;color:#f7f3e8}
       <div class="home-title">🌟 Harlen's ABCs &amp; 123s 🌟</div>
       <div class="home-sub">A cozy night of letters &amp; numbers</div>
       <div class="mode-list">
-        <button class="btn btn-mode" data-go="letters"><span class="emoji">🔤</span>Letters A–Z<span class="sub">Big &amp; little letters in the night</span></button>
+        <button class="btn btn-mode" data-go="letters"><span class="emoji">🔤</span>Letters A–Z<span class="sub">Names, sounds &amp; pictures in the night</span></button>
         <button class="btn btn-mode" data-go="findLetter"><span class="emoji">🔎</span>Find the Letter<span class="sub">Quiz — big &amp; little letters</span></button>
         <button class="btn btn-mode" data-go="numbers"><span class="emoji">🔢</span>Numbers 1–20<span class="sub">Mexican Train dots under the moon</span></button>
         <button class="btn btn-mode" data-go="findNumber"><span class="emoji">🎯</span>Find the Number<span class="sub">Quiz — especially 11–20</span></button>
@@ -262,7 +268,7 @@ body{background:#12102a;color:#f7f3e8}
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="letterProgress">Aa · 1 of 26</div>
       <button class="btn btn-case" id="letterCaseToggle" aria-label="Toggle case">Aa</button>
-      <button class="btn btn-speak" id="letterSpeak" aria-label="Say letter">🔊</button>
+      <button class="btn btn-speak" id="letterSpeak" aria-label="Say letter name and sound">🔊</button>
     </div>
     <div class="scene">
       <div class="scene-stage" id="letterStage">
@@ -274,6 +280,12 @@ body{background:#12102a;color:#f7f3e8}
         <div class="caption-chip" id="letterWord">Apple</div>
         <div class="scene-hint" id="letterPicHint">tap a picture · 1 of 3</div>
       </div>
+    </div>
+    <div class="sound-dock">
+      <button class="btn btn-sound" id="letterSoundBtn" aria-label="Hear letter sound">
+        <span class="snd-ico">🔊</span>
+        <span class="snd-txt" id="letterSoundLabel">A says ah</span>
+      </button>
     </div>
     <div class="dock">
       <button class="btn btn-nav" id="letterPrev" aria-label="Previous">◀</button>
@@ -492,7 +504,7 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   var el = document.getElementById(id);
   if(el) el.classList.add('active');
-  if(id==='letters') renderLetter();
+  if(id==='letters'){ renderLetter(); teachCurrentLetter(); }
   if(id==='findLetter') newLetterQuiz();
   if(id==='numbers') renderNumber();
   if(id==='findNumber') newNumberQuiz();
@@ -511,6 +523,95 @@ function speak(text){
     u.rate = 0.85; u.pitch = 1.1; u.volume = 1;
     window.speechSynthesis.speak(u);
   }catch(e){}
+}
+/* Queue several short utterances (name → sound → picture) without canceling between them */
+function speakParts(parts, rate){
+  try{
+    if(!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    (parts||[]).forEach(function(text){
+      if(!text) return;
+      var u = new SpeechSynthesisUtterance(String(text));
+      u.rate = rate || 0.82; u.pitch = 1.12; u.volume = 1;
+      window.speechSynthesis.speak(u);
+    });
+  }catch(e){}
+}
+
+/* Research-backed single-letter sounds for preschool (no digraphs).
+   soundSay = how Web Speech should pronounce the phoneme;
+   soundLabel = short kid-facing label on the button. */
+var LETTER_SOUNDS = {
+  A:{soundSay:'ah', soundLabel:'ah', prefer:['Apple','Ant']},
+  B:{soundSay:'buh', soundLabel:'b', prefer:['Ball','Bear','Bus']},
+  C:{soundSay:'kuh', soundLabel:'k', prefer:['Cat','Car','Cookie']},
+  D:{soundSay:'duh', soundLabel:'d', prefer:['Dog','Duck','Dinosaur']},
+  E:{soundSay:'eh', soundLabel:'eh', prefer:['Elephant','Egg','Eagle']},
+  F:{soundSay:'fff', soundLabel:'f', prefer:['Fish','Frog','Flower']},
+  G:{soundSay:'guh', soundLabel:'g', prefer:['Goat','Grapes','Guitar']},
+  H:{soundSay:'huh', soundLabel:'h', prefer:['House','Horse','Hat']},
+  I:{soundSay:'ih', soundLabel:'ih', prefer:['Iguana','Igloo','Ice cream']},
+  J:{soundSay:'juh', soundLabel:'j', prefer:['Juice','Jaguar','Jam']},
+  K:{soundSay:'kuh', soundLabel:'k', prefer:['Kite','Koala','Key']},
+  L:{soundSay:'lll', soundLabel:'l', prefer:['Lion','Leaf','Ladybug']},
+  M:{soundSay:'mmm', soundLabel:'m', prefer:['Moon','Monkey','Mouse']},
+  N:{soundSay:'nnn', soundLabel:'n', prefer:['Nest','Nose','Notebook']},
+  O:{soundSay:'ah', soundLabel:'o', prefer:['Octopus','Orange','Owl']},
+  P:{soundSay:'puh', soundLabel:'p', prefer:['Pig','Penguin','Pizza']},
+  Q:{soundSay:'kwuh', soundLabel:'kw', prefer:['Queen','Quilt','Question']},
+  R:{soundSay:'rrr', soundLabel:'r', prefer:['Rainbow','Rabbit','Robot']},
+  S:{soundSay:'sss', soundLabel:'s', prefer:['Sun','Snake','Star','Spider']},
+  T:{soundSay:'tuh', soundLabel:'t', prefer:['Tree','Tiger','Train']},
+  U:{soundSay:'uh', soundLabel:'uh', prefer:['Umbrella','Up','Unicorn']},
+  V:{soundSay:'vvv', soundLabel:'v', prefer:['Violin','Volcano','Van']},
+  W:{soundSay:'wuh', soundLabel:'w', prefer:['Whale','Wolf','Watermelon']},
+  X:{soundSay:'ks', soundLabel:'ks', prefer:['X-ray','Xylophone','X mark'], fallback:'box'},
+  Y:{soundSay:'yuh', soundLabel:'y', prefer:['Yo-yo','Yacht','Yarn']},
+  Z:{soundSay:'zzz', soundLabel:'z', prefer:['Zebra','Zoo','Zipper']}
+};
+
+function phonemeFor(letter){
+  var up = String(letter||'A').toUpperCase();
+  return LETTER_SOUNDS[up] || {soundSay: up.toLowerCase(), soundLabel: up.toLowerCase(), prefer:[]};
+}
+
+function exampleWordFor(letter, pics){
+  var meta = phonemeFor(letter);
+  if(meta.fallback) return meta.fallback;
+  var prefer = meta.prefer || [];
+  var i, j;
+  if(pics && pics.length){
+    for(i=0;i<prefer.length;i++){
+      for(j=0;j<pics.length;j++){
+        if(pics[j].w === prefer[i]) return pics[j].w;
+      }
+    }
+    // Prefer a picture whose first letter matches when possible
+    var up = String(letter).toUpperCase();
+    for(j=0;j<pics.length;j++){
+      if((pics[j].w||'').charAt(0).toUpperCase() === up) return pics[j].w;
+    }
+    return pics[0].w;
+  }
+  return prefer[0] || 'this';
+}
+
+/** Name + sound + picture — Piasta-style paired associate cue */
+function speakLetterLesson(letter, pics, opts){
+  opts = opts || {};
+  var up = String(letter).toUpperCase();
+  var lo = up.toLowerCase();
+  var meta = phonemeFor(up);
+  var word = exampleWordFor(up, pics);
+  var namePart = opts.lower ? ('little ' + lo) : up;
+  // e.g. "A" … "ah" … "like apple"
+  speakParts([namePart, meta.soundSay, 'like ' + word], 0.8);
+}
+
+function soundButtonText(letter){
+  var up = String(letter).toUpperCase();
+  var meta = phonemeFor(up);
+  return up + ' says ' + meta.soundLabel;
 }
 
 function burst(){
@@ -550,6 +651,8 @@ function renderLetter(){
   document.getElementById('letterWord').textContent = P.w;
   document.getElementById('letterPicHint').textContent = 'tap a picture · '+(picIdx+1)+' of '+L.pics.length;
   document.getElementById('letterProgress').textContent = up+lo+'  ·  '+(li+1)+' of 26';
+  var sndLabel = document.getElementById('letterSoundLabel');
+  if(sndLabel) sndLabel.textContent = soundButtonText(up);
 
   var box = document.getElementById('letterSceneObjs');
   box.innerHTML = '';
@@ -571,7 +674,7 @@ function renderLetter(){
     el.addEventListener('click', function(){
       picIdx = idx;
       renderLetter();
-      speak(pic.w);
+      speakLetterLesson(L.c, [pic], {lower: letterFocusLower});
     });
     box.appendChild(el);
   });
@@ -581,25 +684,32 @@ function cyclePic(){
   renderLetter();
   speak(currentPic().w);
 }
+function teachCurrentLetter(auto){
+  var L = LETTERS[li];
+  speakLetterLesson(L.c, L.pics, {lower: letterFocusLower});
+}
 document.getElementById('letterPrev').addEventListener('click', function(){
-  li = (li - 1 + 26) % 26; picIdx = 0; renderLetter();
+  li = (li - 1 + 26) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
 });
 document.getElementById('letterNext').addEventListener('click', function(){
-  li = (li + 1) % 26; picIdx = 0; renderLetter();
+  li = (li + 1) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
 });
 document.getElementById('letterCycle').addEventListener('click', cyclePic);
 document.getElementById('letterCaseToggle').addEventListener('click', function(){
   letterFocusLower = !letterFocusLower;
   renderLetter();
-  var L = LETTERS[li];
-  speak(letterFocusLower ? ('little ' + L.c.toLowerCase()) : ('big ' + L.c));
+  teachCurrentLetter();
 });
-document.getElementById('letterSpeak').addEventListener('click', function(){
+document.getElementById('letterSpeak').addEventListener('click', function(){ teachCurrentLetter(); });
+document.getElementById('letterSoundBtn').addEventListener('click', function(){
   var L = LETTERS[li];
-  var P = currentPic();
-  var focus = letterFocusLower ? L.c.toLowerCase() : L.c;
-  speak(focus + '. ' + P.w);
+  var meta = phonemeFor(L.c);
+  // Buzzphonics-style: tap again to hear just the sound (then gentle reminder of the word)
+  speakParts([meta.soundSay, 'like ' + exampleWordFor(L.c, L.pics)], 0.78);
 });
+document.getElementById('letterPair').addEventListener('click', function(){ teachCurrentLetter(); });
+document.getElementById('letterPair').setAttribute('role','button');
+document.getElementById('letterPair').setAttribute('aria-label','Hear letter name and sound');
 
 /* ========== FIND LETTER ========== */
 var flAnswer = 'A', flStreak = 0, flLocked = false;
@@ -652,7 +762,9 @@ function pickLetter(btn, c){
     document.getElementById('flFeedback').textContent = '🎉 Yes! ' + c + '!';
     document.getElementById('flStars').textContent = '⭐'.repeat(Math.min(flStreak, 5));
     document.getElementById('flProgress').textContent = 'Streak: ' + flStreak;
-    burst(); speak(c);
+    burst();
+    var Lquiz = LETTERS.filter(function(L){ return L.c === c.toUpperCase(); })[0];
+    speakLetterLesson(c, Lquiz ? Lquiz.pics : [], {lower: c === c.toLowerCase()});
   } else {
     btn.classList.add('wrong');
     flStreak = 0;
@@ -666,7 +778,10 @@ function pickLetter(btn, c){
   }
 }
 document.getElementById('flNext').addEventListener('click', newLetterQuiz);
-document.getElementById('flSpeak').addEventListener('click', function(){ speak(flAnswer); });
+document.getElementById('flSpeak').addEventListener('click', function(){
+  var Lquiz = LETTERS.filter(function(L){ return L.c === flAnswer.toUpperCase(); })[0];
+  speakLetterLesson(flAnswer, Lquiz ? Lquiz.pics : [], {lower: flAnswer === flAnswer.toLowerCase()});
+});
 
 /* ========== NUMBERS ========== */
 var ni = 0, themeIdx = 0;
