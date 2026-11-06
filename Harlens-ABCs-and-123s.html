@@ -617,13 +617,25 @@ function exampleWordFor(letter, pics){
   return prefer[0] || 'this';
 }
 
-/** One calm spoken sentence — no isolated "ah" (iOS often sings that as "awe"). */
+/* Spoken letter NAMES (ay, bee, see…) — never the sound. Plain "A" is read as "uh/aw". */
+var LETTER_NAMES = {
+  A:'ay', B:'bee', C:'see', D:'dee', E:'ee', F:'eff', G:'jee',
+  H:'aych', I:'eye', J:'jay', K:'kay', L:'ell', M:'em', N:'en',
+  O:'oh', P:'pee', Q:'cue', R:'ar', S:'ess', T:'tee', U:'you',
+  V:'vee', W:'double you', X:'ex', Y:'why', Z:'zee'
+};
+function letterNameSay(letter){
+  var up = String(letter || 'A').toUpperCase();
+  return LETTER_NAMES[up] || up;
+}
+
+/** "This is ay, like apple." — letter name only, no sound. */
 function speakLetterLesson(letter, pics, opts){
   opts = opts || {};
   var up = String(letter).toUpperCase();
   var word = exampleWordFor(up, pics);
   var wordSay = String(word).toLowerCase();
-  speak('This is the letter ' + up + ', like ' + wordSay + '.');
+  speak('This is ' + letterNameSay(up) + ', like ' + wordSay + '.');
 }
 
 function soundButtonText(letter){
@@ -780,7 +792,7 @@ function pickLetter(btn, c){
     document.querySelectorAll('#flChoices .choice').forEach(function(el){
       if(el.textContent === flAnswer) el.classList.add('correct');
     });
-    speak(flAnswer);
+    speak(letterNameSay(flAnswer));
   }
 }
 document.getElementById('flNext').addEventListener('click', newLetterQuiz);
