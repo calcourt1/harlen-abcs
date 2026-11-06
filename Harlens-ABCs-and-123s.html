@@ -263,7 +263,7 @@ body{background:#12102a;color:#f7f3e8}
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="letterProgress">Aa · 1 of 26</div>
-      <button class="btn btn-speak" id="letterSpeak" aria-label="Say letter name and sound">🔊</button>
+      <button class="btn btn-speak" id="letterSpeak" aria-label="Repeat">🔊</button>
     </div>
     <div class="scene">
       <div class="scene-stage" id="letterStage">
@@ -298,7 +298,7 @@ body{background:#12102a;color:#f7f3e8}
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="flProgress">Find!</div>
-      <button class="btn btn-speak" id="flSpeak" aria-label="Say letter">🔊</button>
+      <button class="btn btn-speak" id="flSpeak" aria-label="Repeat">🔊</button>
     </div>
     <div class="content">
       <div class="card">
@@ -548,11 +548,26 @@ if(typeof window !== 'undefined' && window.speechSynthesis){
   }
 }
 
+/* Last line spoken. 🔊 repeats it (GCompris lips). Never a raw letter or chopped phoneme. */
+var lastUtterance = '';
+var PHONEME_TTS = /^(ah|aw|buh|kuh|duh|eh|fuh|guh|huh|ih|juh|luh|muh|nuh|puh|kwuh|ruh|sss|tuh|uh|vuh|wuh|ks|yuh|zuh)$/i;
+
+function isUnsafeUtterance(text){
+  var t = String(text == null ? '' : text).trim().replace(/[.!?]+$/,'');
+  if(!t) return true;
+  if(/^[A-Za-z]$/.test(t)) return true;
+  if(PHONEME_TTS.test(t)) return true;
+  return false;
+}
+
 function speak(text){
+  var line = String(text == null ? '' : text).trim();
+  if(isUnsafeUtterance(line)) return;
+  lastUtterance = line;
   try{
     if(!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(String(text));
+    var u = new SpeechSynthesisUtterance(line);
     u.lang = 'en-US';
     u.rate = 1.0; // normal talking speed — slower rates can sound sung
     u.pitch = 1.0; // never raise — raised pitch sounds creepy on Safari
@@ -562,39 +577,44 @@ function speak(text){
   }catch(e){}
 }
 
-/* Soft, sentence-friendly phoneme spellings (no long hisses). Preschool only — no digraphs. */
+function repeatLastUtterance(){
+  if(!lastUtterance || isUnsafeUtterance(lastUtterance)) return;
+  speak(lastUtterance);
+}
+
+/* Prefer-words only. Do not add soundSay — chopped phonemes must never reach speechSynthesis. */
 var LETTER_SOUNDS = {
-  A:{soundSay:'ah', soundLabel:'ah', prefer:['Apple','Ant']},
-  B:{soundSay:'buh', soundLabel:'buh', prefer:['Ball','Bear','Bus']},
-  C:{soundSay:'kuh', soundLabel:'kuh', prefer:['Cat','Car','Cookie']},
-  D:{soundSay:'duh', soundLabel:'duh', prefer:['Dog','Duck','Dinosaur']},
-  E:{soundSay:'eh', soundLabel:'eh', prefer:['Elephant','Egg','Eagle']},
-  F:{soundSay:'fuh', soundLabel:'fuh', prefer:['Fish','Frog','Flower']},
-  G:{soundSay:'guh', soundLabel:'guh', prefer:['Goat','Grapes','Guitar']},
-  H:{soundSay:'huh', soundLabel:'huh', prefer:['House','Horse','Hat']},
-  I:{soundSay:'ih', soundLabel:'ih', prefer:['Iguana','Igloo','Ice cream']},
-  J:{soundSay:'juh', soundLabel:'juh', prefer:['Juice','Jaguar','Jam']},
-  K:{soundSay:'kuh', soundLabel:'kuh', prefer:['Kite','Koala','Key']},
-  L:{soundSay:'luh', soundLabel:'luh', prefer:['Lion','Leaf','Ladybug']},
-  M:{soundSay:'muh', soundLabel:'muh', prefer:['Moon','Monkey','Mouse']},
-  N:{soundSay:'nuh', soundLabel:'nuh', prefer:['Nest','Nose','Notebook']},
-  O:{soundSay:'ah', soundLabel:'ah', prefer:['Octopus','Orange','Owl']},
-  P:{soundSay:'puh', soundLabel:'puh', prefer:['Pig','Penguin','Pizza']},
-  Q:{soundSay:'kwuh', soundLabel:'kwuh', prefer:['Queen','Quilt','Question']},
-  R:{soundSay:'ruh', soundLabel:'ruh', prefer:['Rainbow','Rabbit','Robot']},
-  S:{soundSay:'sss', soundLabel:'sss', prefer:['Sun','Snake','Star','Spider']},
-  T:{soundSay:'tuh', soundLabel:'tuh', prefer:['Tree','Tiger','Train']},
-  U:{soundSay:'uh', soundLabel:'uh', prefer:['Umbrella','Up','Unicorn']},
-  V:{soundSay:'vuh', soundLabel:'vuh', prefer:['Violin','Volcano','Van']},
-  W:{soundSay:'wuh', soundLabel:'wuh', prefer:['Whale','Wolf','Watermelon']},
-  X:{soundSay:'ks', soundLabel:'ks', prefer:['X-ray','Xylophone','X mark'], fallback:'box'},
-  Y:{soundSay:'yuh', soundLabel:'yuh', prefer:['Yo-yo','Yacht','Yarn']},
-  Z:{soundSay:'zuh', soundLabel:'zuh', prefer:['Zebra','Zoo','Zipper']}
+  A:{prefer:['Apple','Ant']},
+  B:{prefer:['Ball','Bear','Bus']},
+  C:{prefer:['Cat','Car','Cookie']},
+  D:{prefer:['Dog','Duck','Dinosaur']},
+  E:{prefer:['Elephant','Egg','Eagle']},
+  F:{prefer:['Fish','Frog','Flower']},
+  G:{prefer:['Goat','Grapes','Guitar']},
+  H:{prefer:['House','Horse','Hat']},
+  I:{prefer:['Iguana','Igloo','Ice cream']},
+  J:{prefer:['Juice','Jaguar','Jam']},
+  K:{prefer:['Kite','Koala','Key']},
+  L:{prefer:['Lion','Leaf','Ladybug']},
+  M:{prefer:['Moon','Monkey','Mouse']},
+  N:{prefer:['Nest','Nose','Notebook']},
+  O:{prefer:['Octopus','Orange','Owl']},
+  P:{prefer:['Pig','Penguin','Pizza']},
+  Q:{prefer:['Queen','Quilt','Question']},
+  R:{prefer:['Rainbow','Rabbit','Robot']},
+  S:{prefer:['Sun','Snake','Star','Spider']},
+  T:{prefer:['Tree','Tiger','Train']},
+  U:{prefer:['Umbrella','Up','Unicorn']},
+  V:{prefer:['Violin','Volcano','Van']},
+  W:{prefer:['Whale','Wolf','Watermelon']},
+  X:{prefer:['X-ray','Xylophone','X mark'], fallback:'box'},
+  Y:{prefer:['Yo-yo','Yacht','Yarn']},
+  Z:{prefer:['Zebra','Zoo','Zipper']}
 };
 
 function phonemeFor(letter){
   var up = String(letter||'A').toUpperCase();
-  return LETTER_SOUNDS[up] || {soundSay: up.toLowerCase(), soundLabel: up.toLowerCase(), prefer:[]};
+  return LETTER_SOUNDS[up] || {prefer:[]};
 }
 
 function exampleWordFor(letter, pics){
@@ -625,17 +645,45 @@ var LETTER_NAMES = {
   V:'vee', W:'double you', X:'ex', Y:'why', Z:'zee'
 };
 function letterNameSay(letter){
-  var up = String(letter || 'A').toUpperCase();
-  return LETTER_NAMES[up] || up;
+  var up = String(letter || '').toUpperCase();
+  var name = LETTER_NAMES[up];
+  if(!name || name.length < 2) return '';
+  return name;
 }
 
-/** "This is ay, like apple." — letter name only, no sound. */
-function speakLetterLesson(letter, pics, opts){
-  opts = opts || {};
+/** "This is ay, like apple." — letter name only, no chopped phoneme. */
+function speakLetterLesson(letter, pics){
   var up = String(letter).toUpperCase();
+  var name = letterNameSay(up);
+  if(!name) return;
   var word = exampleWordFor(up, pics);
   var wordSay = String(word).toLowerCase();
-  speak('This is ' + letterNameSay(up) + ', like ' + wordSay + '.');
+  speak('This is ' + name + ', like ' + wordSay + '.');
+}
+
+/** "ay is for apple." — sound button. On-screen label stays "A is for apple". */
+function speakSoundFor(letter){
+  var up = String(letter).toUpperCase();
+  var name = letterNameSay(up);
+  if(!name) return;
+  var wordSay = String(exampleWordFor(up, null)).toLowerCase();
+  speak(name + ' is for ' + wordSay + '.');
+}
+
+/** "Find ay." */
+function findPrompt(letter){
+  var name = letterNameSay(letter);
+  if(!name) return '';
+  return 'Find ' + name + '.';
+}
+
+/** "Yes! ay, like apple." */
+function yesLikePrompt(letter, pics){
+  var up = String(letter).toUpperCase();
+  var name = letterNameSay(up);
+  if(!name) return '';
+  var wordSay = String(exampleWordFor(up, pics)).toLowerCase();
+  return 'Yes! ' + name + ', like ' + wordSay + '.';
 }
 
 function soundButtonText(letter){
@@ -720,10 +768,9 @@ document.getElementById('letterNext').addEventListener('click', function(){
   li = (li + 1) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
 });
 document.getElementById('letterCycle').addEventListener('click', cyclePic);
-document.getElementById('letterSpeak').addEventListener('click', function(){ teachCurrentLetter(); });
+document.getElementById('letterSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 document.getElementById('letterSoundBtn').addEventListener('click', function(){
-  // Same warm sentence again — natural, not chopped phonemes
-  teachCurrentLetter();
+  speakSoundFor(LETTERS[li].c);
 });
 document.getElementById('letterPair').addEventListener('click', function(){ teachCurrentLetter(); });
 document.getElementById('letterPair').setAttribute('role','button');
@@ -743,7 +790,7 @@ function newLetterQuiz(){
   document.getElementById('flTarget').textContent = flAnswer;
   document.getElementById('flCaseTag').textContent = useLower ? 'Little letter' : 'Big letter';
   document.getElementById('flFeedback').textContent = '';
-  document.getElementById('flProgress').textContent = 'Streak: ' + flStreak;
+  document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
   var opts = [flAnswer];
   var guard = 0;
   while(opts.length < 4 && guard < 80){
@@ -770,36 +817,33 @@ function newLetterQuiz(){
     b.addEventListener('click', function(){ pickLetter(b, c); });
     box.appendChild(b);
   });
+  speak(findPrompt(flAnswer));
 }
 function pickLetter(btn, c){
   if(flLocked) return;
-  flLocked = true;
+  var Lquiz = LETTERS.filter(function(L){ return L.c === flAnswer.toUpperCase(); })[0];
+  var pics = Lquiz ? Lquiz.pics : [];
   if(c === flAnswer){
+    flLocked = true;
     btn.classList.add('correct');
     flStreak++;
-    document.getElementById('flFeedback').textContent = '🎉 Yes! ' + c + '!';
+    document.getElementById('flFeedback').textContent = '🎉 Yes!';
     document.getElementById('flStars').textContent = '⭐'.repeat(Math.min(flStreak, 5));
-    document.getElementById('flProgress').textContent = 'Streak: ' + flStreak;
+    document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
     burst();
-    var Lquiz = LETTERS.filter(function(L){ return L.c === c.toUpperCase(); })[0];
-    speakLetterLesson(c, Lquiz ? Lquiz.pics : []);
+    speak(yesLikePrompt(flAnswer, pics));
   } else {
     btn.classList.add('wrong');
     flStreak = 0;
-    document.getElementById('flFeedback').textContent = 'Try again — look for ' + flAnswer;
+    document.getElementById('flFeedback').textContent = 'Try again';
     document.getElementById('flStars').textContent = '';
-    document.getElementById('flProgress').textContent = 'Streak: 0';
-    document.querySelectorAll('#flChoices .choice').forEach(function(el){
-      if(el.textContent === flAnswer) el.classList.add('correct');
-    });
-    speak(letterNameSay(flAnswer));
+    document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
+    speak('Try again. ' + findPrompt(flAnswer));
+    setTimeout(function(){ btn.classList.remove('wrong'); }, 450);
   }
 }
 document.getElementById('flNext').addEventListener('click', newLetterQuiz);
-document.getElementById('flSpeak').addEventListener('click', function(){
-  var Lquiz = LETTERS.filter(function(L){ return L.c === flAnswer.toUpperCase(); })[0];
-  speakLetterLesson(flAnswer, Lquiz ? Lquiz.pics : []);
-});
+document.getElementById('flSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 
 /* ========== NUMBERS ========== */
 var ni = 0, themeIdx = 0;
