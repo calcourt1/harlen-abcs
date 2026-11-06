@@ -400,28 +400,53 @@ body{background:#12102a;color:#f7f3e8}
 .memory-actions[hidden]{display:none}
 
 /* Trace, paint, and memory sit on the Flyer Press scenes. The painted slate, easel, and table are scenery. */
+/* Portrait: stacked — canvas/main on top, side (tabs + chips) under it. Landscape: left rail + taller canvas. */
 #trace .trace-wrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0;width:100%;
-  pointer-events:none;padding:0 12px 8px;z-index:3}
-#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker,#trace .trace-nav,#trace .trace-picker-wrap,#trace .trace-step{pointer-events:auto;position:relative;z-index:5;flex-shrink:0}
-#trace .trace-canvas-box{position:relative;left:auto;top:auto;flex:1 1 auto;width:100%;max-width:none;height:auto;
-  min-height:0;margin:6px 0;z-index:4;pointer-events:auto;
+  pointer-events:none;padding:0 12px 8px;z-index:3;gap:4px}
+#trace .trace-main,#trace .trace-side,#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker,#trace .trace-nav,#trace .trace-picker-wrap,#trace .trace-step,#trace .trace-canvas-box{pointer-events:auto;position:relative;z-index:5}
+#trace .trace-main{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;min-width:0;width:100%;z-index:4}
+#trace .trace-side{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%;min-width:0;z-index:5}
+#trace .trace-canvas-box{left:auto;top:auto;flex:1 1 auto;width:100%;max-width:none;height:auto;
+  min-height:0;margin:4px 0 0;z-index:4;
   background:rgba(8,12,28,.62);border-color:rgba(240,212,138,.7);border-width:4px;border-radius:28px}
-#trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6);margin:2px 0}
-/* Trace picker: one swipeable row on iPhone/iPad. Own horizontal scroller (pan-x), chips never shrink,
+#trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6);margin:0;flex-shrink:0;z-index:5}
+#trace .trace-tabs{flex-shrink:0;margin-bottom:0;justify-content:center}
+/* Trace picker (portrait): one swipeable row. Own horizontal scroller (pan-x), chips never shrink,
    and it sits outside the canvas box, so the canvas touch-action:none / touch handlers never see these swipes. */
-#trace .trace-nav{display:flex;align-items:center;gap:10px;width:100%;margin-top:6px;flex-shrink:0;pointer-events:auto;z-index:5}
-#trace .trace-step{position:relative;left:auto;top:auto;transform:none;flex:0 0 auto;
+#trace .trace-nav{display:flex;flex-direction:row;align-items:center;gap:10px;width:100%;margin-top:0;flex-shrink:0;z-index:5}
+#trace .trace-step{left:auto;top:auto;transform:none;flex:0 0 auto;
   width:max(76px,12vmin);height:max(76px,12vmin);min-width:76px;min-height:76px}
-#trace .trace-picker-wrap{position:relative;flex:1 1 auto;flex-shrink:1;width:auto;min-width:0;margin-top:0;pointer-events:auto;z-index:5}
+#trace .trace-picker-wrap{flex:1 1 auto;flex-shrink:1;width:auto;min-width:0;margin-top:0;z-index:5}
 #trace .trace-picker-wrap::before,#trace .trace-picker-wrap::after{content:"";position:absolute;top:0;bottom:0;width:26px;
   pointer-events:none;z-index:2}
 #trace .trace-picker-wrap::before{left:0;background:linear-gradient(90deg,rgba(12,10,32,.9),rgba(12,10,32,0))}
 #trace .trace-picker-wrap::after{right:0;background:linear-gradient(270deg,rgba(12,10,32,.9),rgba(12,10,32,0))}
-#trace .trace-picker{display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:8px;width:100%;max-width:none;
+#trace .trace-picker{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:flex-start;align-items:center;gap:8px;width:100%;max-width:none;
   max-height:none;margin:0;padding:4px 24px;overflow-x:scroll;overflow-y:hidden;-webkit-overflow-scrolling:touch;
   touch-action:pan-x;overscroll-behavior-x:contain;scrollbar-width:none}
 #trace .trace-picker::-webkit-scrollbar{display:none}
-#trace .trace-pick{flex:0 0 auto;flex-shrink:0;width:56px;height:56px;min-width:56px;font-size:1.35rem;touch-action:pan-x}
+#trace .trace-pick{flex:0 0 auto;flex-shrink:0;width:56px;height:56px;min-width:56px;min-height:56px;font-size:1.35rem;touch-action:pan-x}
+/* Landscape: letter picker on the LEFT, taller drawing space on the RIGHT. */
+@media (orientation:landscape){
+  #trace .trace-wrap{flex-direction:row;align-items:stretch;gap:10px;padding:0 10px 6px}
+  #trace .trace-side{order:-1;flex:0 0 clamp(140px,22vw,240px);width:clamp(140px,22vw,240px);max-width:240px;
+    height:100%;min-height:0;justify-content:flex-start}
+  #trace .trace-tabs{flex-wrap:wrap;justify-content:center;gap:6px}
+  #trace .trace-tab{flex:1 1 auto;min-width:0;padding:8px 10px;font-size:.95rem}
+  #trace .trace-nav{flex:1 1 auto;flex-direction:column;align-items:center;justify-content:stretch;gap:8px;min-height:0;height:auto;margin-top:0}
+  #trace .trace-step{width:max(72px,11vmin);height:max(72px,11vmin);min-width:72px;min-height:72px}
+  #trace .trace-picker-wrap{flex:1 1 auto;width:100%;min-height:0;display:flex;flex-direction:column}
+  #trace .trace-picker-wrap::before,#trace .trace-picker-wrap::after{left:0;right:0;width:auto;height:22px;bottom:auto}
+  #trace .trace-picker-wrap::before{top:0;background:linear-gradient(180deg,rgba(12,10,32,.92),rgba(12,10,32,0))}
+  #trace .trace-picker-wrap::after{top:auto;bottom:0;background:linear-gradient(0deg,rgba(12,10,32,.92),rgba(12,10,32,0))}
+  #trace .trace-picker{flex-direction:column;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:8px;
+    width:100%;height:100%;max-height:none;padding:18px 4px;overflow-x:hidden;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior-y:contain;overscroll-behavior-x:auto}
+  #trace .trace-pick{touch-action:pan-y;width:56px;height:56px;min-width:56px;min-height:56px}
+  #trace .trace-main{flex:1 1 auto;width:auto;min-width:0;min-height:0;height:100%}
+  #trace .trace-hint{font-size:.85rem;margin:0 0 2px}
+  #trace .trace-canvas-box{flex:1 1 auto;width:100%;height:auto;min-height:0;margin:0}
+}
 #paint .paint-wrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0;width:100%;
   padding:0 12px 8px;z-index:3}
 #paint .paint-canvas-box{position:relative;left:auto;top:auto;flex:1 1 auto;width:100%;max-width:none;height:auto;
@@ -466,11 +491,9 @@ body{background:#12102a;color:#f7f3e8}
   #memory .memory-board{position:relative;left:auto;top:auto;transform:none;
     height:auto;width:calc(100% - 16px);max-width:1200px;flex:1 1 auto;min-height:0}
   #memory .mem-card{min-height:0}
-  #trace .trace-wrap{padding:0 10px 6px}
   #trace .trace-tabs,#trace .trace-hint,#trace .trace-picker,#trace .trace-nav{position:relative;top:auto;bottom:auto;left:auto;right:auto}
   #trace .trace-step{width:max(72px,11vmin);height:max(72px,11vmin);min-width:72px;min-height:72px}
   #trace .trace-canvas-box{position:relative;left:auto;top:auto;width:100%;height:auto;flex:1 1 auto;min-height:0}
-  #trace .trace-picker{padding:2px 24px}
   .trace-tab{min-height:44px;padding:6px 12px}
   #paint .paint-wrap{padding:0 10px 6px}
   #paint .paint-canvas-box{position:relative;left:auto;top:auto;width:100%;height:auto;flex:1 1 auto;min-height:0}
@@ -657,23 +680,27 @@ body{background:#12102a;color:#f7f3e8}
       <button class="btn btn-clear" id="traceClear" aria-label="Clear">🗑️</button>
     </div>
     <div class="trace-wrap">
-      <div class="trace-tabs">
-        <button class="trace-tab active" data-set="upper" id="tabUpper">A–Z</button>
-        <button class="trace-tab" data-set="lower" id="tabLower">a–z</button>
-        <button class="trace-tab" data-set="digits" id="tabDigits">0–9</button>
+      <div class="trace-main">
+        <div class="trace-hint">Trace with your finger! 👆</div>
+        <div class="trace-canvas-box">
+          <canvas id="traceCanvas"></canvas>
+        </div>
       </div>
-      <div class="trace-hint">Trace with your finger! 👆</div>
-      <div class="trace-canvas-box">
-        <canvas id="traceCanvas"></canvas>
-      </div>
-      <div class="trace-nav">
-        <button type="button" class="rim-btn trace-step" id="tracePrev" aria-label="Previous letter">
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
-        </button>
-        <div class="trace-picker-wrap"><div class="trace-picker" id="tracePicker"></div></div>
-        <button type="button" class="rim-btn trace-step" id="traceNext" aria-label="Next letter">
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
-        </button>
+      <div class="trace-side">
+        <div class="trace-tabs">
+          <button class="trace-tab active" data-set="upper" id="tabUpper">A–Z</button>
+          <button class="trace-tab" data-set="lower" id="tabLower">a–z</button>
+          <button class="trace-tab" data-set="digits" id="tabDigits">0–9</button>
+        </div>
+        <div class="trace-nav">
+          <button type="button" class="rim-btn trace-step" id="tracePrev" aria-label="Previous letter">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
+          </button>
+          <div class="trace-picker-wrap"><div class="trace-picker" id="tracePicker"></div></div>
+          <button type="button" class="rim-btn trace-step" id="traceNext" aria-label="Next letter">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
+          </button>
+        </div>
       </div>
     </div>
   </section>
@@ -778,7 +805,7 @@ function showScreen(id, cue){
   if(id==='memory') dealMemory(cue);
   if(id==='numbers') renderNumber(true, cue);
   if(id==='findNumber') newNumberQuiz(cue);
-  if(id==='trace'){ setupTracePicker(); resizeTrace(); drawGuide(); speakTrace(cue); }
+  if(id==='trace'){ setupTracePicker(); refreshTraceLayout(); speakTrace(cue); }
   if(id==='paint'){ buildPaintUI(); resizePaint(); requestAnimationFrame(function(){ resizePaint(); }); speakParts([cue || 'Paint.']); }
 }
 document.querySelectorAll('[data-go]').forEach(function(btn){
@@ -1539,10 +1566,16 @@ document.getElementById('paintUndo').addEventListener('click', function(){
   try{ pctx.putImageData(img,0,0); }catch(e){}
 });
 
+function refreshTraceLayout(){
+  if(!document.getElementById('trace').classList.contains('active')) return;
+  resizeTrace(); drawGuide();
+  requestAnimationFrame(function(){ resizeTrace(); drawGuide(); });
+}
 window.addEventListener('resize', function(){
-  if(document.getElementById('trace').classList.contains('active')){ resizeTrace(); drawGuide(); }
+  refreshTraceLayout();
   if(document.getElementById('paint').classList.contains('active')){ resizePaint(); }
 });
+window.addEventListener('orientationchange', function(){ refreshTraceLayout(); });
 if(window.ResizeObserver){
   new ResizeObserver(function(){
     if(document.getElementById('paint').classList.contains('active')) resizePaint();
