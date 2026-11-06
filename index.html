@@ -227,6 +227,8 @@ body{background:#12102a;color:#f7f3e8}
   background:radial-gradient(circle at 40% 32%, rgba(70,58,150,.94), rgba(22,16,56,.94) 74%);
   color:#fff6d8;box-shadow:0 5px 0 rgba(0,0,0,.28),0 10px 18px rgba(0,0,0,.28);
   display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
+.letter-feature{overflow:hidden}
+.letter-feature img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;pointer-events:none}
 .letter-feature span{font-size:clamp(3rem,11vmin,5.2rem);line-height:1;
   filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));pointer-events:none}
 #letters.has-scene .letter-feature{display:flex}
@@ -245,8 +247,8 @@ body{background:#12102a;color:#f7f3e8}
 .rim-prev{left:6.2%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
 .rim-next{left:93.8%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
 .rim-btn:active{filter:brightness(1.08)}
-/* Word chip sits on the painted grass, bottom center, below the big letters. */
-.word-chip{position:absolute;left:calc(var(--cx,.5) * 100%);top:84%;transform:translate(-50%,-50%);z-index:6;min-width:14%;max-width:40%;
+/* Word chip lives in the frame's bottom chrome, centered between the rim arrows, never on the painting's objects. */
+.word-chip{position:absolute;left:50%;top:90%;transform:translate(-50%,-50%);z-index:6;min-width:14%;max-width:38%;overflow:hidden;text-overflow:ellipsis;
   min-height:44px;white-space:nowrap;display:flex;align-items:center;justify-content:center;padding:.4em .9em;
   background:#3a2c86;color:#f7f1e6;font-weight:900;
   font-size:clamp(1.05rem,2.3vw,1.7rem);border:none;border-radius:16px;cursor:pointer;
@@ -262,7 +264,7 @@ body{background:#12102a;color:#f7f3e8}
     left:calc(50% - var(--artw) * var(--cx,.55));top:57%;transform:translateY(-50%);
     -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%);
     mask-image:linear-gradient(180deg,transparent 0,#000 9%,#000 91%,transparent 100%)}
-  #letters .word-chip{top:87%;font-size:1.2rem;padding:.3em .9em;max-width:44%}
+  #letters .word-chip{left:50%;top:calc(100% - env(safe-area-inset-bottom) - 56px);font-size:1.2rem;padding:.3em .9em;max-width:40%;min-height:56px}
   .rim-home,.rim-prev,.rim-next{width:64px;min-width:64px;min-height:64px}
   .rim-home{left:calc(env(safe-area-inset-left) + 44px);top:calc(env(safe-area-inset-top) + 44px)}
   .rim-prev{left:calc(env(safe-area-inset-left) + 44px);top:calc(100% - env(safe-area-inset-bottom) - 56px)}
@@ -308,13 +310,6 @@ body{background:#12102a;color:#f7f3e8}
 .count-sym.dot.a2{background:linear-gradient(145deg,#7dffc0,#10ac84)}
 .count-sym.dot.a3{background:linear-gradient(145deg,#feca57,#ff9f43)}
 .count-sym.dot.a4{background:linear-gradient(145deg,#b48cff,#5f27cd)}
-.theme-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:0 12px 6px;max-width:100%}
-.theme-btn{border:2px solid rgba(255,220,140,.25);border-radius:18px;background:rgba(255,255,255,.1);
-  padding:8px 12px;font-weight:800;font-size:.9rem;cursor:pointer;min-height:48px;color:#f0e8c8;
-  display:inline-flex;align-items:center;gap:6px}
-.theme-btn.active{border-color:#ffe9a0;background:rgba(255,220,140,.22);color:#fff6d0}
-.theme-btn .t-emoji{font-size:1.3rem}
-.theme-label{text-align:center;font-size:.8rem;font-weight:700;color:#b8a8e0;padding-bottom:4px}
 
 /* ---- quiz glass card ---- */
 .content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -452,7 +447,7 @@ body{background:#12102a;color:#f7f3e8}
   .activity-tile .title{font-size:.95rem}
   .parent-note{margin-top:2px;padding:6px 10px;font-size:.68rem;max-width:720px}
   .rim-home,.rim-prev,.rim-next{min-width:48px;min-height:48px;width:max(48px,12vh)}
-  .word-chip{font-size:1.05rem;padding:.28em .8em;min-height:44px}
+  .word-chip{font-size:clamp(1.15rem,3.4vh,1.6rem);padding:.28em .9em;min-height:52px}
   .letter-progress{font-size:.75rem;top:2%}
   .card{max-width:920px;padding:10px 14px}
   .quiz-prompt{font-size:1.05rem;margin-bottom:2px}
@@ -467,8 +462,6 @@ body{background:#12102a;color:#f7f3e8}
   .count-row{gap:8px}
   .count-sym{font-size:clamp(1.05rem,7vh,1.7rem)}
   .count-sym.dot{width:clamp(14px,4.6vh,22px);height:clamp(14px,4.6vh,22px)}
-  .theme-bar{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
-  .theme-btn{min-height:44px;flex:0 0 auto}
   .level-dot{width:44px;height:44px;min-width:44px;min-height:44px}
   #memory .memory-board{position:relative;left:auto;top:auto;transform:none;
     height:auto;width:calc(100% - 16px);max-width:1200px;flex:1 1 auto;min-height:0}
@@ -535,10 +528,10 @@ body{background:#12102a;color:#f7f3e8}
         </div>
         <div id="letterSceneObjs"></div>
         <button type="button" class="letter-hit" id="letterHit" aria-label="Hear the letter"></button>
-        <button type="button" class="word-chip" id="letterWord">Apple</button>
         <div class="scene-hint" id="letterPicHint">tap a picture · 1 of 3</div>
       </div>
       <button type="button" class="letter-feature" id="letterFeature" aria-label="Apple"><span id="letterFeatureEmoji">🍎</span></button>
+      <button type="button" class="word-chip" id="letterWord">Apple</button>
       <div class="letter-progress" id="letterProgress">Aa · 1 of 26</div>
       <button type="button" class="rim-btn rim-home" data-go="home" aria-label="Home">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M32 6 8 28h8v28h12V38h8v18h12V28h8z"/></svg>
@@ -598,11 +591,8 @@ body{background:#12102a;color:#f7f3e8}
         <div class="num-board" id="numDots" aria-label="counting symbols"></div>
       </div>
     </div>
-    <div class="theme-label" id="themeLabel">Count with: Dots</div>
-    <div class="theme-bar" id="themeBar" role="group" aria-label="Counting theme"></div>
     <div class="dock">
       <button class="btn btn-nav" id="numPrev" aria-label="Previous">◀</button>
-      <button class="btn btn-cycle" id="themeCycle" aria-label="Next theme">🔄 Theme</button>
       <button class="btn btn-nav" id="numNext" aria-label="Next">▶</button>
     </div>
   </section>
@@ -741,7 +731,7 @@ var LETTERS = [
   {c:'N',pics:[{w:'Nest',e:'🐦'},{w:'Nose',e:'👃'},{w:'Notebook',e:'📓'}]},
   {c:'O',pics:[{w:'Octopus',e:'🐙'},{w:'Orange',e:'🍊'},{w:'Owl',e:'🦉'}]},
   {c:'P',pics:[{w:'Pig',e:'🐷'},{w:'Penguin',e:'🐧'},{w:'Pizza',e:'🍕'}]},
-  {c:'Q',pics:[{w:'Queen',e:'👑'},{w:'Quilt',e:'🛏️'},{w:'Question',e:'❓'}]},
+  {c:'Q',pics:[{w:'Queen',e:'👑'},{w:'Quilt',e:'🛏️'}]},
   {c:'R',pics:[{w:'Rainbow',e:'🌈'},{w:'Rabbit',e:'🐰'},{w:'Robot',e:'🤖'}]},
   {c:'S',pics:[{w:'Sun',e:'☀️'},{w:'Snake',e:'🐍'},{w:'Star',e:'⭐'},{w:'Spider',e:'🕷️'}]},
   {c:'T',pics:[{w:'Tree',e:'🌳'},{w:'Tiger',e:'🐯'},{w:'Train',e:'🚂'}]},
@@ -754,16 +744,7 @@ var LETTERS = [
 ];
 
 var COUNT_THEMES = [
-  {id:'dots', name:'Dots', kind:'dot'},
-  {id:'apples', name:'Apples', kind:'emoji', emoji:'🍎'},
-  {id:'dino', name:'Dinosaurs', kind:'emoji', emoji:'🦕'},
-  {id:'spider', name:'Spiders', kind:'emoji', emoji:'🕷️'},
-  {id:'stars', name:'Stars', kind:'emoji', emoji:'⭐'},
-  {id:'cars', name:'Cars', kind:'emoji', emoji:'🚗'},
-  {id:'balls', name:'Balls', kind:'emoji', emoji:'⚽'},
-  {id:'hearts', name:'Hearts', kind:'emoji', emoji:'❤️'},
-  {id:'rockets', name:'Rockets', kind:'emoji', emoji:'🚀'},
-  {id:'dashes', name:'Dashes', kind:'dash'}
+  {id:'dots', name:'Dots', kind:'dot'}
 ];
 
 
@@ -925,7 +906,7 @@ var LETTER_META = {
   N:{ipa:'/ɛn/ /n/', prefer:['Nest','Nose','Notebook']},
   O:{ipa:'/oʊ/ /ɑ/', prefer:['Octopus']},
   P:{ipa:'/piː/ /p/', prefer:['Pig','Penguin','Pizza']},
-  Q:{ipa:'/kjuː/ /kw/', prefer:['Queen','Quilt','Question']},
+  Q:{ipa:'/kjuː/ /kw/', prefer:['Queen','Quilt']},
   R:{ipa:'/ɑɹ/ /ɹ/', prefer:['Rainbow','Rabbit','Robot']},
   S:{ipa:'/ɛs/ /s/', prefer:['Sun','Snake','Star','Spider']},
   T:{ipa:'/tiː/ /t/', prefer:['Tree','Tiger','Train']},
@@ -1021,6 +1002,8 @@ function currentPic(){
   var L = LETTERS[li];
   return L.pics[picIdx % L.pics.length];
 }
+/* Painted word pictures for the left gold circle. Only A, B, C so far; everything else keeps its emoji. */
+var WORD_PICS = {Apple:'apple.png',Ant:'ant.png',Airplane:'airplane.png',Ball:'ball.png',Bear:'bear.png',Bus:'bus.png',Cat:'cat.png',Car:'car.png',Cookie:'cookie.png'};
 function renderLetter(){
   var L = LETTERS[li];
   if(picIdx >= L.pics.length) picIdx = 0;
@@ -1032,7 +1015,17 @@ function renderLetter(){
   document.getElementById('letterPicHint').textContent = 'tap a picture · '+(picIdx+1)+' of '+L.pics.length;
   var feat = document.getElementById('letterFeature');
   var featE = document.getElementById('letterFeatureEmoji');
-  if(featE) featE.textContent = P.e || '';
+  var featImg = document.getElementById('letterFeatureImg');
+  var wordPic = WORD_PICS[P.w];
+  if(wordPic){
+    if(!featImg){ featImg = document.createElement('img'); featImg.id = 'letterFeatureImg'; featImg.alt = ''; featImg.setAttribute('aria-hidden','true'); feat.appendChild(featImg); }
+    featImg.src = 'art/words/' + wordPic;
+    featImg.style.display = 'block';
+    if(featE){ featE.textContent = ''; featE.style.display = 'none'; }
+  } else {
+    if(featImg) featImg.style.display = 'none';
+    if(featE){ featE.textContent = P.e || ''; featE.style.display = ''; }
+  }
   if(feat) feat.setAttribute('aria-label', P.w);
   document.getElementById('letterProgress').textContent = up+lo+'  ·  '+(li+1)+' of 26';
   var board = document.getElementById('letters');
@@ -1165,19 +1158,6 @@ document.getElementById('flSpeak').addEventListener('click', function(){ repeatL
 
 /* ========== NUMBERS ========== */
 var ni = 0, themeIdx = 0;
-function buildThemeBar(){
-  var bar = document.getElementById('themeBar');
-  bar.innerHTML = '';
-  COUNT_THEMES.forEach(function(t, idx){
-    var b = document.createElement('button');
-    b.className = 'theme-btn' + (idx === themeIdx ? ' active' : '');
-    b.type = 'button';
-    var preview = t.kind === 'emoji' ? t.emoji : (t.kind === 'dash' ? '—' : '●');
-    b.innerHTML = '<span class="t-emoji">'+preview+'</span>'+t.name;
-    b.addEventListener('click', function(){ themeIdx = idx; renderNumber(); });
-    bar.appendChild(b);
-  });
-}
 function makeSym(theme, colorIdx){
   var d = document.createElement('span');
   if(theme.kind === 'emoji'){ d.className = 'count-sym'; d.textContent = theme.emoji; }
@@ -1190,7 +1170,6 @@ function renderNumber(doSpeak, cue){
   var theme = COUNT_THEMES[themeIdx];
   document.getElementById('numChar').textContent = String(n);
   document.getElementById('numProgress').textContent = n + ' of 20';
-  document.getElementById('themeLabel').textContent = 'Count with: ' + theme.name;
   var box = document.getElementById('numDots');
   box.innerHTML = '';
   var groups = document.createElement('div');
@@ -1208,9 +1187,6 @@ function renderNumber(doSpeak, cue){
     groups.appendChild(row);
   }
   box.appendChild(groups);
-  document.querySelectorAll('#themeBar .theme-btn').forEach(function(b, idx){
-    b.classList.toggle('active', idx === themeIdx);
-  });
   if(doSpeak){
     var line = String(n);
     if(cue) speakParts([cue, line], [line]);
@@ -1219,11 +1195,7 @@ function renderNumber(doSpeak, cue){
 }
 document.getElementById('numPrev').addEventListener('click', function(){ ni = (ni-1+20)%20; renderNumber(true); });
 document.getElementById('numNext').addEventListener('click', function(){ ni = (ni+1)%20; renderNumber(true); });
-document.getElementById('themeCycle').addEventListener('click', function(){
-  themeIdx = (themeIdx+1)%COUNT_THEMES.length; renderNumber(false);
-});
 document.getElementById('numSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
-buildThemeBar();
 
 /* ========== FIND NUMBER ========== */
 var fnAnswer = 11, fnStreak = 0, fnLocked = false;
