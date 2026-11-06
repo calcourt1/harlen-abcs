@@ -580,6 +580,14 @@ body{background:#12102a;color:#f7f3e8}
   background:rgba(255,248,230,.96);border-radius:28px;box-shadow:0 12px 36px rgba(0,0,0,.4);
   overflow:hidden;touch-action:none;border:3px solid rgba(255,220,140,.45)}
 #traceCanvas{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.trace-stage{flex:1 1 auto;min-width:0;min-height:0;width:100%;height:100%;position:relative}
+.trace-clue{flex:0 0 auto;align-self:center;width:clamp(72px,22%,120px);aspect-ratio:1/1;
+  border-radius:22px;border:3px solid rgba(240,215,138,.7);
+  background:linear-gradient(180deg,rgba(40,28,72,.88),rgba(16,12,36,.94));
+  box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 22px rgba(0,0,0,.28);overflow:hidden;
+  display:flex;align-items:center;justify-content:center;pointer-events:none}
+.trace-clue[hidden]{display:none !important}
+.trace-clue img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .trace-hint{font-size:.95rem;font-weight:700;color:#c8b8e8;margin:8px 0 4px;text-align:center}
 .trace-picker{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:480px;margin-top:8px;
   max-height:100px;overflow-y:auto;padding:4px}
@@ -642,12 +650,23 @@ body{background:#12102a;color:#f7f3e8}
 /* Portrait: stacked — canvas/main on top, side (tabs + chips) under it. Landscape: left rail + taller canvas. */
 #trace .trace-wrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0;width:100%;
   pointer-events:none;padding:0 12px 8px;z-index:3;gap:4px}
-#trace .trace-main,#trace .trace-side,#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker,#trace .trace-nav,#trace .trace-picker-wrap,#trace .trace-step,#trace .trace-canvas-box{pointer-events:auto;position:relative;z-index:5}
+#trace .trace-main,#trace .trace-side,#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker,#trace .trace-nav,#trace .trace-picker-wrap,#trace .trace-step,#trace .trace-canvas-box,#trace .trace-stage{pointer-events:auto;position:relative;z-index:5}
 #trace .trace-main{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;min-width:0;width:100%;z-index:4}
 #trace .trace-side{flex:0 0 auto;display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%;min-width:0;z-index:5}
 #trace .trace-canvas-box{left:auto;top:auto;flex:1 1 auto;width:100%;max-width:none;height:auto;
   min-height:0;margin:4px 0 0;z-index:4;
-  background:rgba(8,12,28,.62);border-color:rgba(240,212,138,.7);border-width:4px;border-radius:28px}
+  background:rgba(8,12,28,.62);border-color:rgba(240,212,138,.7);border-width:4px;border-radius:28px;
+  display:flex;flex-direction:row;align-items:stretch;gap:10px;padding:8px}
+#trace .trace-stage{flex:1 1 auto;min-width:0;min-height:0;border-radius:18px;overflow:hidden}
+#trace .trace-clue{flex:0 0 clamp(72px,20%,118px);width:clamp(72px,20%,118px);max-height:min(118px,42%);
+  aspect-ratio:1/1;align-self:center}
+@media (orientation:landscape){
+  #trace .trace-canvas-box{gap:8px;padding:6px}
+  #trace .trace-clue{flex:0 0 clamp(64px,16%,100px);width:clamp(64px,16%,100px);max-height:min(100px,58%)}
+}
+@media (orientation:landscape) and (max-height:520px){
+  #trace .trace-clue{flex:0 0 clamp(56px,14%,84px);width:clamp(56px,14%,84px)}
+}
 #trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6);margin:0;flex-shrink:0;z-index:5}
 #trace .trace-tabs{flex-shrink:0;margin-bottom:0;justify-content:center}
 /* Trace picker (portrait): one swipeable row. Own horizontal scroller (pan-x), chips never shrink,
@@ -963,7 +982,12 @@ body{background:#12102a;color:#f7f3e8}
       <div class="trace-main">
         <div class="trace-hint">Trace with your finger! 👆</div>
         <div class="trace-canvas-box">
-          <canvas id="traceCanvas"></canvas>
+          <div class="trace-stage">
+            <canvas id="traceCanvas"></canvas>
+          </div>
+          <div class="trace-clue" id="traceClue" hidden>
+            <img id="traceClueImg" alt="" decoding="async">
+          </div>
         </div>
       </div>
       <div class="trace-side">
@@ -1862,7 +1886,7 @@ function traceChalkWidth(){
   return Math.max(18, Math.floor(Math.min(w, h) * 0.055));
 }
 /* Manuscript single-story a: round bowl + right stem (no ascender / not a d). */
-function fillMsA(cx, cy, size){
+function fillMsA(target, cx, cy, size){
   var h = size * 0.52;
   var stemW = Math.max(6, size * 0.105);
   var r = h / 2;
@@ -1871,15 +1895,15 @@ function fillMsA(cx, cy, size){
   var bowlCx = cx - totalW / 2 + r;
   var bowlCy = cy;
   var top = bowlCy - r;
-  ctx.beginPath();
-  ctx.arc(bowlCx, bowlCy, r, 0, Math.PI * 2);
-  ctx.arc(bowlCx, bowlCy, inner, 0, Math.PI * 2, true);
-  ctx.fill('evenodd');
+  target.beginPath();
+  target.arc(bowlCx, bowlCy, r, 0, Math.PI * 2);
+  target.arc(bowlCx, bowlCy, inner, 0, Math.PI * 2, true);
+  target.fill('evenodd');
   var stemLeft = bowlCx + r - stemW * 0.35;
-  ctx.fillRect(stemLeft, top, stemW * 0.9, h);
+  target.fillRect(stemLeft, top, stemW * 0.9, h);
 }
 /* Manuscript single-story g: round bowl + open descending tail (not double-story). */
-function fillMsG(cx, cy, size){
+function fillMsG(target, cx, cy, size){
   var h = size * 0.52;
   var stemW = Math.max(6, size * 0.105);
   var r = h / 2;
@@ -1888,14 +1912,14 @@ function fillMsG(cx, cy, size){
   var totalH = h + desc;
   var bowlCy = cy - totalH / 2 + r;
   var bowlCx = cx - stemW * 0.15;
-  ctx.beginPath();
-  ctx.arc(bowlCx, bowlCy, r, 0, Math.PI * 2);
-  ctx.arc(bowlCx, bowlCy, inner, 0, Math.PI * 2, true);
-  ctx.fill('evenodd');
+  target.beginPath();
+  target.arc(bowlCx, bowlCy, r, 0, Math.PI * 2);
+  target.arc(bowlCx, bowlCy, inner, 0, Math.PI * 2, true);
+  target.fill('evenodd');
   var stemLeft = bowlCx + r - stemW * 0.35;
   var stemTop = bowlCy - r * 0.15;
   var stemBot = bowlCy + r + desc - stemW * 0.35;
-  ctx.fillRect(stemLeft, stemTop, stemW * 0.9, Math.max(stemW, stemBot - stemTop));
+  target.fillRect(stemLeft, stemTop, stemW * 0.9, Math.max(stemW, stemBot - stemTop));
   /* Open left-facing hook at the bottom (filled annular sector — not a closed bowl). */
   var hookCx = stemLeft + stemW * 0.45;
   var hookCy = stemBot - r * 0.55;
@@ -1903,61 +1927,181 @@ function fillMsG(cx, cy, size){
   var innerR = Math.max(1, outerR - stemW);
   var a0 = 0.05 * Math.PI;
   var a1 = 1.12 * Math.PI;
-  ctx.beginPath();
-  ctx.arc(hookCx, hookCy, outerR, a0, a1, false);
-  ctx.arc(hookCx, hookCy, innerR, a1, a0, true);
-  ctx.closePath();
-  ctx.fill();
+  target.beginPath();
+  target.arc(hookCx, hookCy, outerR, a0, a1, false);
+  target.arc(hookCx, hookCy, innerR, a1, a0, true);
+  target.closePath();
+  target.fill();
 }
-function fillTraceGlyphShape(ch, cx, cy, size){
-  if(ch === 'a'){ fillMsA(cx, cy, size); return true; }
-  if(ch === 'g'){ fillMsG(cx, cy, size); return true; }
+function fillTraceGlyphShape(target, ch, cx, cy, size){
+  if(ch === 'a'){ fillMsA(target, cx, cy, size); return true; }
+  if(ch === 'g'){ fillMsG(target, cx, cy, size); return true; }
   return false;
 }
-/* F-style silhouette outline (halo + destination-out) at a point. */
-function drawTraceGlyph(ch, cx, cy, size){
+/* Trace letter picture clues — existing WORD_PICS portraits only. */
+var TRACE_CLUES = {
+  A:{word:'Apple', file:'apple.png'},
+  B:{word:'Ball', file:'ball.png'},
+  C:{word:'Cat', file:'cat.png'},
+  D:{word:'Dog', file:'dog.png'},
+  E:{word:'Elephant', file:'elephant.png'},
+  F:{word:'Fish', file:'fish.png'},
+  G:{word:'Goat', file:'goat.png'},
+  H:{word:'House', file:'house.png'},
+  I:{word:'Ice cream', file:'ice-cream.png'},
+  J:{word:'Juice', file:'juice.png'},
+  K:{word:'Kite', file:'kite.png'},
+  L:{word:'Lion', file:'lion.png'},
+  M:{word:'Moon', file:'moon.png'},
+  N:{word:'Nest', file:'nest.png'},
+  O:{word:'Octopus', file:'octopus.png'},
+  P:{word:'Pig', file:'pig.png'},
+  Q:{word:'Queen', file:'queen.png'},
+  R:{word:'Rabbit', file:'rabbit.png'},
+  S:{word:'Sun', file:'sun.png'},
+  T:{word:'Tiger', file:'tiger.png'},
+  U:{word:'Umbrella', file:'umbrella.png'},
+  V:{word:'Van', file:'van.png'},
+  W:{word:'Whale', file:'whale.png'},
+  X:{word:'Xylophone', file:'xylophone.png'},
+  Y:{word:'Yo-yo', file:'yo-yo.png'},
+  Z:{word:'Zebra', file:'zebra.png'}
+};
+var traceClueCache = {};
+function updateTraceClue(){
+  var wrap = document.getElementById('traceClue');
+  var img = document.getElementById('traceClueImg');
+  if(!wrap || !img) return;
+  if(traceSet !== 'letters' || !/^[A-Za-z]$/.test(traceChar)){
+    wrap.hidden = true;
+    img.removeAttribute('src');
+    img.alt = '';
+    return;
+  }
+  var key = String(traceChar).toUpperCase();
+  var clue = TRACE_CLUES[key];
+  if(!clue){ wrap.hidden = true; return; }
+  var src = 'art/words/' + clue.file;
+  img.alt = clue.word;
+  if(img.getAttribute('src') !== src) img.src = src;
+  wrap.hidden = false;
+  wrap.setAttribute('aria-label', clue.word);
+}
+
+/* Draw F-style silhouette onto any 2d context (halo + destination-out). */
+function drawTraceGlyphOn(target, ch, cx, cy, size){
   var ring = Math.max(8, Math.floor(size * 0.045));
   var useMs = (ch === 'a' || ch === 'g');
   if(!useMs){
-    ctx.font = 'bold '+size+'px system-ui,sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    target.font = 'bold '+size+'px system-ui,sans-serif';
+    target.textAlign = 'center'; target.textBaseline = 'middle';
   }
   function paint(ox, oy){
-    if(useMs) fillTraceGlyphShape(ch, cx + ox, cy + oy, size);
-    else ctx.fillText(ch, cx + ox, cy + oy);
+    if(useMs) fillTraceGlyphShape(target, ch, cx + ox, cy + oy, size);
+    else target.fillText(ch, cx + ox, cy + oy);
   }
-  ctx.fillStyle = 'rgba(255,246,220,0.95)';
-  var steps = 36;
-  for(var i=0;i<steps;i++){
-    var a = (Math.PI * 2 * i) / steps;
+  target.fillStyle = 'rgba(255,246,220,0.95)';
+  var steps = 36, i, a;
+  for(i=0;i<steps;i++){
+    a = (Math.PI * 2 * i) / steps;
     paint(Math.cos(a)*ring, Math.sin(a)*ring);
   }
-  ctx.globalCompositeOperation = 'destination-out';
+  target.globalCompositeOperation = 'destination-out';
   paint(0, 0);
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.fillStyle = 'rgba(255,246,220,0.55)';
+  target.globalCompositeOperation = 'source-over';
+  target.fillStyle = 'rgba(255,246,220,0.55)';
   paint(0, 0);
 }
+function drawTraceGlyph(ch, cx, cy, size){
+  drawTraceGlyphOn(ctx, ch, cx, cy, size);
+}
+
+/* Ink bounds of one glyph at `size`, relative to its center (cx,cy). */
+function measureTraceGlyph(ch, size){
+  var ring = Math.max(8, Math.floor(size * 0.045));
+  var pad = Math.ceil(ring + size * 0.12) + 6;
+  var tw = Math.max(32, Math.ceil(size * 2.4 + pad * 2));
+  var th = Math.max(32, Math.ceil(size * 2.6 + pad * 2));
+  var oc = document.createElement('canvas');
+  oc.width = tw; oc.height = th;
+  var octx = oc.getContext('2d');
+  var cx = tw / 2, cy = th / 2;
+  drawTraceGlyphOn(octx, ch, cx, cy, size);
+  var img = octx.getImageData(0, 0, tw, th).data;
+  var minX = tw, maxX = -1, minY = th, maxY = -1;
+  var x, y, i, a, bright;
+  for(y=0;y<th;y++){
+    for(x=0;x<tw;x++){
+      i = (y * tw + x) * 4;
+      a = img[i+3];
+      if(a < 24) continue;
+      bright = img[i] + img[i+1] + img[i+2];
+      if(bright < 140) continue;
+      if(x < minX) minX = x;
+      if(x > maxX) maxX = x;
+      if(y < minY) minY = y;
+      if(y > maxY) maxY = y;
+    }
+  }
+  if(maxX < 0){
+    return {left:-size*0.35, right:size*0.35, top:-size*0.5, bottom:size*0.5, w:size*0.7, h:size};
+  }
+  return {
+    left: minX - cx,
+    right: maxX - cx + 1,
+    top: minY - cy,
+    bottom: maxY - cy + 1,
+    w: (maxX - minX + 1),
+    h: (maxY - minY + 1)
+  };
+}
+
 function drawGuide(){
-  var w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
+  var box = canvas.parentElement;
+  var w = box.clientWidth, h = box.clientHeight;
   if(w<10||h<10) return;
   ctx.clearRect(0,0,w,h);
+  updateTraceClue();
   ctx.save();
   if(traceSet === 'letters' && /^[A-Za-z]$/.test(traceChar)){
-    /* Always-on uppercase + lowercase pair, side by side, both large. */
+    /* Always-on uppercase + lowercase: measure ink and pack with a clear gap. */
     var up = String(traceChar).toUpperCase();
     var lo = String(traceChar).toLowerCase();
-    var gap = Math.max(16, Math.floor(w * 0.04));
-    var half = (w - gap) / 2;
-    var size = Math.floor(Math.min(half * 0.92, h * 0.86));
-    var leftCx = half / 2;
-    var rightCx = half + gap + half / 2;
-    var cy = h / 2;
-    drawTraceGlyph(up, leftCx, cy, size);
-    drawTraceGlyph(lo, rightCx, cy, size);
+    var pad = Math.max(12, Math.floor(Math.min(w, h) * 0.045));
+    var minGap = Math.max(56, Math.floor(w * 0.16));
+    var probe = 120;
+    var bu = measureTraceGlyph(up, probe);
+    var bl = measureTraceGlyph(lo, probe);
+    var scaleW = (w - pad * 2 - minGap) / (bu.w + bl.w);
+    var scaleH = (h - pad * 2) / Math.max(bu.h, bl.h);
+    var size = Math.floor(probe * Math.min(scaleW, scaleH, 1.85));
+    size = Math.max(48, Math.min(size, Math.floor(Math.min(w, h) * 0.70)));
+    bu = measureTraceGlyph(up, size);
+    bl = measureTraceGlyph(lo, size);
+    /* If still cramped (font metrics shifted), shrink until gap fits. */
+    var guard = 0;
+    while(guard < 8 && (bu.w + bl.w + minGap > w - pad * 2 || Math.max(bu.h, bl.h) > h - pad * 2)){
+      size = Math.floor(size * 0.92);
+      bu = measureTraceGlyph(up, size);
+      bl = measureTraceGlyph(lo, size);
+      guard++;
+    }
+    var totalW = bu.w + bl.w + minGap;
+    var startX = Math.max(pad, (w - totalW) / 2);
+    var leftCx = startX - bu.left;
+    var rightCx = startX + bu.w + minGap - bl.left;
+    var cyUp = h / 2 - (bu.top + bu.bottom) / 2;
+    var cyLo = h / 2 - (bl.top + bl.bottom) / 2;
+    drawTraceGlyph(up, leftCx, cyUp, size);
+    drawTraceGlyph(lo, rightCx, cyLo, size);
   } else {
-    var size1 = Math.floor(Math.min(w, h) * 0.9);
-    drawTraceGlyph(traceChar, w/2, h/2, size1);
+    var size1 = Math.floor(Math.min(w, h) * 0.82);
+    var bm = measureTraceGlyph(traceChar, size1);
+    var s2 = size1;
+    if(bm.w > w * 0.9 || bm.h > h * 0.9){
+      s2 = Math.floor(size1 * Math.min((w * 0.86) / bm.w, (h * 0.86) / bm.h));
+    }
+    drawTraceGlyph(traceChar, w/2, h/2, s2);
   }
   ctx.restore();
 }
