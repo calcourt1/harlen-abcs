@@ -202,7 +202,7 @@ body{background:#12102a;color:#f7f3e8}
 #letters.show-k{--cx:0.569;--fit:0.539}
 #letters.show-l{--cx:0.555;--fit:0.466}
 #letters.show-m{--cx:0.592;--fit:0.643}
-#letters.show-n{--cx:0.576;--fit:0.570}
+#letters.show-n{--cx:0.572;--fit:0.620}
 #letters.show-o{--cx:0.571;--fit:0.593}
 #letters.show-p{--cx:0.580;--fit:0.550}
 #letters.show-q{--cx:0.566;--fit:0.583}
@@ -212,8 +212,8 @@ body{background:#12102a;color:#f7f3e8}
 #letters.show-u{--cx:0.581;--fit:0.572}
 #letters.show-v{--cx:0.577;--fit:0.539}
 #letters.show-w{--cx:0.585;--fit:0.622}
-#letters.show-x{--cx:0.579;--fit:0.556}
-#letters.show-y{--cx:0.578;--fit:0.533}
+#letters.show-x{--cx:0.575;--fit:0.620}
+#letters.show-y{--cx:0.585;--fit:0.640}
 #letters.show-z{--cx:0.581;--fit:0.548}
 #letters .glow-pair{top:58%}
 #letters .glow-pair .upper{font-size:clamp(4.4rem,16vw,10.5rem)}
@@ -761,7 +761,7 @@ var LETTERS = [
   {c:'R',pics:[{w:'Rainbow',e:'🌈'},{w:'Rabbit',e:'🐰'},{w:'Robot',e:'🤖'}]},
   {c:'S',pics:[{w:'Sun',e:'☀️'},{w:'Snake',e:'🐍'},{w:'Star',e:'⭐'},{w:'Spider',e:'🕷️'}]},
   {c:'T',pics:[{w:'Tree',e:'🌳'},{w:'Tiger',e:'🐯'},{w:'Train',e:'🚂'}]},
-  {c:'U',pics:[{w:'Umbrella',e:'☂️'},{w:'Up',e:'⬆️'},{w:'Unicorn',e:'🦄'}]},
+  {c:'U',pics:[{w:'Umbrella',e:'☂️'},{w:'Up',e:'⬆️'},{w:'Unicycle',e:'🚲'}]},
   {c:'V',pics:[{w:'Van',e:'🚐'},{w:'Violin',e:'🎻'},{w:'Volcano',e:'🌋'}]},
   {c:'W',pics:[{w:'Whale',e:'🐋'},{w:'Wolf',e:'🐺'},{w:'Watermelon',e:'🍉'}]},
   {c:'X',pics:[{w:'X-ray',e:'🦴'},{w:'Xylophone',e:'🎼'},{w:'X mark',e:'❌'}]},
@@ -936,7 +936,7 @@ var LETTER_META = {
   R:{ipa:'/ɑɹ/ /ɹ/', prefer:['Rainbow','Rabbit','Robot']},
   S:{ipa:'/ɛs/ /s/', prefer:['Sun','Snake','Star','Spider']},
   T:{ipa:'/tiː/ /t/', prefer:['Tree','Tiger','Train']},
-  U:{ipa:'/juː/ /ʌ/', prefer:['Umbrella','Up']},
+  U:{ipa:'/juː/ /ʌ/', prefer:['Umbrella','Up','Unicycle']},
   V:{ipa:'/viː/ /v/', prefer:['Van','Violin','Volcano']},
   W:{ipa:'/ˈdʌbəl juː/ /w/', prefer:['Whale','Wolf','Watermelon']},
   X:{ipa:'/ɛks/ /ks/', prefer:['X-ray','Xylophone','X mark']},
@@ -1028,8 +1028,35 @@ function currentPic(){
   var L = LETTERS[li];
   return L.pics[picIdx % L.pics.length];
 }
-/* Painted word pictures for the left gold circle. Only A, B, C so far; everything else keeps its emoji. */
-var WORD_PICS = {Apple:'apple.png',Ant:'ant.png',Airplane:'airplane.png',Ball:'ball.png',Bear:'bear.png',Bus:'bus.png',Cat:'cat.png',Car:'car.png',Cookie:'cookie.png'};
+/* Painted word pictures for the left gold circle. Spider keeps emoji (no spider.png). */
+var WORD_PICS = {
+  Apple:'apple.png',Ant:'ant.png',Airplane:'airplane.png',
+  Ball:'ball.png',Bear:'bear.png',Bus:'bus.png',
+  Cat:'cat.png',Car:'car.png',Cookie:'cookie.png',
+  Dog:'dog.png',Duck:'duck.png',Dinosaur:'dinosaur.png',
+  Egg:'egg.png',Elephant:'elephant.png',Eagle:'eagle.png',
+  Fish:'fish.png',Frog:'frog.png',Flower:'flower.png',
+  Goat:'goat.png',Grapes:'grapes.png',Guitar:'guitar.png',
+  House:'house.png',Horse:'horse.png',Hat:'hat.png',
+  Igloo:'igloo.png',Iguana:'iguana.png','Ice cream':'ice-cream.png',
+  Juice:'juice.png',Jaguar:'jaguar.png',Jam:'jam.png',
+  Kite:'kite.png',Koala:'koala.png',Key:'key.png',
+  Lion:'lion.png',Leaf:'leaf.png',Ladybug:'ladybug.png',
+  Moon:'moon.png',Monkey:'monkey.png',Mouse:'mouse.png',
+  Nest:'nest.png',Notebook:'notebook.png',
+  Octopus:'octopus.png',Orange:'orange.png',Owl:'owl.png',
+  Pig:'pig.png',Penguin:'penguin.png',Pizza:'pizza.png',
+  Queen:'queen.png',Quilt:'quilt.png',
+  Rainbow:'rainbow.png',Rabbit:'rabbit.png',Robot:'robot.png',
+  Sun:'sun.png',Snake:'snake.png',Star:'star.png',
+  Tree:'tree.png',Tiger:'tiger.png',Train:'train.png',
+  Umbrella:'umbrella.png',Up:'up.png',Unicycle:'unicycle.png',
+  Van:'van.png',Violin:'violin.png',Volcano:'volcano.png',
+  Whale:'whale.png',Wolf:'wolf.png',Watermelon:'watermelon.png',
+  'X-ray':'x-ray.png',Xylophone:'xylophone.png','X mark':'x-mark.png',
+  'Yo-yo':'yo-yo.png',Yak:'yak.png',Yarn:'yarn.png',
+  Zebra:'zebra.png',Zoo:'zoo.png',Zipper:'zipper.png'
+};
 function renderLetter(){
   var L = LETTERS[li];
   if(picIdx >= L.pics.length) picIdx = 0;
