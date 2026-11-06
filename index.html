@@ -635,6 +635,25 @@ body{background:#12102a;color:#f7f3e8}
   background:rgba(255,255,255,.1);color:#f0e8c8;cursor:pointer;min-height:48px;font-size:1.05rem}
 .trace-tab.active{background:linear-gradient(180deg,#ffe9a0,#f0c14a);color:#1a1440;border-color:#ffe9a8}
 
+
+/* Connect the Dots */
+.dots-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 12px 10px;gap:8px}
+.dots-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
+  text-shadow:0 2px 0 rgba(0,0,0,.35);flex-shrink:0}
+.dots-stage{position:relative;flex:1 1 auto;min-height:0;border-radius:28px;overflow:hidden;
+  border:4px solid rgba(240,212,138,.7);background:rgba(8,12,28,.62);
+  box-shadow:0 12px 36px rgba(0,0,0,.35)}
+#dotsCanvas{width:100%;height:100%;display:block;touch-action:none;cursor:pointer}
+.dots-reveal{position:absolute;inset:10%;width:80%;height:80%;object-fit:contain;pointer-events:none;
+  opacity:0;transition:opacity .55s ease;filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))}
+.dots-reveal.is-on{opacity:.92}
+.dots-dock{display:flex;justify-content:center;align-items:center;gap:14px;flex-shrink:0;padding:4px 0 2px;z-index:5}
+#trace .trace-tabs{gap:6px}
+#trace .trace-tab{padding:8px 12px;font-size:.95rem;min-height:44px}
+@media (orientation:landscape){
+  .dots-wrap{padding:0 10px 6px}
+  .dots-hint{font-size:.9rem}
+}
 /* ---- paint ---- */
 .paint-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 10px}
 .paint-canvas-box{flex:1;min-height:0;border-radius:24px;overflow:hidden;touch-action:none;
@@ -835,6 +854,7 @@ body{background:#12102a;color:#f7f3e8}
           <div class="activity-grid">
             <button type="button" class="activity-tile" data-go="findLetter" data-cue="Find the letter"><span class="emoji">🔎</span><span class="title">Find Letter</span></button>
             <button type="button" class="activity-tile" data-go="findNumber" data-cue="Find the number"><span class="emoji">🎯</span><span class="title">Find Number</span></button>
+            <button type="button" class="activity-tile" data-go="dots" data-cue="Connect the dots"><span class="emoji">🔵</span><span class="title">Connect Dots</span></button>
             <button type="button" class="activity-tile" data-go="memory" data-cue="Memory"><span class="emoji">🃏</span><span class="title">Memory</span></button>
             <button type="button" class="activity-tile" data-go="paint" data-cue="Paint"><span class="emoji">🎨</span><span class="title">Paint</span></button>
           </div>
@@ -1030,6 +1050,7 @@ body{background:#12102a;color:#f7f3e8}
         <div class="trace-tabs">
           <button class="trace-tab active" data-set="letters" id="tabLetters">A–Z</button>
           <button class="trace-tab" data-set="digits" id="tabDigits">0–9</button>
+          <button class="trace-tab" data-set="shapes" id="tabShapes">Shapes</button>
         </div>
         <div class="trace-nav">
           <button type="button" class="rim-btn trace-step" id="tracePrev" aria-label="Previous letter">
@@ -1129,6 +1150,33 @@ body{background:#12102a;color:#f7f3e8}
     </div>
   </section>
 
+
+  <!-- CONNECT THE DOTS -->
+  <section id="dots" class="screen">
+    <div class="sky quiz"></div>
+    <div class="stars" id="starsDots"></div>
+    <div class="moon crescent" aria-hidden="true"></div>
+    <div class="mountains" aria-hidden="true"></div>
+    <div class="hill"></div>
+    <div class="topbar">
+      <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
+      <div class="progress" id="dotsProgress">Dots</div>
+      <button class="btn btn-speak" id="dotsSpeak" aria-label="Repeat">🔊</button>
+    </div>
+    <div class="dots-wrap">
+      <div class="dots-hint" id="dotsHint">Tap the numbers in order! ✨</div>
+      <div class="dots-stage">
+        <canvas id="dotsCanvas"></canvas>
+        <img id="dotsReveal" class="dots-reveal" alt="" hidden>
+      </div>
+      <div class="dots-dock">
+        <button type="button" class="btn btn-nav" id="dotsPrev" aria-label="Previous">◀</button>
+        <button type="button" class="btn btn-clear" id="dotsReset" aria-label="Start over">↺</button>
+        <button type="button" class="btn btn-nav" id="dotsNext" aria-label="Next">▶</button>
+      </div>
+    </div>
+  </section>
+
   <!-- SHAPES -->
   <section id="shapes" class="screen">
     <div class="sky"></div>
@@ -1200,7 +1248,7 @@ function sprinkleStars(id, count){
     box.appendChild(s);
   }
 }
-['starsHome','starsLetterPicker','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint','starsAnimals','starsSigns','starsShapes'].forEach(function(id){
+['starsHome','starsLetterPicker','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint','starsDots','starsAnimals','starsSigns','starsShapes'].forEach(function(id){
   sprinkleStars(id, 28);
 });
 
@@ -1225,6 +1273,7 @@ function showScreen(id, cue){
   if(id==='animals'){ renderAnimals(cue); }
   if(id==='signs'){ renderSigns(cue); }
   if(id==='shapes'){ renderShapes(cue); }
+  if(id==='dots'){ setupDots(cue); }
 }
 document.querySelectorAll('[data-go]').forEach(function(btn){
   btn.addEventListener('click', function(){
@@ -1235,7 +1284,7 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
 /* Recorded voice: every kid-facing line is a pre-generated Kokoro-82M clip (voice af_bella) in audio/.
    No system text-to-speech. A missing clip is logged and skipped, never read by the phone's voice. */
 var VOICE_DIR = 'audio/';
-var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"all-done":1,"animals":1,"challenge-find-two-that-go-together":1,"circle":1,"crescent":1,"daddy":1,"diamond":1,"drink":1,"easy-find-two-that-go-together":1,"eat":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-a":1,"find-the-b":1,"find-the-c":1,"find-the-d":1,"find-the-e":1,"find-the-f":1,"find-the-g":1,"find-the-h":1,"find-the-i":1,"find-the-j":1,"find-the-k":1,"find-the-l":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-m":1,"find-the-n":1,"find-the-number":1,"find-the-o":1,"find-the-p":1,"find-the-q":1,"find-the-r":1,"find-the-s":1,"find-the-t":1,"find-the-u":1,"find-the-v":1,"find-the-w":1,"find-the-x":1,"find-the-y":1,"find-the-z":1,"heart":1,"help":1,"hexagon":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"milk":1,"mommy":1,"more":1,"numbers":1,"oval":1,"paint":1,"please":1,"rectangle":1,"shapes":1,"signs":1,"square":1,"star":1,"thank-you":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-a-cardinal":1,"this-is-a-coyote":1,"this-is-a-lion":1,"this-is-a-monkey":1,"this-is-a-rabbit":1,"this-is-a-raccoon":1,"this-is-a-squirrel":1,"this-is-a-white-tailed-deer":1,"this-is-a-wild-turkey":1,"this-is-all-done":1,"this-is-an-elephant":1,"this-is-daddy":1,"this-is-drink":1,"this-is-eat":1,"this-is-help":1,"this-is-milk":1,"this-is-mommy":1,"this-is-more":1,"this-is-please":1,"this-is-thank-you":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"triangle":1,"try-again":1,"yes":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1,"baby":1,"grandma":1,"grandpa":1,"sleep":1,"bath":1,"diaper":1,"potty":1,"water":1,"hungry":1,"sorry":1,"no":1,"want":1,"stop":1,"wait":1,"hello":1,"bye":1,"happy":1,"sad":1,"love":1}/*END_VOICE_CLIPS*/;
+var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"all-done":1,"animals":1,"challenge-find-two-that-go-together":1,"circle":1,"crescent":1,"daddy":1,"diamond":1,"drink":1,"easy-find-two-that-go-together":1,"eat":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-a":1,"find-the-b":1,"find-the-c":1,"find-the-d":1,"find-the-e":1,"find-the-f":1,"find-the-g":1,"find-the-h":1,"find-the-i":1,"find-the-j":1,"find-the-k":1,"find-the-l":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-m":1,"find-the-n":1,"find-the-number":1,"find-the-o":1,"find-the-p":1,"find-the-q":1,"find-the-r":1,"find-the-s":1,"find-the-t":1,"find-the-u":1,"find-the-v":1,"find-the-w":1,"find-the-x":1,"find-the-y":1,"find-the-z":1,"heart":1,"help":1,"hexagon":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"milk":1,"mommy":1,"more":1,"numbers":1,"oval":1,"paint":1,"please":1,"rectangle":1,"shapes":1,"signs":1,"square":1,"star":1,"thank-you":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-a-cardinal":1,"this-is-a-coyote":1,"this-is-a-lion":1,"this-is-a-monkey":1,"this-is-a-rabbit":1,"this-is-a-raccoon":1,"this-is-a-squirrel":1,"this-is-a-white-tailed-deer":1,"this-is-a-wild-turkey":1,"this-is-all-done":1,"this-is-an-elephant":1,"this-is-daddy":1,"this-is-drink":1,"this-is-eat":1,"this-is-help":1,"this-is-milk":1,"this-is-mommy":1,"this-is-more":1,"this-is-please":1,"this-is-thank-you":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"triangle":1,"try-again":1,"yes":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1,"baby":1,"grandma":1,"grandpa":1,"sleep":1,"bath":1,"diaper":1,"potty":1,"water":1,"hungry":1,"sorry":1,"no":1,"want":1,"stop":1,"wait":1,"hello":1,"bye":1,"happy":1,"sad":1,"love":1,"connect-the-dots":1,"you-made-a-star":1,"you-made-a-heart":1,"you-made-a-circle":1,"you-made-a-triangle":1,"you-made-a-square":1,"you-made-an-apple":1,"you-made-a-ball":1,"you-made-a-cat":1,"you-made-a-dog":1,"you-made-a-fish":1,"you-made-a-moon":1,"you-made-a-house":1,"apple":1,"ball":1,"cat":1,"dog":1,"fish":1,"moon":1,"house":1}/*END_VOICE_CLIPS*/;
 var voiceEl = null, voiceQueue = [];
 var lastParts = [];
 var speakGen = 0;
@@ -1836,11 +1885,23 @@ var canvas = document.getElementById('traceCanvas');
 var ctx = canvas.getContext('2d');
 var tracing = false, traceSet = 'letters', traceChar = 'A', lastX = 0, lastY = 0;
 
+function traceShapeIds(){
+  return SHAPES.map(function(s){ return s.id; });
+}
+function traceShapeById(id){
+  for(var i=0;i<SHAPES.length;i++){ if(SHAPES[i].id === id) return SHAPES[i]; }
+  return null;
+}
 function traceItems(){
   if(traceSet === 'digits') return ['0','1','2','3','4','5','6','7','8','9'];
+  if(traceSet === 'shapes') return traceShapeIds();
   return LETTERS.map(function(L){ return L.c; });
 }
 function traceLabel(ch){
+  if(traceSet === 'shapes'){
+    var sh = traceShapeById(ch);
+    return sh ? sh.label : String(ch);
+  }
   if(/^[A-Za-z]$/.test(ch)) return String(ch).toUpperCase() + String(ch).toLowerCase();
   return String(ch);
 }
@@ -1861,7 +1922,7 @@ function setupTracePicker(){
       b.className = 'trace-pick';
       b.textContent = traceLabel(ch);
       b.setAttribute('data-ch', ch);
-      b.setAttribute('aria-label', /^[A-Za-z]$/.test(ch) ? ('Letter ' + String(ch).toUpperCase()) : ('Number ' + ch));
+      b.setAttribute('aria-label', traceSet==='shapes' ? ('Shape ' + traceLabel(ch)) : (/^[A-Za-z]$/.test(ch) ? ('Letter ' + String(ch).toUpperCase()) : ('Number ' + ch)));
       b.addEventListener('click', function(){
         traceChar = ch;
         setupTracePicker(); drawGuide(); speakTrace();
@@ -1897,13 +1958,17 @@ function setTraceTab(setName, firstChar){
 }
 function speakTrace(prefix){
   var line = 'Trace.';
-  if(/^[A-Za-z]$/.test(traceChar)) line = 'Trace the letter ' + String(traceChar).toUpperCase() + '.';
+  if(traceSet === 'shapes'){
+    var sh = traceShapeById(traceChar);
+    line = sh ? sh.say : 'Shapes.';
+  } else if(/^[A-Za-z]$/.test(traceChar)) line = 'Trace the letter ' + String(traceChar).toUpperCase() + '.';
   else if(traceChar) line = 'Trace ' + String(traceChar) + '.';
   if(prefix) speakParts([prefix, line], [line]);
   else speakParts([line]);
 }
 document.getElementById('tabLetters').addEventListener('click', function(){ setTraceTab('letters','A'); });
 document.getElementById('tabDigits').addEventListener('click', function(){ setTraceTab('digits','0'); });
+document.getElementById('tabShapes').addEventListener('click', function(){ setTraceTab('shapes','circle'); });
 document.getElementById('tracePrev').addEventListener('click', function(){ stepTrace(-1); });
 document.getElementById('traceNext').addEventListener('click', function(){ stepTrace(1); });
 
@@ -2024,6 +2089,70 @@ function updateTraceClue(){
   wrap.setAttribute('aria-label', clue.word);
 }
 
+
+/* Solid preschool shape fills (for F-style hollow outlines). */
+function fillTraceShapePath(target, id, cx, cy, size){
+  var s = size * 0.48;
+  target.beginPath();
+  if(id === 'circle'){
+    target.arc(cx, cy, s, 0, Math.PI * 2);
+  } else if(id === 'oval'){
+    target.ellipse(cx, cy, s * 0.72, s, 0, 0, Math.PI * 2);
+  } else if(id === 'square'){
+    var h = s * 1.35; target.rect(cx - h/2, cy - h/2, h, h);
+  } else if(id === 'rectangle'){
+    var w = s * 1.7, hh = s * 1.05; target.rect(cx - w/2, cy - hh/2, w, hh);
+  } else if(id === 'triangle'){
+    target.moveTo(cx, cy - s); target.lineTo(cx + s * 0.95, cy + s * 0.85); target.lineTo(cx - s * 0.95, cy + s * 0.85); target.closePath();
+  } else if(id === 'diamond'){
+    target.moveTo(cx, cy - s); target.lineTo(cx + s * 0.85, cy); target.lineTo(cx, cy + s); target.lineTo(cx - s * 0.85, cy); target.closePath();
+  } else if(id === 'star'){
+    var pts = 5, ro = s, ri = s * 0.42, i, ang, r;
+    for(i=0;i<pts*2;i++){
+      ang = -Math.PI/2 + i * Math.PI / pts;
+      r = (i % 2 === 0) ? ro : ri;
+      if(i===0) target.moveTo(cx + Math.cos(ang)*r, cy + Math.sin(ang)*r);
+      else target.lineTo(cx + Math.cos(ang)*r, cy + Math.sin(ang)*r);
+    }
+    target.closePath();
+  } else if(id === 'heart'){
+    var hs = s * 1.05;
+    target.moveTo(cx, cy + hs * 0.7);
+    target.bezierCurveTo(cx - hs * 1.05, cy + hs * 0.15, cx - hs * 1.05, cy - hs * 0.55, cx, cy - hs * 0.2);
+    target.bezierCurveTo(cx + hs * 1.05, cy - hs * 0.55, cx + hs * 1.05, cy + hs * 0.15, cx, cy + hs * 0.7);
+    target.closePath();
+  } else if(id === 'crescent'){
+    target.arc(cx - s * 0.12, cy, s * 0.95, 0.35, Math.PI * 2 - 0.35, false);
+    target.arc(cx + s * 0.28, cy, s * 0.72, Math.PI * 2 - 0.55, 0.55, true);
+    target.closePath();
+  } else if(id === 'hexagon'){
+    for(var j=0;j<6;j++){
+      var a2 = -Math.PI/2 + j * Math.PI / 3;
+      var x2 = cx + Math.cos(a2) * s, y2 = cy + Math.sin(a2) * s;
+      if(j===0) target.moveTo(x2,y2); else target.lineTo(x2,y2);
+    }
+    target.closePath();
+  } else {
+    target.arc(cx, cy, s, 0, Math.PI * 2);
+  }
+  target.fill();
+}
+function drawTraceShapeOn(target, id, cx, cy, size){
+  var ring = Math.max(8, Math.floor(size * 0.045));
+  function paint(ox, oy){ fillTraceShapePath(target, id, cx + ox, cy + oy, size); }
+  target.fillStyle = 'rgba(255,246,220,0.95)';
+  var steps = 36, i, a;
+  for(i=0;i<steps;i++){
+    a = (Math.PI * 2 * i) / steps;
+    paint(Math.cos(a)*ring, Math.sin(a)*ring);
+  }
+  target.globalCompositeOperation = 'destination-out';
+  paint(0, 0);
+  target.globalCompositeOperation = 'source-over';
+  target.fillStyle = 'rgba(255,246,220,0.55)';
+  paint(0, 0);
+}
+
 /* Draw F-style silhouette onto any 2d context (halo + destination-out). */
 function drawTraceGlyphOn(target, ch, cx, cy, size){
   var ring = Math.max(8, Math.floor(size * 0.045));
@@ -2130,6 +2259,9 @@ function drawGuide(){
     var cyLo = h / 2 - (bl.top + bl.bottom) / 2;
     drawTraceGlyph(up, leftCx, cyUp, size);
     drawTraceGlyph(lo, rightCx, cyLo, size);
+  } else if(traceSet === 'shapes'){
+    var sizeS = Math.floor(Math.min(w, h) * 0.78);
+    drawTraceShapeOn(ctx, traceChar, w/2, h/2, sizeS);
   } else {
     var size1 = Math.floor(Math.min(w, h) * 0.82);
     var bm = measureTraceGlyph(traceChar, size1);
@@ -2979,6 +3111,187 @@ function renderShapes(cue){
   if(prog) prog.textContent = 'Shapes';
   lastShapeSay = cue || 'Shapes.';
   speakParts([cue || 'Shapes.']);
+}
+
+
+
+/* ========== CONNECT THE DOTS ========== */
+var dotsCanvas = document.getElementById('dotsCanvas');
+var dctx = dotsCanvas ? dotsCanvas.getContext('2d') : null;
+var dotsIdx = 0, dotsNext = 0, dotsDone = false, dotsBuilt = false;
+var dotsLastSay = 'Connect the dots.';
+var DOT_PUZZLES = [
+  {id:'star', name:'Star', say:'You made a star!', color:'#ffe66d',
+    dots:[[50,8],[66,34],[94,36],[72,54],[80,82],[50,66],[20,82],[28,54],[6,36],[34,34]]},
+  {id:'heart', name:'Heart', say:'You made a heart!', color:'#ff7aa2',
+    dots:[[50,88],[18,58],[10,36],[18,18],[34,12],[50,28],[66,12],[82,18],[90,36],[82,58]]},
+  {id:'circle', name:'Circle', say:'You made a circle!', color:'#7ec8ff',
+    dots:[[50,10],[78,18],[90,42],[84,70],[62,90],[38,90],[16,70],[10,42],[22,18]]},
+  {id:'triangle', name:'Triangle', say:'You made a triangle!', color:'#9dffb0',
+    dots:[[50,12],[62,32],[78,58],[90,82],[70,82],[50,82],[30,82],[10,82],[22,58],[38,32]]},
+  {id:'square', name:'Square', say:'You made a square!', color:'#ffe07a',
+    dots:[[18,18],[40,18],[62,18],[82,18],[82,40],[82,62],[82,82],[62,82],[40,82],[18,82],[18,62],[18,40]]},
+  {id:'apple', name:'Apple', say:'You made an apple!', color:'#e74c3c', img:'art/words/apple.png',
+    dots:[[50,22],[66,18],[78,30],[86,48],[82,70],[66,88],[50,92],[34,88],[18,70],[14,48],[22,30],[34,18]]},
+  {id:'ball', name:'Ball', say:'You made a ball!', color:'#54a0ff', img:'art/words/ball.png',
+    dots:[[50,12],[72,20],[88,42],[84,68],[64,88],[36,88],[16,68],[12,42],[28,20]]},
+  {id:'cat', name:'Cat', say:'You made a cat!', color:'#feca57', img:'art/words/cat.png',
+    dots:[[28,18],[40,32],[50,28],[60,32],[72,18],[78,40],[82,62],[70,84],[50,90],[30,84],[18,62],[22,40]]},
+  {id:'dog', name:'Dog', say:'You made a dog!', color:'#ff9f43', img:'art/words/dog.png',
+    dots:[[22,30],[38,18],[55,16],[72,24],[84,40],[86,62],[74,82],[52,90],[30,84],[16,66],[14,46]]},
+  {id:'fish', name:'Fish', say:'You made a fish!', color:'#48dbfb', img:'art/words/fish.png',
+    dots:[[18,50],[32,32],[55,22],[78,32],[92,42],[80,50],[92,58],[78,68],[55,78],[32,68]]},
+  {id:'moon', name:'Moon', say:'You made a moon!', color:'#f0e6a8', img:'art/words/moon.png',
+    dots:[[62,14],[78,28],[86,50],[78,72],[58,88],[42,82],[36,64],[42,44],[52,28]]},
+  {id:'house', name:'House', say:'You made a house!', color:'#ffb347', img:'art/words/house.png',
+    dots:[[50,12],[82,42],[82,88],[62,88],[62,66],[38,66],[38,88],[18,88],[18,42]]}
+];
+
+function currentDotPuzzle(){ return DOT_PUZZLES[dotsIdx % DOT_PUZZLES.length]; }
+
+function resizeDots(){
+  if(!dotsCanvas || !dctx) return;
+  var box = dotsCanvas.parentElement;
+  var dpr = Math.min(window.devicePixelRatio||1, 2);
+  var w = box.clientWidth, h = box.clientHeight;
+  if(w<10||h<10) return;
+  dotsCanvas.width = Math.floor(w*dpr); dotsCanvas.height = Math.floor(h*dpr);
+  dctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+function dotsPoint(p, w, h){
+  var pad = Math.min(w, h) * 0.1;
+  return {x: pad + (p[0]/100) * (w - pad*2), y: pad + (p[1]/100) * (h - pad*2)};
+}
+
+function drawDotsBoard(){
+  if(!dotsCanvas || !dctx) return;
+  var box = dotsCanvas.parentElement;
+  var w = box.clientWidth, h = box.clientHeight;
+  if(w<10||h<10) return;
+  var P = currentDotPuzzle();
+  var pts = P.dots.map(function(p){ return dotsPoint(p, w, h); });
+  dctx.clearRect(0,0,w,h);
+  if(dotsDone){
+    dctx.beginPath();
+    pts.forEach(function(pt, i){ if(i===0) dctx.moveTo(pt.x,pt.y); else dctx.lineTo(pt.x,pt.y); });
+    dctx.closePath();
+    dctx.fillStyle = P.color;
+    dctx.globalAlpha = 0.88;
+    dctx.fill();
+    dctx.globalAlpha = 1;
+  }
+  dctx.strokeStyle = '#e34d3c';
+  dctx.lineWidth = Math.max(8, Math.min(w,h)*0.028);
+  dctx.lineCap = 'round'; dctx.lineJoin = 'round';
+  if(dotsNext > 0){
+    dctx.beginPath();
+    for(var i=0;i<Math.min(dotsNext, pts.length);i++){
+      if(i===0) dctx.moveTo(pts[i].x, pts[i].y);
+      else dctx.lineTo(pts[i].x, pts[i].y);
+    }
+    if(dotsDone) dctx.lineTo(pts[0].x, pts[0].y);
+    dctx.stroke();
+  }
+  var r = Math.max(16, Math.min(w,h)*0.045);
+  pts.forEach(function(pt, i){
+    var on = i < dotsNext || (dotsDone && i === 0);
+    var next = i === dotsNext && !dotsDone;
+    dctx.beginPath();
+    dctx.arc(pt.x, pt.y, r, 0, Math.PI*2);
+    dctx.fillStyle = on ? '#ffe9a0' : (next ? '#fff6d8' : 'rgba(255,246,220,.88)');
+    dctx.fill();
+    dctx.lineWidth = next ? 5 : 3;
+    dctx.strokeStyle = next ? '#ff8a4c' : 'rgba(240,215,138,.85)';
+    dctx.stroke();
+    dctx.fillStyle = '#1a1440';
+    dctx.font = 'bold ' + Math.floor(r*1.05) + 'px system-ui,sans-serif';
+    dctx.textAlign = 'center'; dctx.textBaseline = 'middle';
+    dctx.fillText(String(i+1), pt.x, pt.y + 1);
+  });
+  var rev = document.getElementById('dotsReveal');
+  if(rev){
+    if(dotsDone && P.img){
+      if(rev.getAttribute('src') !== P.img) rev.src = P.img;
+      rev.alt = P.name;
+      rev.hidden = false;
+      rev.classList.add('is-on');
+    } else {
+      rev.classList.remove('is-on');
+      rev.hidden = true;
+    }
+  }
+}
+
+function resetDotsPuzzle(){
+  dotsNext = 0; dotsDone = false;
+  var P = currentDotPuzzle();
+  document.getElementById('dotsProgress').textContent = P.name;
+  document.getElementById('dotsHint').textContent = 'Tap 1, then 2, then 3… ✨';
+  drawDotsBoard();
+}
+
+function finishDotsPuzzle(){
+  dotsDone = true;
+  dotsNext = currentDotPuzzle().dots.length;
+  drawDotsBoard();
+  burst();
+  var P = currentDotPuzzle();
+  dotsLastSay = P.say;
+  speakParts([P.say]);
+  document.getElementById('dotsHint').textContent = 'You did it! 🎉';
+}
+
+function hitDots(x, y){
+  if(dotsDone) return;
+  var box = dotsCanvas.parentElement;
+  var w = box.clientWidth, h = box.clientHeight;
+  var P = currentDotPuzzle();
+  var pts = P.dots.map(function(p){ return dotsPoint(p, w, h); });
+  var r = Math.max(28, Math.min(w,h)*0.08);
+  var i, best = -1, bestD = r*r;
+  for(i=0;i<pts.length;i++){
+    var dx = pts[i].x - x, dy = pts[i].y - y, d = dx*dx+dy*dy;
+    if(d <= bestD){ bestD = d; best = i; }
+  }
+  if(best < 0) return;
+  if(best === dotsNext){
+    dotsNext++;
+    if(dotsNext >= pts.length) finishDotsPuzzle();
+    else drawDotsBoard();
+  } else if(best > dotsNext){
+    speakParts(['Try again.']);
+  }
+}
+
+function setupDots(cue){
+  if(!dotsCanvas) return;
+  if(!dotsBuilt){
+    dotsBuilt = true;
+    function pos(e){
+      var r = dotsCanvas.getBoundingClientRect();
+      var t = (e.touches&&e.touches[0]) ? e.touches[0] : (e.changedTouches&&e.changedTouches[0]) ? e.changedTouches[0] : e;
+      return {x:t.clientX-r.left, y:t.clientY-r.top};
+    }
+    dotsCanvas.addEventListener('click', function(e){ var p=pos(e); hitDots(p.x,p.y); });
+    dotsCanvas.addEventListener('touchend', function(e){ e.preventDefault(); var p=pos(e); hitDots(p.x,p.y); }, {passive:false});
+    document.getElementById('dotsPrev').addEventListener('click', function(){
+      dotsIdx = (dotsIdx - 1 + DOT_PUZZLES.length) % DOT_PUZZLES.length;
+      resetDotsPuzzle(); speakParts([currentDotPuzzle().name + '.']);
+    });
+    document.getElementById('dotsNext').addEventListener('click', function(){
+      dotsIdx = (dotsIdx + 1) % DOT_PUZZLES.length;
+      resetDotsPuzzle(); speakParts([currentDotPuzzle().name + '.']);
+    });
+    document.getElementById('dotsReset').addEventListener('click', function(){ resetDotsPuzzle(); });
+    document.getElementById('dotsSpeak').addEventListener('click', function(){ speakParts([dotsLastSay]); });
+    window.addEventListener('resize', function(){ if(document.getElementById('dots').classList.contains('active')){ resizeDots(); drawDotsBoard(); } });
+  }
+  resizeDots();
+  resetDotsPuzzle();
+  requestAnimationFrame(function(){ resizeDots(); drawDotsBoard(); });
+  dotsLastSay = cue || 'Connect the dots.';
+  speakParts([cue || 'Connect the dots.']);
 }
 
 
