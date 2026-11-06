@@ -87,8 +87,14 @@ body{background:#12102a;color:#f7f3e8}
 .home-title{font-size:clamp(1.7rem,5.8vw,2.5rem);font-weight:900;color:#fff6d8;text-align:center;line-height:1.15;
   text-shadow:0 0 24px rgba(255,220,140,.45),0 4px 0 rgba(0,0,0,.35)}
 .home-sub{color:#d8c8f8;font-weight:700;font-size:1.05rem;text-align:center}
-/* Activity icon grid: 2 columns portrait, 4 across in landscape. */
-.activity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;max-width:520px}
+/* Home: Learn / Play / Explore groups with large gold-rim tiles. */
+.home-sections{display:flex;flex-direction:column;gap:14px;width:100%;max-width:560px}
+.home-section{display:flex;flex-direction:column;gap:8px;width:100%}
+.home-section-label{font-size:clamp(1.05rem,3.8vw,1.35rem);font-weight:900;color:#ffe9a0;letter-spacing:.04em;
+  text-transform:uppercase;text-shadow:0 2px 0 rgba(0,0,0,.35);padding:0 4px}
+.activity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%}
+.activity-grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.activity-grid.cols-1{grid-template-columns:1fr;max-width:280px;margin:0 auto}
 .activity-tile{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.55);border-radius:24px;
   background:linear-gradient(180deg,rgba(60,40,100,.55),rgba(30,20,55,.72));color:#fff6e8;
   min-height:104px;min-width:0;padding:12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
@@ -98,8 +104,38 @@ body{background:#12102a;color:#f7f3e8}
 .activity-tile .emoji{font-size:2.5rem;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
 .activity-tile .title{font-size:1.05rem;font-weight:900;text-align:center;line-height:1.15}
 @media (orientation:landscape){
-  .activity-grid{grid-template-columns:repeat(4,minmax(72px,1fr));max-width:920px}
-  .activity-tile{min-height:96px}
+  .home-sections{max-width:980px;gap:10px}
+  .home-section{gap:6px}
+  .activity-grid{grid-template-columns:repeat(3,minmax(72px,1fr));gap:10px}
+  .activity-grid.cols-3{grid-template-columns:repeat(3,minmax(72px,1fr))}
+  .activity-grid.cols-1{grid-template-columns:repeat(3,minmax(72px,1fr));max-width:none;margin:0}
+  .activity-tile{min-height:88px}
+}
+
+/* Animals tab */
+.animals-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
+.animals-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
+  text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.animals-grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 2px 10px;align-content:start}
+.animal-card{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.6);border-radius:22px;
+  background:linear-gradient(180deg,rgba(40,28,72,.72),rgba(18,12,40,.85));color:#fff6e8;
+  padding:8px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;
+  box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 22px rgba(0,0,0,.28);touch-action:manipulation;font-family:inherit;
+  min-height:148px}
+.animal-card:active{transform:translateY(2px)}
+.animal-card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;
+  background:rgba(10,8,24,.45);pointer-events:none}
+.animal-card .animal-name{font-size:clamp(.92rem,3.2vw,1.12rem);font-weight:900;text-align:center;line-height:1.15;
+  color:#fff6d8;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+@media (orientation:landscape){
+  .animals-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .animal-card{min-height:120px;padding:6px 6px 8px}
+  .animal-card .animal-name{font-size:.95rem}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .animals-hint{font-size:.85rem}
+  .animal-card{min-height:96px;gap:4px}
 }
 /* Flyer Press 1920×1080 plates. Night-sky CSS stays behind them if a file is missing. */
 .screen > .art-plate{position:absolute;inset:0;z-index:2;pointer-events:none;
@@ -466,10 +502,13 @@ body{background:#12102a;color:#f7f3e8}
   .home-wrap{padding:6px 12px 8px;gap:6px;justify-content:center}
   .home-title{font-size:clamp(1.25rem,5vh,1.8rem)}
   .home-sub{font-size:.85rem}
-  .activity-grid{grid-template-columns:repeat(4,minmax(0,1fr));max-width:980px;gap:8px}
+  .home-sections{max-width:980px;gap:6px}
+  .activity-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .activity-grid.cols-1{grid-template-columns:repeat(3,minmax(0,1fr))}
   .activity-tile{min-height:64px;padding:6px 4px}
   .activity-tile .emoji{font-size:1.7rem}
   .activity-tile .title{font-size:.95rem}
+  .home-section-label{font-size:1rem}
   .parent-note{margin-top:2px;padding:6px 10px;font-size:.68rem;max-width:720px}
   .rim-home,.rim-prev,.rim-next{min-width:48px;min-height:48px;width:max(48px,12vh)}
   .word-chip{font-size:clamp(1.15rem,3.4vh,1.6rem);padding:.28em .9em;min-height:52px}
@@ -523,14 +562,30 @@ body{background:#12102a;color:#f7f3e8}
     <div class="home-wrap">
       <div class="home-title">🌟 Harlen's ABCs &amp; 123s 🌟</div>
       <div class="home-sub">A cozy night of letters &amp; numbers</div>
-      <div class="activity-grid">
-        <button type="button" class="activity-tile" data-go="letters" data-cue="Letters"><span class="emoji">🔤</span><span class="title">Letters</span></button>
-        <button type="button" class="activity-tile" data-go="findLetter" data-cue="Find the letter"><span class="emoji">🔎</span><span class="title">Find Letter</span></button>
-        <button type="button" class="activity-tile" data-go="memory" data-cue="Memory"><span class="emoji">🃏</span><span class="title">Memory</span></button>
-        <button type="button" class="activity-tile" data-go="numbers" data-cue="Numbers"><span class="emoji">🔢</span><span class="title">Numbers</span></button>
-        <button type="button" class="activity-tile" data-go="findNumber" data-cue="Find the number"><span class="emoji">🎯</span><span class="title">Find Number</span></button>
-        <button type="button" class="activity-tile" data-go="trace" data-cue="Trace"><span class="emoji">✍️</span><span class="title">Trace</span></button>
-        <button type="button" class="activity-tile" data-go="paint" data-cue="Paint"><span class="emoji">🎨</span><span class="title">Paint</span></button>
+      <div class="home-sections">
+        <div class="home-section" aria-label="Learn">
+          <div class="home-section-label">📚 Learn</div>
+          <div class="activity-grid cols-3">
+            <button type="button" class="activity-tile" data-go="letters" data-cue="Letters"><span class="emoji">🔤</span><span class="title">Letters</span></button>
+            <button type="button" class="activity-tile" data-go="numbers" data-cue="Numbers"><span class="emoji">🔢</span><span class="title">Numbers</span></button>
+            <button type="button" class="activity-tile" data-go="trace" data-cue="Trace"><span class="emoji">✍️</span><span class="title">Trace</span></button>
+          </div>
+        </div>
+        <div class="home-section" aria-label="Play">
+          <div class="home-section-label">🎮 Play</div>
+          <div class="activity-grid">
+            <button type="button" class="activity-tile" data-go="findLetter" data-cue="Find the letter"><span class="emoji">🔎</span><span class="title">Find Letter</span></button>
+            <button type="button" class="activity-tile" data-go="findNumber" data-cue="Find the number"><span class="emoji">🎯</span><span class="title">Find Number</span></button>
+            <button type="button" class="activity-tile" data-go="memory" data-cue="Memory"><span class="emoji">🃏</span><span class="title">Memory</span></button>
+            <button type="button" class="activity-tile" data-go="paint" data-cue="Paint"><span class="emoji">🎨</span><span class="title">Paint</span></button>
+          </div>
+        </div>
+        <div class="home-section" aria-label="Explore">
+          <div class="home-section-label">🌙 Explore</div>
+          <div class="activity-grid cols-1">
+            <button type="button" class="activity-tile" data-go="animals" data-cue="Animals"><span class="emoji">🦌</span><span class="title">Animals</span></button>
+          </div>
+        </div>
       </div>
       <div class="parent-note">
         <strong>Parents:</strong> Safari → Share → Add to Home Screen. Works offline after first open. Volume up for speech.
@@ -733,6 +788,25 @@ body{background:#12102a;color:#f7f3e8}
       </div>
     </div>
   </section>
+
+  <!-- ANIMALS -->
+  <section id="animals" class="screen">
+    <div class="sky"></div>
+    <div class="stars" id="starsAnimals"></div>
+    <div class="cloud-soft" style="top:14%;left:16%"></div>
+    <div class="moon crescent" aria-hidden="true"></div>
+    <div class="mountains" aria-hidden="true"></div>
+    <div class="hill"></div>
+    <div class="topbar">
+      <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
+      <div class="progress" id="animalsProgress">Animals</div>
+      <button class="btn btn-speak" id="animalsSpeak" aria-label="Repeat">🔊</button>
+    </div>
+    <div class="animals-wrap">
+      <div class="animals-hint">Tap an animal to hear it 🐾</div>
+      <div class="animals-grid" id="animalsGrid" role="list"></div>
+    </div>
+  </section>
 </div>
 <div class="confetti" id="confetti" aria-hidden="true"></div>
 
@@ -786,7 +860,7 @@ function sprinkleStars(id, count){
     box.appendChild(s);
   }
 }
-['starsHome','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint'].forEach(function(id){
+['starsHome','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint','starsAnimals'].forEach(function(id){
   sprinkleStars(id, 28);
 });
 
@@ -797,6 +871,7 @@ function showScreen(id, cue){
   if(id==='home'){
     speakGen++;
     stopVoice();
+    if(typeof stopAnimalSfx === 'function') stopAnimalSfx();
     return;
   }
   if(id==='letters'){ renderLetter(); teachCurrentLetter(cue); }
@@ -806,6 +881,7 @@ function showScreen(id, cue){
   if(id==='findNumber') newNumberQuiz(cue);
   if(id==='trace'){ setupTracePicker(); refreshTraceLayout(); speakTrace(cue); }
   if(id==='paint'){ buildPaintUI(); resizePaint(); requestAnimationFrame(function(){ resizePaint(); }); speakParts([cue || 'Paint.']); }
+  if(id==='animals'){ renderAnimals(cue); }
 }
 document.querySelectorAll('[data-go]').forEach(function(btn){
   btn.addEventListener('click', function(){
@@ -816,7 +892,7 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
 /* Recorded voice: every kid-facing line is a pre-generated Kokoro-82M clip (voice af_bella) in audio/.
    No system text-to-speech. A missing clip is logged and skipped, never read by the phone's voice. */
 var VOICE_DIR = 'audio/';
-var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"challenge-find-two-that-go-together":1,"easy-find-two-that-go-together":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-number":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"numbers":1,"paint":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"try-again":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1}/*END_VOICE_CLIPS*/;
+var VOICE_CLIPS = /*VOICE_CLIPS*/{"1":1,"10":1,"11":1,"12":1,"13":1,"14":1,"15":1,"16":1,"17":1,"18":1,"19":1,"2":1,"20":1,"3":1,"4":1,"5":1,"6":1,"7":1,"8":1,"9":1,"a-little-more-find-two-that-go-together":1,"animals":1,"challenge-find-two-that-go-together":1,"easy-find-two-that-go-together":1,"find-1":1,"find-10":1,"find-11":1,"find-12":1,"find-13":1,"find-14":1,"find-15":1,"find-16":1,"find-17":1,"find-18":1,"find-19":1,"find-2":1,"find-20":1,"find-3":1,"find-4":1,"find-5":1,"find-6":1,"find-7":1,"find-8":1,"find-9":1,"find-the-letter":1,"find-the-letter-a":1,"find-the-letter-b":1,"find-the-letter-c":1,"find-the-letter-d":1,"find-the-letter-e":1,"find-the-letter-f":1,"find-the-letter-g":1,"find-the-letter-h":1,"find-the-letter-i":1,"find-the-letter-j":1,"find-the-letter-k":1,"find-the-letter-l":1,"find-the-letter-m":1,"find-the-letter-n":1,"find-the-letter-o":1,"find-the-letter-p":1,"find-the-letter-q":1,"find-the-letter-r":1,"find-the-letter-s":1,"find-the-letter-t":1,"find-the-letter-u":1,"find-the-letter-v":1,"find-the-letter-w":1,"find-the-letter-x":1,"find-the-letter-y":1,"find-the-letter-z":1,"find-the-number":1,"letters":1,"memory":1,"memory-find-two-that-go-together":1,"numbers":1,"paint":1,"the-letter-a":1,"the-letter-a-like-apple":1,"the-letter-b":1,"the-letter-b-like-ball":1,"the-letter-c":1,"the-letter-c-like-cat":1,"the-letter-d":1,"the-letter-d-like-dog":1,"the-letter-e":1,"the-letter-e-like-egg":1,"the-letter-f":1,"the-letter-f-like-fish":1,"the-letter-g":1,"the-letter-g-like-goat":1,"the-letter-h":1,"the-letter-h-like-house":1,"the-letter-i":1,"the-letter-i-like-igloo":1,"the-letter-j":1,"the-letter-j-like-juice":1,"the-letter-k":1,"the-letter-k-like-kite":1,"the-letter-l":1,"the-letter-l-like-lion":1,"the-letter-m":1,"the-letter-m-like-moon":1,"the-letter-n":1,"the-letter-n-like-nest":1,"the-letter-o":1,"the-letter-o-like-octopus":1,"the-letter-p":1,"the-letter-p-like-pig":1,"the-letter-q":1,"the-letter-q-like-queen":1,"the-letter-r":1,"the-letter-r-like-rainbow":1,"the-letter-s":1,"the-letter-s-like-sun":1,"the-letter-t":1,"the-letter-t-like-tree":1,"the-letter-u":1,"the-letter-u-like-umbrella":1,"the-letter-v":1,"the-letter-v-like-van":1,"the-letter-w":1,"the-letter-w-like-whale":1,"the-letter-x":1,"the-letter-x-like-box":1,"the-letter-y":1,"the-letter-y-like-yo-yo":1,"the-letter-z":1,"the-letter-z-like-zebra":1,"this-is-a-cardinal":1,"this-is-a-coyote":1,"this-is-a-lion":1,"this-is-a-monkey":1,"this-is-a-rabbit":1,"this-is-a-raccoon":1,"this-is-a-squirrel":1,"this-is-a-white-tailed-deer":1,"this-is-a-wild-turkey":1,"this-is-an-elephant":1,"this-is-the-letter-a-like-airplane":1,"this-is-the-letter-a-like-ant":1,"this-is-the-letter-a-like-apple":1,"this-is-the-letter-b-like-ball":1,"this-is-the-letter-b-like-bear":1,"this-is-the-letter-b-like-bus":1,"this-is-the-letter-c-like-car":1,"this-is-the-letter-c-like-cat":1,"this-is-the-letter-c-like-cookie":1,"this-is-the-letter-d-like-dinosaur":1,"this-is-the-letter-d-like-dog":1,"this-is-the-letter-d-like-duck":1,"this-is-the-letter-e-like-eagle":1,"this-is-the-letter-e-like-egg":1,"this-is-the-letter-e-like-elephant":1,"this-is-the-letter-f-like-fish":1,"this-is-the-letter-f-like-flower":1,"this-is-the-letter-f-like-frog":1,"this-is-the-letter-g-like-goat":1,"this-is-the-letter-g-like-grapes":1,"this-is-the-letter-g-like-guitar":1,"this-is-the-letter-h-like-hat":1,"this-is-the-letter-h-like-horse":1,"this-is-the-letter-h-like-house":1,"this-is-the-letter-i-like-ice-cream":1,"this-is-the-letter-i-like-igloo":1,"this-is-the-letter-i-like-iguana":1,"this-is-the-letter-j-like-jaguar":1,"this-is-the-letter-j-like-jam":1,"this-is-the-letter-j-like-juice":1,"this-is-the-letter-k-like-key":1,"this-is-the-letter-k-like-kite":1,"this-is-the-letter-k-like-koala":1,"this-is-the-letter-l-like-ladybug":1,"this-is-the-letter-l-like-leaf":1,"this-is-the-letter-l-like-lion":1,"this-is-the-letter-m-like-monkey":1,"this-is-the-letter-m-like-moon":1,"this-is-the-letter-m-like-mouse":1,"this-is-the-letter-n-like-nest":1,"this-is-the-letter-n-like-nose":1,"this-is-the-letter-n-like-notebook":1,"this-is-the-letter-o-like-octopus":1,"this-is-the-letter-o-like-orange":1,"this-is-the-letter-o-like-owl":1,"this-is-the-letter-p-like-penguin":1,"this-is-the-letter-p-like-pig":1,"this-is-the-letter-p-like-pizza":1,"this-is-the-letter-q-like-queen":1,"this-is-the-letter-q-like-question":1,"this-is-the-letter-q-like-quilt":1,"this-is-the-letter-r-like-rabbit":1,"this-is-the-letter-r-like-rainbow":1,"this-is-the-letter-r-like-robot":1,"this-is-the-letter-s-like-snake":1,"this-is-the-letter-s-like-spider":1,"this-is-the-letter-s-like-star":1,"this-is-the-letter-s-like-sun":1,"this-is-the-letter-t-like-tiger":1,"this-is-the-letter-t-like-train":1,"this-is-the-letter-t-like-tree":1,"this-is-the-letter-u-like-umbrella":1,"this-is-the-letter-u-like-unicorn":1,"this-is-the-letter-u-like-up":1,"this-is-the-letter-v-like-van":1,"this-is-the-letter-v-like-violin":1,"this-is-the-letter-v-like-volcano":1,"this-is-the-letter-w-like-watermelon":1,"this-is-the-letter-w-like-whale":1,"this-is-the-letter-w-like-wolf":1,"this-is-the-letter-x-like-box":1,"this-is-the-letter-x-like-x-mark":1,"this-is-the-letter-x-like-x-ray":1,"this-is-the-letter-y-like-yacht":1,"this-is-the-letter-y-like-yarn":1,"this-is-the-letter-y-like-yo-yo":1,"this-is-the-letter-z-like-zebra":1,"this-is-the-letter-z-like-zipper":1,"this-is-the-letter-z-like-zoo":1,"trace":1,"trace-0":1,"trace-1":1,"trace-2":1,"trace-3":1,"trace-4":1,"trace-5":1,"trace-6":1,"trace-7":1,"trace-8":1,"trace-9":1,"trace-the-letter-a":1,"trace-the-letter-b":1,"trace-the-letter-c":1,"trace-the-letter-d":1,"trace-the-letter-e":1,"trace-the-letter-f":1,"trace-the-letter-g":1,"trace-the-letter-h":1,"trace-the-letter-i":1,"trace-the-letter-j":1,"trace-the-letter-k":1,"trace-the-letter-l":1,"trace-the-letter-m":1,"trace-the-letter-n":1,"trace-the-letter-o":1,"trace-the-letter-p":1,"trace-the-letter-q":1,"trace-the-letter-r":1,"trace-the-letter-s":1,"trace-the-letter-t":1,"trace-the-letter-u":1,"trace-the-letter-v":1,"trace-the-letter-w":1,"trace-the-letter-x":1,"trace-the-letter-y":1,"trace-the-letter-z":1,"try-again":1,"yes-1":1,"yes-10":1,"yes-11":1,"yes-12":1,"yes-13":1,"yes-14":1,"yes-15":1,"yes-16":1,"yes-17":1,"yes-18":1,"yes-19":1,"yes-2":1,"yes-20":1,"yes-3":1,"yes-4":1,"yes-5":1,"yes-6":1,"yes-7":1,"yes-8":1,"yes-9":1,"yes-the-letter-a-like-apple":1,"yes-the-letter-b-like-ball":1,"yes-the-letter-c-like-cat":1,"yes-the-letter-d-like-dog":1,"yes-the-letter-e-like-egg":1,"yes-the-letter-f-like-fish":1,"yes-the-letter-g-like-goat":1,"yes-the-letter-h-like-house":1,"yes-the-letter-i-like-igloo":1,"yes-the-letter-j-like-juice":1,"yes-the-letter-k-like-kite":1,"yes-the-letter-l-like-lion":1,"yes-the-letter-m-like-moon":1,"yes-the-letter-n-like-nest":1,"yes-the-letter-o-like-octopus":1,"yes-the-letter-p-like-pig":1,"yes-the-letter-q-like-queen":1,"yes-the-letter-r-like-rainbow":1,"yes-the-letter-s-like-sun":1,"yes-the-letter-t-like-tree":1,"yes-the-letter-u-like-umbrella":1,"yes-the-letter-v-like-van":1,"yes-the-letter-w-like-whale":1,"yes-the-letter-x-like-box":1,"yes-the-letter-y-like-yo-yo":1,"yes-the-letter-z-like-zebra":1,"you-found-them-all":1}/*END_VOICE_CLIPS*/;
 var voiceEl = null, voiceQueue = [];
 var lastParts = [];
 var speakGen = 0;
@@ -1832,6 +1908,96 @@ function shuffle(a){
 
 renderLetter();
 renderNumber();
+
+/* ---- Animals ---- */
+var ANIMALS = [
+  {id:'white-tailed-deer', file:'white-tailed-deer.png', label:'White-tailed deer', sound:'deer.mp3', say:'This is a white-tailed deer.'},
+  {id:'raccoon', file:'raccoon.png', label:'Raccoon', sound:'raccoon.mp3', say:'This is a raccoon.'},
+  {id:'coyote', file:'coyote.png', label:'Coyote', sound:'coyote.mp3', say:'This is a coyote.'},
+  {id:'cardinal', file:'northern-cardinal.png', label:'Cardinal', sound:'cardinal.mp3', say:'This is a cardinal.'},
+  {id:'squirrel', file:'squirrel.png', label:'Squirrel', sound:'squirrel.mp3', say:'This is a squirrel.'},
+  {id:'rabbit', file:'rabbit.png', label:'Rabbit', sound:'rabbit.mp3', say:'This is a rabbit.'},
+  {id:'wild-turkey', file:'wild-turkey.png', label:'Wild turkey', sound:'turkey.mp3', say:'This is a wild turkey.'},
+  {id:'elephant', file:'elephant.png', label:'Elephant', sound:'elephant.mp3', say:'This is an elephant.'},
+  {id:'lion', file:'lion.png', label:'Lion', sound:'lion.mp3', say:'This is a lion.'},
+  {id:'monkey', file:'monkey.png', label:'Monkey', sound:'monkey.mp3', say:'This is a monkey.'}
+];
+var animalSfxEl = null;
+var animalsBuilt = false;
+var lastAnimalSay = 'Animals.';
+
+function getAnimalSfxEl(){
+  if(animalSfxEl) return animalSfxEl;
+  animalSfxEl = new Audio();
+  animalSfxEl.preload = 'auto';
+  animalSfxEl.setAttribute('playsinline', '');
+  return animalSfxEl;
+}
+
+function stopAnimalSfx(){
+  if(animalSfxEl){ try{ animalSfxEl.pause(); animalSfxEl.currentTime = 0; }catch(e){} }
+}
+
+function playAnimalTap(animal){
+  lastAnimalSay = animal.say;
+  lastParts = [animal.say];
+  speakGen++;
+  stopVoice();
+  stopAnimalSfx();
+  var el = getAnimalSfxEl();
+  var finished = false;
+  function afterSound(){
+    if(finished) return;
+    finished = true;
+    el.removeEventListener('ended', afterSound);
+    el.removeEventListener('error', afterSound);
+    speakParts([animal.say], [animal.say]);
+  }
+  el.src = 'audio/animals/' + animal.sound;
+  el.addEventListener('ended', afterSound);
+  el.addEventListener('error', afterSound);
+  var p = null;
+  try{ p = el.play(); }catch(e){ afterSound(); }
+  if(p && p.catch) p.catch(function(){ afterSound(); });
+  /* Safety: if a clip hangs, still say the name after 3.2s. */
+  setTimeout(afterSound, 3200);
+}
+
+function renderAnimals(cue){
+  var grid = document.getElementById('animalsGrid');
+  if(!grid) return;
+  if(!animalsBuilt){
+    grid.innerHTML = '';
+    ANIMALS.forEach(function(animal){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'animal-card';
+      btn.setAttribute('role', 'listitem');
+      btn.setAttribute('aria-label', animal.label);
+      var img = document.createElement('img');
+      img.src = 'art/animals/' + animal.file;
+      img.alt = '';
+      img.decoding = 'async';
+      img.loading = 'eager';
+      var name = document.createElement('span');
+      name.className = 'animal-name';
+      name.textContent = animal.label;
+      btn.appendChild(img);
+      btn.appendChild(name);
+      btn.addEventListener('click', function(){ playAnimalTap(animal); });
+      grid.appendChild(btn);
+    });
+    animalsBuilt = true;
+    var speakBtn = document.getElementById('animalsSpeak');
+    if(speakBtn) speakBtn.addEventListener('click', function(){ speakParts([lastAnimalSay]); });
+  }
+  var prog = document.getElementById('animalsProgress');
+  if(prog) prog.textContent = 'Animals';
+  lastAnimalSay = cue || 'Animals.';
+  speakParts([cue || 'Animals.']);
+}
+
+
 })();
 </script>
 </body>
