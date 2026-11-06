@@ -169,6 +169,15 @@ body{background:#12102a;color:#f7f3e8}
 #letters.show-o .letter-frame{background-image:url("art/letters-o.png")}
 #letters.show-p .letter-frame{background-image:url("art/letters-p.png")}
 #letters.show-q .letter-frame{background-image:url("art/letters-q.png")}
+#letters.show-r .letter-frame{background-image:url("art/letters-r.png")}
+#letters.show-s .letter-frame{background-image:url("art/letters-s.png")}
+#letters.show-t .letter-frame{background-image:url("art/letters-t.png")}
+#letters.show-u .letter-frame{background-image:url("art/letters-u.png")}
+#letters.show-v .letter-frame{background-image:url("art/letters-v.png")}
+#letters.show-w .letter-frame{background-image:url("art/letters-w.png")}
+#letters.show-x .letter-frame{background-image:url("art/letters-x.png")}
+#letters.show-y .letter-frame{background-image:url("art/letters-y.png")}
+#letters.show-z .letter-frame{background-image:url("art/letters-z.png")}
 #letters .glow-pair{top:58%}
 #letters .glow-pair .upper{font-size:clamp(4.4rem,16vw,10.5rem)}
 #letters .glow-pair .lower{font-size:clamp(3.4rem,12vw,8rem);opacity:1}
@@ -918,8 +927,8 @@ function renderLetter(){
   document.getElementById('letterPicHint').textContent = 'tap a picture · '+(picIdx+1)+' of '+L.pics.length;
   document.getElementById('letterProgress').textContent = up+lo+'  ·  '+(li+1)+' of 26';
   var board = document.getElementById('letters');
-  var sceneClass = {A:'show-a',B:'show-b',C:'show-c',D:'show-d',E:'show-e',F:'show-f',G:'show-g',H:'show-h',I:'show-i',J:'show-j',K:'show-k',L:'show-l',M:'show-m',N:'show-n',O:'show-o',P:'show-p',Q:'show-q'}[up];
-  board.classList.remove('show-a','show-b','show-c','show-d','show-e','show-f','show-g','show-h','show-i','show-j','show-k','show-l','show-m','show-n','show-o','show-p','show-q','show-fallback','has-scene');
+  var sceneClass = {A:'show-a',B:'show-b',C:'show-c',D:'show-d',E:'show-e',F:'show-f',G:'show-g',H:'show-h',I:'show-i',J:'show-j',K:'show-k',L:'show-l',M:'show-m',N:'show-n',O:'show-o',P:'show-p',Q:'show-q',R:'show-r',S:'show-s',T:'show-t',U:'show-u',V:'show-v',W:'show-w',X:'show-x',Y:'show-y',Z:'show-z'}[up];
+  board.classList.remove('show-a','show-b','show-c','show-d','show-e','show-f','show-g','show-h','show-i','show-j','show-k','show-l','show-m','show-n','show-o','show-p','show-q','show-r','show-s','show-t','show-u','show-v','show-w','show-x','show-y','show-z','show-fallback','has-scene');
   board.classList.add(sceneClass || 'show-fallback');
   if(sceneClass) board.classList.add('has-scene');
   var sndLabel = document.getElementById('letterSoundLabel');
