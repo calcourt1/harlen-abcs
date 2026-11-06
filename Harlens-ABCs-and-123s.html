@@ -11,6 +11,7 @@
 <title>Harlen's ABCs &amp; 123s</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
 html,body{height:100%;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   touch-action:manipulation;user-select:none;-webkit-user-select:none}
 body{background:#12102a;color:#f7f3e8}
@@ -81,21 +82,38 @@ body{background:#12102a;color:#f7f3e8}
 .sound-dock{display:flex;justify-content:center;padding:0 14px 6px;z-index:5;flex-shrink:0}
 
 /* ---- home ---- */
-.home-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+.home-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   padding:12px 16px 18px;gap:12px;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:3}
 .home-title{font-size:clamp(1.7rem,5.8vw,2.5rem);font-weight:900;color:#fff6d8;text-align:center;line-height:1.15;
   text-shadow:0 0 24px rgba(255,220,140,.45),0 4px 0 rgba(0,0,0,.35)}
 .home-sub{color:#d8c8f8;font-weight:700;font-size:1.05rem;text-align:center}
-.mode-list{display:flex;flex-direction:column;gap:12px;width:100%;max-width:420px}
-.btn-mode{background:linear-gradient(180deg,rgba(60,40,100,.55),rgba(30,20,55,.7));
-  color:#fff6e8;font-size:1.2rem;width:100%;padding:16px 18px;border-radius:28px;text-align:left;
-  border:3px solid rgba(240,215,138,.55);box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.3);
-  min-height:72px;backdrop-filter:blur(8px)}
-.btn-mode .emoji{font-size:2.1rem;margin-right:12px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
-.btn-mode .sub{display:block;font-size:.85rem;font-weight:600;color:#c8b8e8;margin-top:3px}
-.parent-note{margin-top:6px;background:rgba(255,255,255,.1);border-radius:18px;padding:12px 14px;
-  font-size:.78rem;color:#d0c4f0;max-width:420px;line-height:1.4;font-weight:600;
-  border:1px solid rgba(255,255,255,.12)}
+/* Activity icon grid: 2 columns portrait, 4 across in landscape. */
+.activity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;max-width:520px}
+.activity-tile{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.55);border-radius:24px;
+  background:linear-gradient(180deg,rgba(60,40,100,.55),rgba(30,20,55,.72));color:#fff6e8;
+  min-height:104px;min-width:0;padding:12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 24px rgba(0,0,0,.3);touch-action:manipulation;
+  font-family:inherit}
+.activity-tile:active{transform:translateY(3px)}
+.activity-tile .emoji{font-size:2.5rem;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+.activity-tile .title{font-size:1.05rem;font-weight:900;text-align:center;line-height:1.15}
+@media (orientation:landscape){
+  .activity-grid{grid-template-columns:repeat(4,minmax(72px,1fr));max-width:920px}
+  .activity-tile{min-height:96px}
+}
+/* Flyer Press 1920×1080 plates. Night-sky CSS stays behind them if a file is missing. */
+.screen > .art-plate{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background-repeat:no-repeat;background-position:center;background-size:cover}
+.art-home{background-image:url("art/home.png")}
+.art-find-letter{background-image:url("art/find-letter.png")}
+.art-memory{background-image:url("art/memory.png")}
+.art-numbers{background-image:url("art/numbers.png")}
+.art-find-number{background-image:url("art/find-number.png")}
+.art-trace{background-image:url("art/trace.png")}
+.art-paint{background-image:url("art/paint.png")}
+.parent-note{margin-top:6px;background:rgba(16,12,36,.78);border-radius:18px;padding:12px 14px;
+  font-size:.78rem;color:#f0e8ff;max-width:520px;line-height:1.4;font-weight:600;
+  border:1px solid rgba(255,220,160,.28)}
 .parent-note strong{color:#ffe9a0}
 
 /* ---- letter SCENE ---- */
@@ -124,6 +142,64 @@ body{background:#12102a;color:#f7f3e8}
 .caption-chip::after{content:"";position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;
   background:radial-gradient(circle at 35% 35%,#fff6d0,#f0c14a);box-shadow:0 0 10px rgba(255,220,140,.7);
   border:2px solid #fff8dc}
+
+/* 16:9 letter board. A/B/C use finished scenes; D–Z use the empty clearing. */
+#letters.screen{align-items:center;justify-content:center}
+#letters .hill,#letters .moon,#letters .mountains,#letters .cloud-soft,#letters .stars{display:none}
+#letters .sky{background:#100c24}
+.letter-frame{position:relative;z-index:3;aspect-ratio:16/9;
+  width:min(100%, calc(100vh * 16 / 9));
+  width:min(100%, calc(100dvh * 16 / 9));
+  max-height:100vh;max-height:100dvh;overflow:hidden;
+  background:#100c24 url("art/letters.png") center/cover no-repeat}
+#letters.show-a .letter-frame{background-image:url("art/letters-a.png")}
+#letters.show-b .letter-frame{background-image:url("art/letters-b.png")}
+#letters.show-c .letter-frame{background-image:url("art/letters-c.png")}
+#letters.show-d .letter-frame{background-image:url("art/letters-d.png")}
+#letters.show-e .letter-frame{background-image:url("art/letters-e.png")}
+#letters.show-f .letter-frame{background-image:url("art/letters-f.png")}
+#letters.show-g .letter-frame{background-image:url("art/letters-g.png")}
+#letters.show-h .letter-frame{background-image:url("art/letters-h.png")}
+#letters.show-i .letter-frame{background-image:url("art/letters-i.png")}
+#letters.show-j .letter-frame{background-image:url("art/letters-j.png")}
+#letters.show-k .letter-frame{background-image:url("art/letters-k.png")}
+#letters.show-l .letter-frame{background-image:url("art/letters-l.png")}
+#letters .glow-pair{top:58%}
+#letters .glow-pair .upper{font-size:clamp(4.4rem,16vw,10.5rem)}
+#letters .glow-pair .lower{font-size:clamp(3.4rem,12vw,8rem);opacity:1}
+#letters.has-scene .glow-pair,
+#letters.has-scene #letterSceneObjs,
+#letters.has-scene .scene-hint{display:none}
+#letters .scene-obj.o0{left:14%;bottom:22%}
+#letters .scene-obj.o1{left:62%;top:42%}
+#letters .scene-obj.o2{right:14%;top:18%}
+.letter-progress{position:absolute;left:50%;top:3.2%;transform:translateX(-50%);z-index:6;
+  color:#f7f1e4;font-weight:800;font-size:clamp(.75rem,1.7vw,1.05rem);
+  text-shadow:0 2px 8px rgba(0,0,0,.65);pointer-events:none;white-space:nowrap}
+.rim-btn{position:absolute;z-index:6;border-radius:50%;border:4px solid #f0d48a;
+  background:radial-gradient(circle at 40% 32%, #3c3484, #241c58 72%);color:#f4ead0;
+  box-shadow:0 5px 0 rgba(0,0,0,.28),0 8px 14px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;touch-action:manipulation}
+.rim-btn svg{width:50%;height:50%;display:block}
+.rim-home{left:6.2%;top:11%;width:8.4%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
+.rim-prev{left:6.2%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
+.rim-next{left:93.8%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
+.rim-repeat{left:22%;top:11%;width:6.4%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:52px;min-height:52px}
+.rim-more{left:26%;top:78%;width:5.2%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:44px;min-height:44px;z-index:7;
+  font-size:1.15rem;font-weight:900;color:#f4ead0}
+.rim-btn:active{filter:brightness(1.08)}
+.word-chip{position:absolute;left:4.2%;top:70%;z-index:6;min-width:14%;max-width:28%;
+  display:flex;align-items:center;justify-content:center;padding:.4em .9em;
+  background:#3a2c86;color:#f7f1e6;font-weight:900;
+  font-size:clamp(1.05rem,2.3vw,1.7rem);border:none;border-radius:16px;cursor:pointer;
+  border:3px solid #f0d48a;box-shadow:0 5px 0 rgba(0,0,0,.25);
+  font-family:inherit}
+.sound-pill{position:absolute;left:50%;top:10.5%;transform:translate(-50%,-50%);z-index:6;
+  display:flex;align-items:center;gap:8px;min-height:52px;padding:8px 16px;border-radius:999px;
+  border:4px solid #f0d48a;background:#2e2468;color:#f7f1e6;font-weight:900;
+  font-size:clamp(.95rem,1.8vw,1.2rem);font-family:inherit;cursor:pointer;
+  box-shadow:0 5px 0 rgba(0,0,0,.28);white-space:nowrap}
+#letters .scene-hint{bottom:16%;color:rgba(255,248,230,.8)}
 .scene-hint{position:absolute;left:50%;bottom:1%;transform:translateX(-50%);font-size:.75rem;font-weight:700;
   color:rgba(220,210,255,.55);z-index:5}
 .dock{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:8px 14px 14px;z-index:5;flex-shrink:0}
@@ -217,6 +293,51 @@ body{background:#12102a;color:#f7f3e8}
   font-size:1.6rem;cursor:pointer;min-width:52px}
 .stamp.active{border-color:#ffe9a0;background:rgba(255,220,140,.22)}
 
+/* ---- memory ---- */
+.level-dots{display:flex;gap:10px;justify-content:center;align-items:center;padding:0 12px 6px;z-index:5;flex-shrink:0}
+.level-dot{width:56px;height:56px;min-width:56px;min-height:56px;border-radius:50%;border:3px solid rgba(255,220,140,.35);
+  background:rgba(255,255,255,.1);color:#fff6d8;font-weight:900;font-size:1.15rem;cursor:pointer;touch-action:manipulation}
+.level-dot.active{background:rgba(255,220,140,.28);border-color:#ffe9a0;color:#ffe9a0}
+.memory-board{flex:1;min-height:0;display:grid;gap:10px;width:100%;max-width:720px;margin:0 auto;
+  padding:4px 12px 8px;grid-template-rows:repeat(2,minmax(72px,1fr));z-index:3}
+.memory-board.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.memory-board.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.memory-board.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.memory-board.cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.mem-card{min-height:72px;height:100%;border-radius:22px;border:3px solid rgba(240,215,138,.5);
+  background:linear-gradient(180deg,#2a2158,#16122e);color:#fff4c8;font-weight:900;cursor:pointer;
+  touch-action:manipulation;box-shadow:0 6px 0 rgba(0,0,0,.35);
+  display:flex;align-items:center;justify-content:center;padding:6px}
+.mem-card:active{transform:translateY(2px)}
+.mem-card.up{background:linear-gradient(180deg,#4a3888,#2a2058)}
+.mem-card.matched{box-shadow:0 0 0 3px rgba(255,230,160,.55),0 6px 0 rgba(0,0,0,.28)}
+.mem-face{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1}
+.mem-upper,.mem-lower{font-weight:900;opacity:1;color:#fff4c8;
+  text-shadow:0 0 12px rgba(255,240,180,1),0 0 28px rgba(255,220,120,.9)}
+.mem-upper{font-size:clamp(1.7rem,7vw,3rem)}
+.mem-lower{font-size:clamp(1.35rem,5.5vw,2.4rem)}
+.mem-emoji{font-size:clamp(1.8rem,7vw,3rem);line-height:1}
+.mem-word{font-size:clamp(.72rem,2.5vw,1rem);font-weight:800;color:#fff6d8}
+.mem-back{font-size:clamp(1.6rem,6vw,2.4rem)}
+.memory-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:4px 12px 12px;z-index:5}
+.memory-actions[hidden]{display:none}
+
+/* Trace, paint, and memory sit on the Flyer Press scenes. The painted slate, easel, and table are scenery. */
+#trace .trace-wrap{position:static;pointer-events:none}
+#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker{pointer-events:auto;position:relative;z-index:4}
+#trace .trace-canvas-box{position:absolute;left:17%;top:59%;width:64%;height:20%;max-width:none;z-index:4;
+  pointer-events:auto;background:rgba(18,24,40,.42);border-color:rgba(240,212,138,.45)}
+#trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+#paint .paint-wrap{position:static}
+#paint .paint-canvas-box{position:absolute;left:40.6%;top:39.5%;width:18.8%;height:27.5%;z-index:4;
+  background:#f3eee4;border-radius:4px;border:none;box-shadow:none}
+#paint .paint-dock{position:absolute;left:0;right:0;bottom:0;z-index:5;
+  background:rgba(16,12,36,.55);padding:8px 8px 10px;pointer-events:auto}
+#memory .memory-board{position:absolute;left:50%;top:67%;transform:translate(-50%,-42%);
+  width:min(680px,72%);height:min(300px,38%);z-index:4;margin:0}
+#memory .level-dots{position:relative;z-index:5}
+#memory .memory-actions{position:absolute;left:0;right:0;bottom:10px;z-index:6}
+
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
 .confetti span{position:absolute;width:12px;height:12px;border-radius:3px;animation:fall 1.2s ease-out forwards}
 @keyframes fall{0%{transform:translateY(-20px) rotate(0);opacity:1}
@@ -234,16 +355,18 @@ body{background:#12102a;color:#f7f3e8}
     <div class="moon crescent" aria-hidden="true"></div>
     <div class="mountains" aria-hidden="true"></div>
     <div class="hill"></div>
+    <div class="art-plate art-home" aria-hidden="true"></div>
     <div class="home-wrap">
       <div class="home-title">🌟 Harlen's ABCs &amp; 123s 🌟</div>
       <div class="home-sub">A cozy night of letters &amp; numbers</div>
-      <div class="mode-list">
-        <button class="btn btn-mode" data-go="letters"><span class="emoji">🔤</span>Letters A–Z<span class="sub">Names, sounds &amp; pictures in the night</span></button>
-        <button class="btn btn-mode" data-go="findLetter"><span class="emoji">🔎</span>Find the Letter<span class="sub">Quiz — big &amp; little letters</span></button>
-        <button class="btn btn-mode" data-go="numbers"><span class="emoji">🔢</span>Numbers 1–20<span class="sub">Mexican Train dots under the moon</span></button>
-        <button class="btn btn-mode" data-go="findNumber"><span class="emoji">🎯</span>Find the Number<span class="sub">Quiz — especially 11–20</span></button>
-        <button class="btn btn-mode" data-go="trace"><span class="emoji">✍️</span>Trace<span class="sub">Finger-draw A a … Z z and 0–9</span></button>
-        <button class="btn btn-mode" data-go="paint"><span class="emoji">🎨</span>Paint<span class="sub">Big colors, thick brush, stamps</span></button>
+      <div class="activity-grid">
+        <button type="button" class="activity-tile" data-go="letters" data-cue="Letters"><span class="emoji">🔤</span><span class="title">Letters</span></button>
+        <button type="button" class="activity-tile" data-go="findLetter" data-cue="Find the letter"><span class="emoji">🔎</span><span class="title">Find Letter</span></button>
+        <button type="button" class="activity-tile" data-go="memory" data-cue="Memory"><span class="emoji">🃏</span><span class="title">Memory</span></button>
+        <button type="button" class="activity-tile" data-go="numbers" data-cue="Numbers"><span class="emoji">🔢</span><span class="title">Numbers</span></button>
+        <button type="button" class="activity-tile" data-go="findNumber" data-cue="Find the number"><span class="emoji">🎯</span><span class="title">Find Number</span></button>
+        <button type="button" class="activity-tile" data-go="trace" data-cue="Trace"><span class="emoji">✍️</span><span class="title">Trace</span></button>
+        <button type="button" class="activity-tile" data-go="paint" data-cue="Paint"><span class="emoji">🎨</span><span class="title">Paint</span></button>
       </div>
       <div class="parent-note">
         <strong>Parents:</strong> Safari → Share → Add to Home Screen. Works offline after first open. Volume up for speech.
@@ -252,40 +375,34 @@ body{background:#12102a;color:#f7f3e8}
   </section>
 
   <!-- LETTERS -->
-  <section id="letters" class="screen">
+  <section id="letters" class="screen show-a has-scene">
     <div class="sky"></div>
-    <div class="stars" id="starsLetters"></div>
-    <div class="cloud-soft" style="top:14%;left:12%"></div>
-    <div class="cloud-soft" style="top:22%;right:18%;width:70px"></div>
-    <div class="moon crescent" aria-hidden="true"></div>
-    <div class="mountains" aria-hidden="true"></div>
-    <div class="hill"></div>
-    <div class="topbar">
-      <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
-      <div class="progress" id="letterProgress">Aa · 1 of 26</div>
-      <button class="btn btn-speak" id="letterSpeak" aria-label="Say letter name and sound">🔊</button>
-    </div>
-    <div class="scene">
-      <div class="scene-stage" id="letterStage">
-        <div class="glow-pair" id="letterPair">
-          <span class="upper" id="letterUpper">A</span>
-          <span class="lower" id="letterLower">a</span>
-        </div>
-        <div id="letterSceneObjs"></div>
-        <div class="caption-chip" id="letterWord">Apple</div>
-        <div class="scene-hint" id="letterPicHint">tap a picture · 1 of 3</div>
+    <div class="letter-frame" id="letterStage">
+      <div class="glow-pair" id="letterPair">
+        <span class="upper" id="letterUpper">A</span>
+        <span class="lower" id="letterLower">a</span>
       </div>
-    </div>
-    <div class="sound-dock">
-      <button class="btn btn-sound" id="letterSoundBtn" aria-label="Hear letter sound">
-        <span class="snd-ico">🔊</span>
+      <div id="letterSceneObjs"></div>
+      <div class="letter-progress" id="letterProgress">Aa · 1 of 26</div>
+      <button type="button" class="rim-btn rim-home" data-go="home" aria-label="Home">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M32 6 8 28h8v28h12V38h8v18h12V28h8z"/></svg>
+      </button>
+      <button type="button" class="rim-btn rim-repeat" id="letterSpeak" aria-label="Repeat">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M10 26h12l12-12v36L22 38H10z"/><path fill="none" stroke="#f4ead0" stroke-width="5" stroke-linecap="round" d="M44 22c7 5 7 15 0 20M50 16c11 8 11 24 0 32"/></svg>
+      </button>
+      <button type="button" class="word-chip" id="letterWord">Apple</button>
+      <button type="button" class="rim-btn rim-more" id="letterCycle" aria-label="More pictures">🔄</button>
+      <button type="button" class="rim-btn rim-prev" id="letterPrev" aria-label="Previous">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
+      </button>
+      <button type="button" class="rim-btn rim-next" id="letterNext" aria-label="Next">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
+      </button>
+      <button type="button" class="sound-pill" id="letterSoundBtn" aria-label="Hear letter sound">
+        <span class="snd-ico" aria-hidden="true">🔊</span>
         <span class="snd-txt" id="letterSoundLabel">A is for apple</span>
       </button>
-    </div>
-    <div class="dock">
-      <button class="btn btn-nav" id="letterPrev" aria-label="Previous">◀</button>
-      <button class="btn btn-cycle" id="letterCycle" aria-label="More pictures">🔄 More</button>
-      <button class="btn btn-nav" id="letterNext" aria-label="Next">▶</button>
+      <div class="scene-hint" id="letterPicHint">tap a picture · 1 of 3</div>
     </div>
   </section>
 
@@ -295,10 +412,11 @@ body{background:#12102a;color:#f7f3e8}
     <div class="stars" id="starsFL"></div>
     <div class="mountains" aria-hidden="true"></div>
     <div class="hill"></div>
+    <div class="art-plate art-find-letter" aria-hidden="true"></div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="flProgress">Find!</div>
-      <button class="btn btn-speak" id="flSpeak" aria-label="Say letter">🔊</button>
+      <button class="btn btn-speak" id="flSpeak" aria-label="Repeat">🔊</button>
     </div>
     <div class="content">
       <div class="card">
@@ -322,10 +440,11 @@ body{background:#12102a;color:#f7f3e8}
     <div class="moon crescent" aria-hidden="true"></div>
     <div class="mountains" aria-hidden="true"></div>
     <div class="hill"></div>
+    <div class="art-plate art-numbers" aria-hidden="true"></div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="numProgress">1 of 20</div>
-      <button class="btn btn-speak" id="numSpeak" aria-label="Say number">🔊</button>
+      <button class="btn btn-speak" id="numSpeak" aria-label="Repeat">🔊</button>
     </div>
     <div class="scene">
       <div class="scene-stage">
@@ -348,10 +467,11 @@ body{background:#12102a;color:#f7f3e8}
     <div class="stars" id="starsFN"></div>
     <div class="mountains" aria-hidden="true"></div>
     <div class="hill"></div>
+    <div class="art-plate art-find-number" aria-hidden="true"></div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="fnProgress">Find!</div>
-      <button class="btn btn-speak" id="fnSpeak" aria-label="Say number">🔊</button>
+      <button class="btn btn-speak" id="fnSpeak" aria-label="Repeat">🔊</button>
     </div>
     <div class="content">
       <div class="card">
@@ -367,13 +487,37 @@ body{background:#12102a;color:#f7f3e8}
     </div>
   </section>
 
+  <!-- MEMORY -->
+  <section id="memory" class="screen">
+    <div class="sky"></div>
+    <div class="stars" id="starsMemory"></div>
+    <div class="cloud-soft" style="top:14%;left:12%"></div>
+    <div class="moon crescent" aria-hidden="true"></div>
+    <div class="mountains" aria-hidden="true"></div>
+    <div class="hill"></div>
+    <div class="art-plate art-memory" aria-hidden="true"></div>
+    <div class="topbar">
+      <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
+      <div class="progress" id="memoryProgress">Memory · easy</div>
+      <button class="btn btn-speak" id="memorySpeak" aria-label="Repeat">🔊</button>
+    </div>
+    <div class="level-dots" id="memoryLevels" role="group" aria-label="Memory level"></div>
+    <div class="memory-board cols-2" id="memoryBoard"></div>
+    <div class="memory-actions" id="memoryWin" hidden>
+      <button type="button" class="btn btn-nextq" id="memoryAgain">Play again</button>
+      <button type="button" class="btn btn-nav" id="memoryNext">Next</button>
+    </div>
+  </section>
+
   <!-- TRACE -->
   <section id="trace" class="screen">
     <div class="sky trace"></div>
     <div class="stars" id="starsTrace"></div>
+    <div class="art-plate art-trace" aria-hidden="true"></div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="traceProgress">Trace A</div>
+      <button class="btn btn-speak" id="traceSpeak" aria-label="Repeat">🔊</button>
       <button class="btn btn-clear" id="traceClear" aria-label="Clear">🗑️</button>
     </div>
     <div class="trace-wrap">
@@ -394,9 +538,11 @@ body{background:#12102a;color:#f7f3e8}
   <section id="paint" class="screen">
     <div class="sky paint"></div>
     <div class="stars" id="starsPaint"></div>
+    <div class="art-plate art-paint" aria-hidden="true"></div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress">Paint!</div>
+      <button class="btn btn-speak" id="paintSpeak" aria-label="Repeat">🔊</button>
       <button class="btn btn-tool" id="paintUndo" aria-label="Undo">↩️</button>
       <button class="btn btn-clear" id="paintClear" aria-label="Clear">🗑️</button>
     </div>
@@ -429,26 +575,26 @@ var LETTERS = [
   {c:'B',pics:[{w:'Ball',e:'⚽'},{w:'Bear',e:'🐻'},{w:'Bus',e:'🚌'}]},
   {c:'C',pics:[{w:'Cat',e:'🐱'},{w:'Car',e:'🚗'},{w:'Cookie',e:'🍪'}]},
   {c:'D',pics:[{w:'Dog',e:'🐶'},{w:'Duck',e:'🦆'},{w:'Dinosaur',e:'🦕'}]},
-  {c:'E',pics:[{w:'Elephant',e:'🐘'},{w:'Egg',e:'🥚'},{w:'Eagle',e:'🦅'}]},
+  {c:'E',pics:[{w:'Egg',e:'🥚'},{w:'Elephant',e:'🐘'},{w:'Eagle',e:'🦅'}]},
   {c:'F',pics:[{w:'Fish',e:'🐟'},{w:'Frog',e:'🐸'},{w:'Flower',e:'🌸'}]},
-  {c:'G',pics:[{w:'Grapes',e:'🍇'},{w:'Goat',e:'🐐'},{w:'Guitar',e:'🎸'}]},
+  {c:'G',pics:[{w:'Goat',e:'🐐'},{w:'Grapes',e:'🍇'},{w:'Guitar',e:'🎸'}]},
   {c:'H',pics:[{w:'House',e:'🏠'},{w:'Horse',e:'🐴'},{w:'Hat',e:'🎩'}]},
-  {c:'I',pics:[{w:'Ice cream',e:'🍦'},{w:'Iguana',e:'🦎'},{w:'Igloo',e:'🧊'}]},
+  {c:'I',pics:[{w:'Igloo',e:'🧊'},{w:'Iguana',e:'🦎'},{w:'Ice cream',e:'🍦'}]},
   {c:'J',pics:[{w:'Juice',e:'🧃'},{w:'Jaguar',e:'🐆'},{w:'Jam',e:'🍓'}]},
   {c:'K',pics:[{w:'Kite',e:'🪁'},{w:'Koala',e:'🐨'},{w:'Key',e:'🔑'}]},
   {c:'L',pics:[{w:'Lion',e:'🦁'},{w:'Leaf',e:'🍃'},{w:'Ladybug',e:'🐞'}]},
   {c:'M',pics:[{w:'Moon',e:'🌙'},{w:'Monkey',e:'🐵'},{w:'Mouse',e:'🐭'}]},
   {c:'N',pics:[{w:'Nest',e:'🐦'},{w:'Nose',e:'👃'},{w:'Notebook',e:'📓'}]},
-  {c:'O',pics:[{w:'Orange',e:'🍊'},{w:'Owl',e:'🦉'},{w:'Octopus',e:'🐙'}]},
+  {c:'O',pics:[{w:'Octopus',e:'🐙'},{w:'Orange',e:'🍊'},{w:'Owl',e:'🦉'}]},
   {c:'P',pics:[{w:'Pig',e:'🐷'},{w:'Penguin',e:'🐧'},{w:'Pizza',e:'🍕'}]},
   {c:'Q',pics:[{w:'Queen',e:'👑'},{w:'Quilt',e:'🛏️'},{w:'Question',e:'❓'}]},
   {c:'R',pics:[{w:'Rainbow',e:'🌈'},{w:'Rabbit',e:'🐰'},{w:'Robot',e:'🤖'}]},
   {c:'S',pics:[{w:'Sun',e:'☀️'},{w:'Snake',e:'🐍'},{w:'Star',e:'⭐'},{w:'Spider',e:'🕷️'}]},
   {c:'T',pics:[{w:'Tree',e:'🌳'},{w:'Tiger',e:'🐯'},{w:'Train',e:'🚂'}]},
-  {c:'U',pics:[{w:'Umbrella',e:'☂️'},{w:'Unicorn',e:'🦄'},{w:'Up',e:'⬆️'}]},
-  {c:'V',pics:[{w:'Violin',e:'🎻'},{w:'Volcano',e:'🌋'},{w:'Van',e:'🚐'}]},
+  {c:'U',pics:[{w:'Umbrella',e:'☂️'},{w:'Up',e:'⬆️'},{w:'Unicorn',e:'🦄'}]},
+  {c:'V',pics:[{w:'Van',e:'🚐'},{w:'Violin',e:'🎻'},{w:'Volcano',e:'🌋'}]},
   {c:'W',pics:[{w:'Whale',e:'🐋'},{w:'Wolf',e:'🐺'},{w:'Watermelon',e:'🍉'}]},
-  {c:'X',pics:[{w:'Xylophone',e:'🎹'},{w:'X-ray',e:'🦴'},{w:'X mark',e:'❌'}]},
+  {c:'X',pics:[{w:'Box',e:'📦'},{w:'X-ray',e:'🦴'},{w:'X mark',e:'❌'}]},
   {c:'Y',pics:[{w:'Yo-yo',e:'🪀'},{w:'Yacht',e:'⛵'},{w:'Yarn',e:'🧶'}]},
   {c:'Z',pics:[{w:'Zebra',e:'🦓'},{w:'Zoo',e:'🦒'},{w:'Zipper',e:'🧥'}]}
 ];
@@ -491,23 +637,31 @@ function sprinkleStars(id, count){
     box.appendChild(s);
   }
 }
-['starsHome','starsLetters','starsFL','starsNum','starsFN','starsTrace','starsPaint'].forEach(function(id){
+['starsHome','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint'].forEach(function(id){
   sprinkleStars(id, 28);
 });
 
-function showScreen(id){
+function showScreen(id, cue){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   var el = document.getElementById(id);
   if(el) el.classList.add('active');
-  if(id==='letters'){ renderLetter(); teachCurrentLetter(); }
-  if(id==='findLetter') newLetterQuiz();
-  if(id==='numbers') renderNumber();
-  if(id==='findNumber') newNumberQuiz();
-  if(id==='trace'){ setupTracePicker(); resizeTrace(); drawGuide(); }
-  if(id==='paint'){ resizePaint(); buildPaintUI(); }
+  if(id==='home'){
+    speakGen++;
+    try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){}
+    return;
+  }
+  if(id==='letters'){ renderLetter(); teachCurrentLetter(cue); }
+  if(id==='findLetter') newLetterQuiz(cue);
+  if(id==='memory') dealMemory(cue);
+  if(id==='numbers') renderNumber(true, cue);
+  if(id==='findNumber') newNumberQuiz(cue);
+  if(id==='trace'){ setupTracePicker(); resizeTrace(); drawGuide(); speakTrace(cue); }
+  if(id==='paint'){ resizePaint(); buildPaintUI(); speakParts([cue || 'Paint.']); }
 }
 document.querySelectorAll('[data-go]').forEach(function(btn){
-  btn.addEventListener('click', function(){ showScreen(btn.getAttribute('data-go')); });
+  btn.addEventListener('click', function(){
+    showScreen(btn.getAttribute('data-go'), btn.getAttribute('data-cue'));
+  });
 });
 
 /* Calm adult talking voice — like a person on a phone call, never sing-song */
@@ -548,58 +702,100 @@ if(typeof window !== 'undefined' && window.speechSynthesis){
   }
 }
 
-function speak(text){
+/* Last spoken lines. 🔊 repeats them. Never a raw letter or chopped phoneme. */
+var lastUtterance = '';
+var lastParts = [];
+var speakGen = 0;
+var PHONEME_TTS = /^(ah|aw|buh|kuh|duh|eh|fuh|guh|huh|ih|juh|luh|muh|nuh|puh|kwuh|ruh|sss|tuh|uh|vuh|wuh|ks|yuh|zuh)$/i;
+
+function isUnsafeUtterance(text){
+  var t = String(text == null ? '' : text).trim().replace(/[.!?]+$/,'');
+  if(!t) return true;
+  if(/^[A-Za-z]$/.test(t)) return true;
+  if(PHONEME_TTS.test(t)) return true;
+  return false;
+}
+
+function cleanParts(parts){
+  var out = [], i, bit;
+  if(typeof parts === 'string') parts = [parts];
+  for(i=0;i<(parts ? parts.length : 0);i++){
+    bit = String(parts[i] == null ? '' : parts[i]).trim();
+    if(!bit || isUnsafeUtterance(bit)) continue;
+    out.push(bit);
+  }
+  return out;
+}
+
+function speakParts(parts, remember){
+  var say = cleanParts(parts);
+  if(!say.length) return;
+  var mem = cleanParts(remember || say);
+  if(!mem.length) mem = say.slice();
+  lastParts = mem.slice();
+  lastUtterance = lastParts[0];
+  speakGen++;
   try{
     if(!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(String(text));
-    u.lang = 'en-US';
-    u.rate = 1.0; // normal talking speed — slower rates can sound sung
-    u.pitch = 1.0; // never raise — raised pitch sounds creepy on Safari
-    u.volume = 1;
-    if(preferredVoice) u.voice = preferredVoice;
-    window.speechSynthesis.speak(u);
+    for(var i=0;i<say.length;i++){
+      var u = new SpeechSynthesisUtterance(say[i]);
+      u.lang = 'en-US';
+      u.rate = 1.0; // normal talking speed — slower rates can sound sung
+      u.pitch = 1.0; // never raise — raised pitch sounds creepy on Safari
+      u.volume = 1;
+      if(preferredVoice) u.voice = preferredVoice;
+      window.speechSynthesis.speak(u);
+    }
   }catch(e){}
 }
 
-/* Soft, sentence-friendly phoneme spellings (no long hisses). Preschool only — no digraphs. */
-var LETTER_SOUNDS = {
-  A:{soundSay:'ah', soundLabel:'ah', prefer:['Apple','Ant']},
-  B:{soundSay:'buh', soundLabel:'buh', prefer:['Ball','Bear','Bus']},
-  C:{soundSay:'kuh', soundLabel:'kuh', prefer:['Cat','Car','Cookie']},
-  D:{soundSay:'duh', soundLabel:'duh', prefer:['Dog','Duck','Dinosaur']},
-  E:{soundSay:'eh', soundLabel:'eh', prefer:['Elephant','Egg','Eagle']},
-  F:{soundSay:'fuh', soundLabel:'fuh', prefer:['Fish','Frog','Flower']},
-  G:{soundSay:'guh', soundLabel:'guh', prefer:['Goat','Grapes','Guitar']},
-  H:{soundSay:'huh', soundLabel:'huh', prefer:['House','Horse','Hat']},
-  I:{soundSay:'ih', soundLabel:'ih', prefer:['Iguana','Igloo','Ice cream']},
-  J:{soundSay:'juh', soundLabel:'juh', prefer:['Juice','Jaguar','Jam']},
-  K:{soundSay:'kuh', soundLabel:'kuh', prefer:['Kite','Koala','Key']},
-  L:{soundSay:'luh', soundLabel:'luh', prefer:['Lion','Leaf','Ladybug']},
-  M:{soundSay:'muh', soundLabel:'muh', prefer:['Moon','Monkey','Mouse']},
-  N:{soundSay:'nuh', soundLabel:'nuh', prefer:['Nest','Nose','Notebook']},
-  O:{soundSay:'ah', soundLabel:'ah', prefer:['Octopus','Orange','Owl']},
-  P:{soundSay:'puh', soundLabel:'puh', prefer:['Pig','Penguin','Pizza']},
-  Q:{soundSay:'kwuh', soundLabel:'kwuh', prefer:['Queen','Quilt','Question']},
-  R:{soundSay:'ruh', soundLabel:'ruh', prefer:['Rainbow','Rabbit','Robot']},
-  S:{soundSay:'sss', soundLabel:'sss', prefer:['Sun','Snake','Star','Spider']},
-  T:{soundSay:'tuh', soundLabel:'tuh', prefer:['Tree','Tiger','Train']},
-  U:{soundSay:'uh', soundLabel:'uh', prefer:['Umbrella','Up','Unicorn']},
-  V:{soundSay:'vuh', soundLabel:'vuh', prefer:['Violin','Volcano','Van']},
-  W:{soundSay:'wuh', soundLabel:'wuh', prefer:['Whale','Wolf','Watermelon']},
-  X:{soundSay:'ks', soundLabel:'ks', prefer:['X-ray','Xylophone','X mark'], fallback:'box'},
-  Y:{soundSay:'yuh', soundLabel:'yuh', prefer:['Yo-yo','Yacht','Yarn']},
-  Z:{soundSay:'zuh', soundLabel:'zuh', prefer:['Zebra','Zoo','Zipper']}
+function speak(text){
+  speakParts([text]);
+}
+
+function repeatLastUtterance(){
+  if(!lastParts.length) return;
+  speakParts(lastParts.slice());
+}
+
+/* Prefer-words and author IPA notes only. No soundSay — chopped phonemes must never reach speechSynthesis. */
+var LETTER_META = {
+  A:{ipa:'/eɪ/ /æ/', prefer:['Apple','Ant']},
+  B:{ipa:'/biː/ /b/', prefer:['Ball','Bear','Bus']},
+  C:{ipa:'/siː/ /k/', prefer:['Cat','Car','Cookie']},
+  D:{ipa:'/diː/ /d/', prefer:['Dog','Duck','Dinosaur']},
+  E:{ipa:'/iː/ /ɛ/', prefer:['Egg','Elephant']},
+  F:{ipa:'/ɛf/ /f/', prefer:['Fish','Frog','Flower']},
+  G:{ipa:'/dʒiː/ /g/', prefer:['Goat','Grapes','Guitar']},
+  H:{ipa:'/eɪtʃ/ /h/', prefer:['House','Horse','Hat']},
+  I:{ipa:'/aɪ/ /ɪ/', prefer:['Igloo','Iguana']},
+  J:{ipa:'/dʒeɪ/ /dʒ/', prefer:['Juice','Jaguar','Jam']},
+  K:{ipa:'/keɪ/ /k/', prefer:['Kite','Koala','Key']},
+  L:{ipa:'/ɛl/ /l/', prefer:['Lion','Leaf','Ladybug']},
+  M:{ipa:'/ɛm/ /m/', prefer:['Moon','Monkey','Mouse']},
+  N:{ipa:'/ɛn/ /n/', prefer:['Nest','Nose','Notebook']},
+  O:{ipa:'/oʊ/ /ɑ/', prefer:['Octopus']},
+  P:{ipa:'/piː/ /p/', prefer:['Pig','Penguin','Pizza']},
+  Q:{ipa:'/kjuː/ /kw/', prefer:['Queen','Quilt','Question']},
+  R:{ipa:'/ɑɹ/ /ɹ/', prefer:['Rainbow','Rabbit','Robot']},
+  S:{ipa:'/ɛs/ /s/', prefer:['Sun','Snake','Star','Spider']},
+  T:{ipa:'/tiː/ /t/', prefer:['Tree','Tiger','Train']},
+  U:{ipa:'/juː/ /ʌ/', prefer:['Umbrella','Up']},
+  V:{ipa:'/viː/ /v/', prefer:['Van','Violin','Volcano']},
+  W:{ipa:'/ˈdʌbəl juː/ /w/', prefer:['Whale','Wolf','Watermelon']},
+  X:{ipa:'/ɛks/ /ks/', prefer:['Box']},
+  Y:{ipa:'/waɪ/ /j/', prefer:['Yo-yo','Yacht','Yarn']},
+  Z:{ipa:'/ziː/ /z/', prefer:['Zebra','Zoo','Zipper']}
 };
 
 function phonemeFor(letter){
   var up = String(letter||'A').toUpperCase();
-  return LETTER_SOUNDS[up] || {soundSay: up.toLowerCase(), soundLabel: up.toLowerCase(), prefer:[]};
+  return LETTER_META[up] || {prefer:[]};
 }
 
 function exampleWordFor(letter, pics){
   var meta = phonemeFor(letter);
-  if(meta.fallback) return meta.fallback;
   var prefer = meta.prefer || [];
   var i, j;
   if(pics && pics.length){
@@ -617,25 +813,65 @@ function exampleWordFor(letter, pics){
   return prefer[0] || 'this';
 }
 
-/* Spoken letter NAMES (ay, bee, see…) — never the sound. Plain "A" is read as "uh/aw". */
+/* Spoken letter NAMES (ey, bee, see…) — never the raw letter. A is "ey", like the vowel in "hey". */
 var LETTER_NAMES = {
-  A:'ay', B:'bee', C:'see', D:'dee', E:'ee', F:'eff', G:'jee',
+  A:'ey', B:'bee', C:'see', D:'dee', E:'ee', F:'eff', G:'jee',
   H:'aych', I:'eye', J:'jay', K:'kay', L:'ell', M:'em', N:'en',
   O:'oh', P:'pee', Q:'cue', R:'ar', S:'ess', T:'tee', U:'you',
   V:'vee', W:'double you', X:'ex', Y:'why', Z:'zee'
 };
 function letterNameSay(letter){
-  var up = String(letter || 'A').toUpperCase();
-  return LETTER_NAMES[up] || up;
+  var up = String(letter || '').toUpperCase();
+  var name = LETTER_NAMES[up];
+  if(!name || name.length < 2) return '';
+  return name;
 }
 
-/** "This is ay, like apple." — letter name only, no sound. */
-function speakLetterLesson(letter, pics, opts){
-  opts = opts || {};
+function wordBeat(word){
+  var w = String(word || '');
+  if(!w) return '';
+  return w.charAt(0).toUpperCase() + w.slice(1) + '.';
+}
+
+/** "This is ey, like apple." plus a clear "Apple." so the onset is heard in the word. */
+function lessonParts(letter, pics){
   var up = String(letter).toUpperCase();
+  var name = letterNameSay(up);
+  if(!name) return [];
   var word = exampleWordFor(up, pics);
-  var wordSay = String(word).toLowerCase();
-  speak('This is ' + letterNameSay(up) + ', like ' + wordSay + '.');
+  return ['This is ' + name + ', like ' + String(word).toLowerCase() + '.', wordBeat(word)];
+}
+
+function speakLetterLesson(letter, pics, prefix){
+  var parts = lessonParts(letter, pics);
+  if(!parts.length) return;
+  var say = prefix ? [prefix].concat(parts) : parts;
+  speakParts(say, parts);
+}
+
+/** "ey is for apple." — sound button. On-screen label stays "A is for apple". */
+function speakSoundFor(letter){
+  var up = String(letter).toUpperCase();
+  var name = letterNameSay(up);
+  if(!name) return;
+  var wordSay = String(exampleWordFor(up, null)).toLowerCase();
+  speak(name + ' is for ' + wordSay + '.');
+}
+
+/** "Find ey." */
+function findPrompt(letter){
+  var name = letterNameSay(letter);
+  if(!name) return '';
+  return 'Find ' + name + '.';
+}
+
+/** "Yes! ey, like apple." */
+function yesLikePrompt(letter, pics){
+  var up = String(letter).toUpperCase();
+  var name = letterNameSay(up);
+  if(!name) return '';
+  var wordSay = String(exampleWordFor(up, pics)).toLowerCase();
+  return 'Yes! ' + name + ', like ' + wordSay + '.';
 }
 
 function soundButtonText(letter){
@@ -676,6 +912,11 @@ function renderLetter(){
   document.getElementById('letterWord').textContent = P.w;
   document.getElementById('letterPicHint').textContent = 'tap a picture · '+(picIdx+1)+' of '+L.pics.length;
   document.getElementById('letterProgress').textContent = up+lo+'  ·  '+(li+1)+' of 26';
+  var board = document.getElementById('letters');
+  var sceneClass = {A:'show-a',B:'show-b',C:'show-c',D:'show-d',E:'show-e',F:'show-f',G:'show-g',H:'show-h',I:'show-i',J:'show-j',K:'show-k',L:'show-l'}[up];
+  board.classList.remove('show-a','show-b','show-c','show-d','show-e','show-f','show-g','show-h','show-i','show-j','show-k','show-l','show-fallback','has-scene');
+  board.classList.add(sceneClass || 'show-fallback');
+  if(sceneClass) board.classList.add('has-scene');
   var sndLabel = document.getElementById('letterSoundLabel');
   if(sndLabel) sndLabel.textContent = soundButtonText(up);
 
@@ -707,11 +948,11 @@ function renderLetter(){
 function cyclePic(){
   picIdx = (picIdx + 1) % LETTERS[li].pics.length;
   renderLetter();
-  speak(currentPic().w);
+  speakLetterLesson(LETTERS[li].c, [currentPic()]);
 }
-function teachCurrentLetter(){
+function teachCurrentLetter(prefix){
   var L = LETTERS[li];
-  speakLetterLesson(L.c, L.pics);
+  speakLetterLesson(L.c, L.pics, prefix);
 }
 document.getElementById('letterPrev').addEventListener('click', function(){
   li = (li - 1 + 26) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
@@ -720,10 +961,10 @@ document.getElementById('letterNext').addEventListener('click', function(){
   li = (li + 1) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
 });
 document.getElementById('letterCycle').addEventListener('click', cyclePic);
-document.getElementById('letterSpeak').addEventListener('click', function(){ teachCurrentLetter(); });
+document.getElementById('letterWord').addEventListener('click', cyclePic);
+document.getElementById('letterSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 document.getElementById('letterSoundBtn').addEventListener('click', function(){
-  // Same warm sentence again — natural, not chopped phonemes
-  teachCurrentLetter();
+  speakSoundFor(LETTERS[li].c);
 });
 document.getElementById('letterPair').addEventListener('click', function(){ teachCurrentLetter(); });
 document.getElementById('letterPair').setAttribute('role','button');
@@ -735,7 +976,7 @@ function weightedLetterUpper(){
   if(Math.random() < 0.75) return LETTERS[3 + Math.floor(Math.random()*23)].c;
   return LETTERS[Math.floor(Math.random()*26)].c;
 }
-function newLetterQuiz(){
+function newLetterQuiz(cue){
   flLocked = false;
   var upper = weightedLetterUpper();
   var useLower = Math.random() < 0.5;
@@ -743,7 +984,7 @@ function newLetterQuiz(){
   document.getElementById('flTarget').textContent = flAnswer;
   document.getElementById('flCaseTag').textContent = useLower ? 'Little letter' : 'Big letter';
   document.getElementById('flFeedback').textContent = '';
-  document.getElementById('flProgress').textContent = 'Streak: ' + flStreak;
+  document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
   var opts = [flAnswer];
   var guard = 0;
   while(opts.length < 4 && guard < 80){
@@ -770,36 +1011,35 @@ function newLetterQuiz(){
     b.addEventListener('click', function(){ pickLetter(b, c); });
     box.appendChild(b);
   });
+  var line = findPrompt(flAnswer);
+  if(cue) speakParts([cue, line], [line]);
+  else speakParts([line]);
 }
 function pickLetter(btn, c){
   if(flLocked) return;
-  flLocked = true;
+  var Lquiz = LETTERS.filter(function(L){ return L.c === flAnswer.toUpperCase(); })[0];
+  var pics = Lquiz ? Lquiz.pics : [];
   if(c === flAnswer){
+    flLocked = true;
     btn.classList.add('correct');
     flStreak++;
-    document.getElementById('flFeedback').textContent = '🎉 Yes! ' + c + '!';
+    document.getElementById('flFeedback').textContent = '🎉 Yes!';
     document.getElementById('flStars').textContent = '⭐'.repeat(Math.min(flStreak, 5));
-    document.getElementById('flProgress').textContent = 'Streak: ' + flStreak;
+    document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
     burst();
-    var Lquiz = LETTERS.filter(function(L){ return L.c === c.toUpperCase(); })[0];
-    speakLetterLesson(c, Lquiz ? Lquiz.pics : []);
+    speak(yesLikePrompt(flAnswer, pics));
   } else {
     btn.classList.add('wrong');
     flStreak = 0;
-    document.getElementById('flFeedback').textContent = 'Try again — look for ' + flAnswer;
+    document.getElementById('flFeedback').textContent = 'Try again';
     document.getElementById('flStars').textContent = '';
-    document.getElementById('flProgress').textContent = 'Streak: 0';
-    document.querySelectorAll('#flChoices .choice').forEach(function(el){
-      if(el.textContent === flAnswer) el.classList.add('correct');
-    });
-    speak(letterNameSay(flAnswer));
+    document.getElementById('flProgress').textContent = 'Find ' + flAnswer;
+    speak('Try again. ' + findPrompt(flAnswer));
+    setTimeout(function(){ btn.classList.remove('wrong'); }, 450);
   }
 }
 document.getElementById('flNext').addEventListener('click', newLetterQuiz);
-document.getElementById('flSpeak').addEventListener('click', function(){
-  var Lquiz = LETTERS.filter(function(L){ return L.c === flAnswer.toUpperCase(); })[0];
-  speakLetterLesson(flAnswer, Lquiz ? Lquiz.pics : []);
-});
+document.getElementById('flSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 
 /* ========== NUMBERS ========== */
 var ni = 0, themeIdx = 0;
@@ -840,7 +1080,7 @@ function makePipTile(face, theme, colorBase){
   }
   return tile;
 }
-function renderNumber(){
+function renderNumber(doSpeak, cue){
   var n = ni + 1;
   var theme = COUNT_THEMES[themeIdx];
   document.getElementById('numChar').textContent = String(n);
@@ -853,13 +1093,18 @@ function renderNumber(){
   document.querySelectorAll('#themeBar .theme-btn').forEach(function(b, idx){
     b.classList.toggle('active', idx === themeIdx);
   });
+  if(doSpeak){
+    var line = String(n);
+    if(cue) speakParts([cue, line], [line]);
+    else speakParts([line]);
+  }
 }
-document.getElementById('numPrev').addEventListener('click', function(){ ni = (ni-1+20)%20; renderNumber(); });
-document.getElementById('numNext').addEventListener('click', function(){ ni = (ni+1)%20; renderNumber(); });
+document.getElementById('numPrev').addEventListener('click', function(){ ni = (ni-1+20)%20; renderNumber(true); });
+document.getElementById('numNext').addEventListener('click', function(){ ni = (ni+1)%20; renderNumber(true); });
 document.getElementById('themeCycle').addEventListener('click', function(){
-  themeIdx = (themeIdx+1)%COUNT_THEMES.length; renderNumber();
+  themeIdx = (themeIdx+1)%COUNT_THEMES.length; renderNumber(false);
 });
-document.getElementById('numSpeak').addEventListener('click', function(){ speak(String(ni+1)); });
+document.getElementById('numSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 buildThemeBar();
 
 /* ========== FIND NUMBER ========== */
@@ -868,12 +1113,12 @@ function weightedNumber(){
   if(Math.random() < 0.75) return 11 + Math.floor(Math.random()*10);
   return 1 + Math.floor(Math.random()*20);
 }
-function newNumberQuiz(){
+function newNumberQuiz(cue){
   fnLocked = false;
   fnAnswer = weightedNumber();
   document.getElementById('fnTarget').textContent = String(fnAnswer);
   document.getElementById('fnFeedback').textContent = '';
-  document.getElementById('fnProgress').textContent = 'Streak: ' + fnStreak;
+  document.getElementById('fnProgress').textContent = 'Find ' + fnAnswer;
   var opts = [fnAnswer];
   while(opts.length < 4){
     var n = 1 + Math.floor(Math.random()*20);
@@ -889,31 +1134,33 @@ function newNumberQuiz(){
     b.addEventListener('click', function(){ pickNumber(b, n); });
     box.appendChild(b);
   });
+  var line = 'Find ' + fnAnswer + '.';
+  if(cue) speakParts([cue, line], [line]);
+  else speakParts([line]);
 }
 function pickNumber(btn, n){
   if(fnLocked) return;
-  fnLocked = true;
   if(n === fnAnswer){
+    fnLocked = true;
     btn.classList.add('correct');
     fnStreak++;
-    document.getElementById('fnFeedback').textContent = '🎉 Yes! ' + n + '!';
+    document.getElementById('fnFeedback').textContent = '🎉 Yes!';
     document.getElementById('fnStars').textContent = '⭐'.repeat(Math.min(fnStreak, 5));
-    document.getElementById('fnProgress').textContent = 'Streak: ' + fnStreak;
-    burst(); speak(String(n));
+    document.getElementById('fnProgress').textContent = 'Find ' + fnAnswer;
+    burst();
+    speak('Yes! ' + n + '.');
   } else {
     btn.classList.add('wrong');
     fnStreak = 0;
-    document.getElementById('fnFeedback').textContent = 'Try again — look for ' + fnAnswer;
+    document.getElementById('fnFeedback').textContent = 'Try again';
     document.getElementById('fnStars').textContent = '';
-    document.getElementById('fnProgress').textContent = 'Streak: 0';
-    document.querySelectorAll('#fnChoices .choice').forEach(function(el){
-      if(el.textContent === String(fnAnswer)) el.classList.add('correct');
-    });
-    speak(String(fnAnswer));
+    document.getElementById('fnProgress').textContent = 'Find ' + fnAnswer;
+    speak('Try again. Find ' + fnAnswer + '.');
+    setTimeout(function(){ btn.classList.remove('wrong'); }, 450);
   }
 }
-document.getElementById('fnNext').addEventListener('click', newNumberQuiz);
-document.getElementById('fnSpeak').addEventListener('click', function(){ speak(String(fnAnswer)); });
+document.getElementById('fnNext').addEventListener('click', function(){ newNumberQuiz(); });
+document.getElementById('fnSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 
 /* ========== TRACE (no green flash) ========== */
 var canvas = document.getElementById('traceCanvas');
@@ -937,7 +1184,7 @@ function setupTracePicker(){
     b.addEventListener('click', function(){
       traceChar = ch;
       document.getElementById('traceProgress').textContent = 'Trace ' + ch;
-      setupTracePicker(); drawGuide();
+      setupTracePicker(); drawGuide(); speakTrace();
     });
     picker.appendChild(b);
   });
@@ -948,7 +1195,13 @@ function setTraceTab(setName, firstChar){
   document.querySelectorAll('.trace-tab').forEach(function(t){
     t.classList.toggle('active', t.getAttribute('data-set')===setName);
   });
-  setupTracePicker(); drawGuide();
+  setupTracePicker(); drawGuide(); speakTrace();
+}
+function speakTrace(prefix){
+  var name = (/^[A-Za-z]$/.test(traceChar)) ? letterNameSay(traceChar) : String(traceChar);
+  var line = name ? ('Trace ' + name + '.') : 'Trace.';
+  if(prefix) speakParts([prefix, line], [line]);
+  else speakParts([line]);
 }
 document.getElementById('tabUpper').addEventListener('click', function(){ setTraceTab('upper','A'); });
 document.getElementById('tabLower').addEventListener('click', function(){ setTraceTab('lower','a'); });
@@ -967,8 +1220,8 @@ function drawGuide(){
   if(w<10||h<10) return;
   ctx.clearRect(0,0,w,h);
   ctx.save();
-  ctx.fillStyle = 'rgba(90,70,30,0.16)';
-  ctx.strokeStyle = 'rgba(90,70,30,0.28)';
+  ctx.fillStyle = 'rgba(255,244,214,0.34)';
+  ctx.strokeStyle = 'rgba(255,244,214,0.45)';
   ctx.lineWidth = 3;
   ctx.font = 'bold '+Math.floor(Math.min(w,h)*0.72)+'px system-ui,sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -991,13 +1244,13 @@ function startDraw(e){
   e.preventDefault(); tracing = true;
   var p = getPos(e, canvas); lastX = p.x; lastY = p.y;
   ctx.beginPath(); ctx.arc(lastX,lastY,4,0,Math.PI*2);
-  ctx.fillStyle = '#e74c3c'; ctx.fill();
+  ctx.fillStyle = '#f7f1e4'; ctx.fill();
 }
 function moveDraw(e){
   if(!tracing) return; e.preventDefault();
   var p = getPos(e, canvas);
   ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y);
-  ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 10; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  ctx.strokeStyle = '#f7f1e4'; ctx.lineWidth = 10; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
   lastX = p.x; lastY = p.y;
 }
 function endDraw(e){ if(e) e.preventDefault(); tracing = false; }
@@ -1010,6 +1263,9 @@ canvas.addEventListener('touchmove', moveDraw, {passive:false});
 canvas.addEventListener('touchend', endDraw, {passive:false});
 canvas.addEventListener('touchcancel', endDraw, {passive:false});
 document.getElementById('traceClear').addEventListener('click', function(){ drawGuide(); });
+document.getElementById('traceSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
+document.getElementById('paintSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
+document.getElementById('memorySpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 
 /* ========== PAINT ========== */
 var paintCanvas = document.getElementById('paintCanvas');
@@ -1156,6 +1412,141 @@ document.getElementById('paintUndo').addEventListener('click', function(){
 window.addEventListener('resize', function(){
   if(document.getElementById('trace').classList.contains('active')){ resizeTrace(); drawGuide(); }
   if(document.getElementById('paint').classList.contains('active')){ resizePaint(); }
+});
+
+/* ========== MEMORY (letter ↔ picture, no timer, no score) ========== */
+var MEMORY_LEVELS = [
+  {pairs:2, cols:2, spoken:'Easy'},
+  {pairs:3, cols:3, spoken:'Easy'},
+  {pairs:4, cols:4, spoken:'A little more'},
+  {pairs:5, cols:5, spoken:'Challenge'}
+];
+var memoryLevel = 0, memoryDeck = [], memoryOpen = [], memoryLock = false, memoryTimer = 0, memoryRound = 0;
+
+function dealMemory(prefix, fromLevel){
+  memoryRound++;
+  clearTimeout(memoryTimer);
+  memoryLock = false;
+  memoryOpen = [];
+  var level = MEMORY_LEVELS[memoryLevel];
+  var pool = LETTERS.slice();
+  shuffle(pool);
+  var deck = [];
+  pool.slice(0, level.pairs).forEach(function(L){
+    var pic = L.pics[0];
+    deck.push({pair:L.c, type:'letter', letter:L.c, word:pic.w, emoji:pic.e});
+    deck.push({pair:L.c, type:'pic', letter:L.c, word:pic.w, emoji:pic.e});
+  });
+  shuffle(deck);
+  memoryDeck = deck;
+  document.getElementById('memoryProgress').textContent = 'Memory · ' + level.spoken.toLowerCase();
+  document.getElementById('memoryWin').hidden = true;
+  renderMemory();
+  var intro = fromLevel ? (level.spoken + '. Find two that go together.') : 'Memory. Find two that go together.';
+  if(prefix) speakParts([prefix, intro], [intro]);
+  else speakParts([intro]);
+}
+
+function renderMemory(){
+  var level = MEMORY_LEVELS[memoryLevel];
+  var board = document.getElementById('memoryBoard');
+  board.className = 'memory-board cols-' + level.cols;
+  board.innerHTML = '';
+  memoryDeck.forEach(function(card, idx){
+    var b = document.createElement('button');
+    b.type = 'button';
+    var faceUp = !!(card.up || card.matched);
+    b.className = 'mem-card' + (faceUp ? ' up' : '') + (card.matched ? ' matched' : '');
+    if(faceUp && card.type === 'letter'){
+      b.innerHTML = '<span class="mem-face"><span class="mem-upper">'+card.letter+'</span><span class="mem-lower">'+card.letter.toLowerCase()+'</span></span>';
+    } else if(faceUp){
+      b.innerHTML = '<span class="mem-face"><span class="mem-emoji">'+card.emoji+'</span><span class="mem-word">'+card.word+'</span></span>';
+    } else {
+      b.innerHTML = '<span class="mem-face mem-back" aria-hidden="true">🌙</span>';
+    }
+    b.setAttribute('aria-label', faceUp ? (card.type==='letter' ? (card.letter+' '+card.letter.toLowerCase()) : card.word) : 'Hidden card');
+    b.addEventListener('click', function(){ flipMemory(idx); });
+    board.appendChild(b);
+  });
+  document.querySelectorAll('#memoryLevels .level-dot').forEach(function(d, i){
+    d.classList.toggle('active', i === memoryLevel);
+  });
+}
+
+function memoryFlipLine(card){
+  var name = letterNameSay(card.letter);
+  if(!name) return '';
+  if(card.type === 'pic') return name + '. ' + wordBeat(card.word);
+  return name;
+}
+
+function flipMemory(idx){
+  if(memoryLock) return;
+  var card = memoryDeck[idx];
+  if(!card || card.up || card.matched) return;
+  card.up = true;
+  memoryOpen.push(idx);
+  renderMemory();
+  if(memoryOpen.length < 2){
+    var one = memoryFlipLine(card);
+    if(one) speakParts([one]);
+    return;
+  }
+  var a = memoryDeck[memoryOpen[0]];
+  var b = memoryDeck[memoryOpen[1]];
+  var second = memoryFlipLine(b);
+  var open = memoryOpen.slice();
+  memoryOpen = [];
+  if(a.pair === b.pair){
+    a.matched = true;
+    b.matched = true;
+    var yes = 'Yes! ' + letterNameSay(a.letter) + ', like ' + String(exampleWordFor(a.letter, null)).toLowerCase() + '.';
+    var done = memoryDeck.every(function(c){ return c.matched; });
+    if(done){
+      speakParts([second, yes, 'You found them all!'], ['You found them all!']);
+      document.getElementById('memoryWin').hidden = false;
+      document.getElementById('memoryNext').hidden = memoryLevel >= MEMORY_LEVELS.length - 1;
+      burst();
+    } else {
+      speakParts([second, yes], [yes]);
+      burst();
+    }
+    renderMemory();
+    return;
+  }
+  if(second) speakParts([second, 'Try again.'], ['Try again.']);
+  else speakParts(['Try again.']);
+  memoryLock = true;
+  var round = memoryRound;
+  memoryTimer = setTimeout(function(){
+    if(round !== memoryRound) return;
+    open.forEach(function(i){ if(memoryDeck[i]) memoryDeck[i].up = false; });
+    memoryLock = false;
+    renderMemory();
+  }, 850);
+}
+
+function buildMemoryLevels(){
+  var bar = document.getElementById('memoryLevels');
+  bar.innerHTML = '';
+  MEMORY_LEVELS.forEach(function(level, idx){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'level-dot' + (idx === memoryLevel ? ' active' : '');
+    b.textContent = String(level.pairs);
+    b.setAttribute('aria-label', level.spoken + ', ' + level.pairs + ' pairs');
+    b.addEventListener('click', function(){
+      memoryLevel = idx;
+      dealMemory(null, true);
+    });
+    bar.appendChild(b);
+  });
+}
+buildMemoryLevels();
+document.getElementById('memoryAgain').addEventListener('click', function(){ dealMemory(null, false); });
+document.getElementById('memoryNext').addEventListener('click', function(){
+  if(memoryLevel < MEMORY_LEVELS.length - 1) memoryLevel++;
+  dealMemory(null, true);
 });
 
 function shuffle(a){
