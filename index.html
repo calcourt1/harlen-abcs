@@ -13,33 +13,35 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   touch-action:manipulation;user-select:none;-webkit-user-select:none}
-body{background:#1a2744;color:#1a1a2e}
+body{background:#87CEEB;color:#1a1a2e}
 
-/* ---- backgrounds ---- */
-.bg-home{background:
-  radial-gradient(circle at 12% 20%,rgba(255,200,80,.35) 0 8%,transparent 9%),
-  radial-gradient(circle at 88% 15%,rgba(255,120,160,.3) 0 6%,transparent 7%),
-  radial-gradient(circle at 70% 80%,rgba(100,220,180,.28) 0 10%,transparent 11%),
-  radial-gradient(circle at 20% 75%,rgba(140,160,255,.3) 0 7%,transparent 8%),
-  linear-gradient(160deg,#6eb5ff 0%,#a8e6cf 40%,#ffd3a5 70%,#ffaaa5 100%)}
-.bg-letters{background:
-  radial-gradient(ellipse at 30% 0%,rgba(255,255,255,.25),transparent 50%),
-  repeating-linear-gradient(45deg,transparent,transparent 28px,rgba(255,255,255,.06) 28px,rgba(255,255,255,.06) 30px),
-  linear-gradient(135deg,#7ec8ff 0%,#b4f0d0 50%,#ffe09a 100%)}
-.bg-find-letter{background:
-  radial-gradient(circle at 80% 20%,rgba(255,230,100,.4) 0 12%,transparent 13%),
-  radial-gradient(circle at 15% 70%,rgba(255,140,180,.35) 0 10%,transparent 11%),
-  linear-gradient(160deg,#ff9a9e 0%,#fecfef 45%,#a18cd1 100%)}
-.bg-numbers{background:
-  radial-gradient(circle at 50% 100%,rgba(255,255,255,.2),transparent 55%),
-  repeating-radial-gradient(circle at 50% 50%,transparent 0,transparent 18px,rgba(255,255,255,.07) 18px,rgba(255,255,255,.07) 20px),
-  linear-gradient(145deg,#89f7fe 0%,#66a6ff 55%,#8fd3f4 100%)}
-.bg-find-number{background:
-  radial-gradient(circle at 20% 30%,rgba(255,255,180,.4) 0 10%,transparent 11%),
-  linear-gradient(150deg,#f6d365 0%,#fda085 50%,#ff9a9e 100%)}
-.bg-trace{background:
-  radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.3),transparent 60%),
-  linear-gradient(160deg,#c3cfe2 0%,#a8edea 40%,#fed6e3 100%)}
+/* ---- soft kid-friendly backgrounds ---- */
+.screen{position:relative;isolation:isolate}
+.screen::before,.screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.screen > *{position:relative;z-index:1}
+
+.bg-home{background:linear-gradient(165deg,#a8d8ff 0%,#c9f0e0 38%,#ffe6b8 72%,#ffc8c8 100%)}
+.bg-letters{background:linear-gradient(145deg,#b8e0ff 0%,#d4f5e0 48%,#fff0c2 100%)}
+.bg-find-letter{background:linear-gradient(160deg,#ffc2d4 0%,#ffe0f0 42%,#d4c4f5 100%)}
+.bg-numbers{background:linear-gradient(150deg,#b8f0f8 0%,#a8c8ff 52%,#c8e8ff 100%)}
+.bg-find-number{background:linear-gradient(155deg,#ffe8a0 0%,#ffd0a8 48%,#ffc0c8 100%)}
+.bg-trace{background:linear-gradient(165deg,#d8e4f0 0%,#c8f0ec 42%,#f5d8e8 100%)}
+
+/* floating decor — soft shapes that never cover the card content */
+.floaties{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.floaties span{position:absolute;border-radius:50%;opacity:.35;animation:drift 18s ease-in-out infinite}
+.floaties .blob{filter:blur(2px)}
+.floaties .star{border-radius:0;background:transparent;font-size:1.6rem;opacity:.45;line-height:1;
+  animation:twinkle 4s ease-in-out infinite,drift 22s ease-in-out infinite}
+.floaties .cloud{width:70px;height:28px;border-radius:40px;background:rgba(255,255,255,.55);
+  box-shadow:22px 6px 0 -4px rgba(255,255,255,.45),-18px 4px 0 -6px rgba(255,255,255,.4);
+  opacity:.55;animation:driftSlow 28s ease-in-out infinite}
+.floaties .bubble{border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);
+  animation:bob 6s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-22px)}}
+@keyframes driftSlow{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,12px)}}
+@keyframes bob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-16px) scale(1.05)}}
+@keyframes twinkle{0%,100%{opacity:.3;transform:scale(1) rotate(0)}50%{opacity:.7;transform:scale(1.15) rotate(12deg)}}
 
 #app{height:100%;width:100%;display:flex;flex-direction:column;position:relative}
 
@@ -58,6 +60,7 @@ body{background:#1a2744;color:#1a1a2e}
 .btn-speak{background:#7ed957;font-size:1.5rem}
 .btn-clear{background:#ff9f43}
 .btn-nextq{background:#5B8DEF}
+.btn-case{background:#a29bfe;font-size:1.25rem;min-width:64px;letter-spacing:.02em}
 .btn-mode{background:#fff;color:#2d3436;font-size:1.2rem;width:100%;
   padding:14px 18px;border-radius:20px;text-align:left;
   box-shadow:0 5px 0 rgba(0,0,0,.12),0 8px 20px rgba(0,0,0,.1);
@@ -68,42 +71,61 @@ body{background:#1a2744;color:#1a1a2e}
   text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:8px 16px 16px;min-height:0;overflow:hidden}
-.card{background:rgba(255,255,255,.92);border-radius:28px;padding:20px 24px;
-  box-shadow:0 10px 30px rgba(0,0,0,.15);text-align:center;max-width:520px;width:100%;
-  backdrop-filter:blur(6px)}
+.card{background:rgba(255,255,255,.94);border-radius:28px;padding:20px 24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.12);text-align:center;max-width:520px;width:100%;
+  backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.7)}
 
 /* ---- home ---- */
 .home-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:12px 16px 16px;gap:10px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .home-title{font-size:clamp(1.6rem,5.5vw,2.4rem);font-weight:900;color:#fff;
-  text-shadow:0 3px 0 rgba(0,0,0,.2),0 6px 20px rgba(0,0,0,.25);text-align:center;line-height:1.15}
-.home-sub{color:rgba(255,255,255,.95);font-weight:700;font-size:1rem;text-align:center;margin-bottom:6px}
+  text-shadow:0 3px 0 rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.2);text-align:center;line-height:1.15}
+.home-sub{color:rgba(255,255,255,.97);font-weight:700;font-size:1rem;text-align:center;margin-bottom:6px;
+  text-shadow:0 1px 4px rgba(0,0,0,.15)}
 .mode-list{display:flex;flex-direction:column;gap:12px;width:100%;max-width:420px}
-.parent-note{margin-top:10px;background:rgba(255,255,255,.85);border-radius:16px;padding:12px 14px;
+.parent-note{margin-top:10px;background:rgba(255,255,255,.88);border-radius:16px;padding:12px 14px;
   font-size:.8rem;color:#2d3436;max-width:420px;line-height:1.4;font-weight:600}
 .parent-note strong{color:#5B8DEF}
 
 /* ---- letters / numbers learn ---- */
-.huge-letter{font-size:clamp(7rem,28vw,12rem);font-weight:900;line-height:1;color:#5B8DEF;
+.huge-letter{font-size:clamp(6rem,24vw,10rem);font-weight:900;line-height:1;color:#5B8DEF;
   text-shadow:0 4px 0 rgba(0,0,0,.08);letter-spacing:-.02em}
+.huge-pair{display:flex;align-items:baseline;justify-content:center;gap:.12em;flex-wrap:wrap}
+.huge-pair .upper{font-size:clamp(5.5rem,22vw,9.5rem);font-weight:900;line-height:1;color:#5B8DEF;
+  text-shadow:0 4px 0 rgba(0,0,0,.08)}
+.huge-pair .lower{font-size:clamp(4rem,16vw,7rem);font-weight:900;line-height:1;color:#74b9ff;
+  text-shadow:0 3px 0 rgba(0,0,0,.06)}
+.case-hint{font-size:.9rem;font-weight:700;color:#636e72;margin-top:2px}
 .pic-row{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:4px}
 .pic-emoji{font-size:clamp(3.5rem,14vw,5.5rem);line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.12))}
 .pic-word{font-size:clamp(1.4rem,5vw,2rem);font-weight:800;color:#2d3436}
 .pic-hint{font-size:.85rem;font-weight:700;color:#636e72;margin-top:2px}
 .btn-cycle{background:#a29bfe;font-size:1.05rem;min-height:48px;padding:10px 16px}
 .nav-row{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.count-wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:380px;margin:12px auto 0;
+
+/* structured counting grid (Mexican Train / dice pips) */
+.count-wrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:400px;margin:12px auto 0;
   align-items:center}
+.count-pip-board{display:inline-flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;
+  margin:12px auto 0;max-width:420px}
+.pip-tile{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
+  width:clamp(72px,22vw,110px);height:clamp(72px,22vw,110px);gap:4px;padding:8px;
+  background:rgba(255,255,255,.55);border-radius:16px;border:2px solid rgba(45,52,54,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 3px 8px rgba(0,0,0,.06)}
+.pip-tile.tall{grid-template-rows:repeat(4,1fr);height:clamp(88px,26vw,130px)}
+.pip-cell{display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}
+.pip-cell .count-sym{font-size:clamp(1.15rem,4.2vw,1.7rem)}
 .count-sym{font-size:clamp(1.7rem,6vw,2.4rem);line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.12));
   display:inline-flex;align-items:center;justify-content:center;min-width:1.2em}
-.count-sym.dash{width:28px;height:8px;min-width:28px;border-radius:4px;
+.count-sym.dash{width:22px;height:7px;min-width:22px;border-radius:4px;
   background:linear-gradient(90deg,#2d3436,#636e72);box-shadow:0 2px 0 rgba(0,0,0,.15);font-size:0}
-.count-sym.dot{width:26px;height:26px;min-width:26px;border-radius:50%;font-size:0;
-  background:linear-gradient(145deg,#54a0ff,#2e86de);box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.count-sym.dot{width:clamp(14px,4vw,22px);height:clamp(14px,4vw,22px);min-width:14px;border-radius:50%;font-size:0;
+  background:linear-gradient(145deg,#54a0ff,#2e86de);box-shadow:0 2px 0 rgba(0,0,0,.15)}
 .count-sym.dot.a1{background:linear-gradient(145deg,#ff6b6b,#ee5a24)}
 .count-sym.dot.a2{background:linear-gradient(145deg,#1dd1a1,#10ac84)}
 .count-sym.dot.a3{background:linear-gradient(145deg,#feca57,#ff9f43)}
 .count-sym.dot.a4{background:linear-gradient(145deg,#5f27cd,#341f97)}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:380px;margin:12px auto 0}
 .theme-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px;max-width:400px}
 .theme-btn{border:3px solid transparent;border-radius:16px;background:#fff;padding:8px 12px;
   font-weight:800;font-size:.95rem;cursor:pointer;min-height:48px;
@@ -116,6 +138,8 @@ body{background:#1a2744;color:#1a1a2e}
 .quiz-prompt{font-size:clamp(1.3rem,4.5vw,1.8rem);font-weight:800;color:#2d3436;margin-bottom:8px}
 .quiz-target{font-size:clamp(4rem,16vw,7rem);font-weight:900;color:#5B8DEF;line-height:1;
   text-shadow:0 3px 0 rgba(0,0,0,.08);margin:8px 0 18px}
+.quiz-case-tag{display:inline-block;font-size:.85rem;font-weight:800;color:#636e72;background:#f1f2f6;
+  border-radius:999px;padding:4px 12px;margin-bottom:4px}
 .choices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:100%;max-width:360px;margin:0 auto}
 .choice{min-height:88px;font-size:clamp(2.2rem,9vw,3.2rem);font-weight:900;border:none;border-radius:22px;
   background:#fff;color:#2d3436;cursor:pointer;
@@ -135,15 +159,24 @@ body{background:#1a2744;color:#1a1a2e}
   background:rgba(255,255,255,.95);border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.15);
   overflow:hidden;touch-action:none}
 #traceCanvas{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.trace-flash{position:absolute;inset:0;background:rgba(46,213,115,.55);pointer-events:none;
+  opacity:0;border-radius:24px;transition:opacity .12s ease;z-index:2}
+.trace-flash.on{opacity:1;animation:greenPulse .55s ease}
+@keyframes greenPulse{
+  0%{opacity:0;background:rgba(46,213,115,.15)}
+  25%{opacity:1;background:rgba(46,213,115,.7)}
+  100%{opacity:0;background:rgba(46,213,115,.1)}
+}
 .trace-hint{font-size:.95rem;font-weight:700;color:#636e72;margin:8px 0 4px;text-align:center}
 .trace-picker{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:480px;margin-top:8px;
-  max-height:90px;overflow-y:auto;padding:4px}
-.trace-pick{width:44px;height:44px;border-radius:12px;border:3px solid transparent;background:#fff;
-  font-weight:900;font-size:1.15rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1);color:#2d3436}
+  max-height:100px;overflow-y:auto;padding:4px}
+.trace-pick{width:48px;height:48px;border-radius:12px;border:3px solid transparent;background:#fff;
+  font-weight:900;font-size:1.15rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.1);color:#2d3436;
+  min-width:48px}
 .trace-pick.active{border-color:#5B8DEF;background:#e8f1ff;color:#5B8DEF}
-.trace-tabs{display:flex;gap:8px;margin-bottom:6px}
-.trace-tab{padding:8px 16px;border-radius:14px;border:none;font-weight:800;background:rgba(255,255,255,.7);
-  color:#2d3436;cursor:pointer;min-height:44px}
+.trace-tabs{display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap;justify-content:center}
+.trace-tab{padding:10px 16px;border-radius:14px;border:none;font-weight:800;background:rgba(255,255,255,.75);
+  color:#2d3436;cursor:pointer;min-height:48px;font-size:1.05rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .trace-tab.active{background:#5B8DEF;color:#fff}
 
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden}
@@ -156,15 +189,27 @@ body{background:#1a2744;color:#1a1a2e}
 <div id="app">
   <!-- HOME -->
   <section id="home" class="screen active bg-home">
+    <div class="floaties" aria-hidden="true">
+      <span class="cloud" style="top:8%;left:6%"></span>
+      <span class="cloud" style="top:18%;right:8%;animation-delay:-6s"></span>
+      <span class="bubble" style="width:28px;height:28px;top:70%;left:12%;animation-delay:-1s"></span>
+      <span class="bubble" style="width:18px;height:18px;top:55%;right:14%;animation-delay:-2.5s"></span>
+      <span class="bubble" style="width:36px;height:36px;top:78%;right:22%;animation-delay:-4s"></span>
+      <span class="star" style="top:12%;left:42%">⭐</span>
+      <span class="star" style="top:62%;left:8%;animation-delay:-1.5s">✨</span>
+      <span class="star" style="top:28%;right:18%;animation-delay:-3s">🌟</span>
+      <span class="blob" style="width:90px;height:90px;background:#ffd6e8;top:75%;left:55%;animation-delay:-8s"></span>
+      <span class="blob" style="width:70px;height:70px;background:#c8f0d8;top:5%;right:30%;animation-delay:-3s"></span>
+    </div>
     <div class="home-wrap">
       <div class="home-title">🌟 Harlen's ABCs &amp; 123s 🌟</div>
       <div class="home-sub">Let's learn letters &amp; numbers!</div>
       <div class="mode-list">
-        <button class="btn-mode" data-go="letters"><span class="emoji">🔤</span>Letters A–Z<span class="sub">Big letters with pictures</span></button>
-        <button class="btn-mode" data-go="findLetter"><span class="emoji">🔎</span>Find the Letter<span class="sub">Quiz — especially D–Z</span></button>
-        <button class="btn-mode" data-go="numbers"><span class="emoji">🔢</span>Numbers 1–20<span class="sub">Big numbers with dots</span></button>
+        <button class="btn-mode" data-go="letters"><span class="emoji">🔤</span>Letters A–Z<span class="sub">Upper &amp; lowercase with pictures</span></button>
+        <button class="btn-mode" data-go="findLetter"><span class="emoji">🔎</span>Find the Letter<span class="sub">Quiz — big &amp; little letters</span></button>
+        <button class="btn-mode" data-go="numbers"><span class="emoji">🔢</span>Numbers 1–20<span class="sub">Count with dots like Mexican Train</span></button>
         <button class="btn-mode" data-go="findNumber"><span class="emoji">🎯</span>Find the Number<span class="sub">Quiz — especially 11–20</span></button>
-        <button class="btn-mode" data-go="trace"><span class="emoji">✍️</span>Trace<span class="sub">Finger-draw A–Z and 0–9</span></button>
+        <button class="btn-mode" data-go="trace"><span class="emoji">✍️</span>Trace<span class="sub">Finger-draw A a … Z z and 0–9</span></button>
       </div>
       <div class="parent-note">
         <strong>Parents:</strong> On iPad — Share → Add to Home Screen. On Android — menu → Add to Home screen / Install app.
@@ -175,14 +220,26 @@ body{background:#1a2744;color:#1a1a2e}
 
   <!-- LETTERS -->
   <section id="letters" class="screen bg-letters">
+    <div class="floaties" aria-hidden="true">
+      <span class="bubble" style="width:22px;height:22px;top:12%;left:10%"></span>
+      <span class="bubble" style="width:34px;height:34px;top:68%;right:8%;animation-delay:-2s"></span>
+      <span class="star" style="top:20%;right:12%">✨</span>
+      <span class="blob" style="width:80px;height:80px;background:#fff3c4;top:78%;left:18%;animation-delay:-5s"></span>
+      <span class="cloud" style="top:8%;right:22%;animation-delay:-4s"></span>
+    </div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="letterProgress">A of Z</div>
+      <button class="btn btn-case" id="letterCaseToggle" aria-label="Toggle upper or lowercase" title="Aa">Aa</button>
       <button class="btn btn-speak" id="letterSpeak" aria-label="Say letter">🔊</button>
     </div>
     <div class="content">
       <div class="card">
-        <div class="huge-letter" id="letterChar">A</div>
+        <div class="huge-pair" id="letterPair">
+          <span class="upper" id="letterUpper">A</span>
+          <span class="lower" id="letterLower">a</span>
+        </div>
+        <div class="case-hint" id="letterCaseHint">Big A · little a</div>
         <div class="pic-row">
           <div class="pic-emoji" id="letterPic">🍎</div>
           <div class="pic-word" id="letterWord">Apple</div>
@@ -199,6 +256,12 @@ body{background:#1a2744;color:#1a1a2e}
 
   <!-- FIND LETTER -->
   <section id="findLetter" class="screen bg-find-letter">
+    <div class="floaties" aria-hidden="true">
+      <span class="star" style="top:10%;left:14%">💖</span>
+      <span class="star" style="top:18%;right:10%;animation-delay:-2s">✨</span>
+      <span class="bubble" style="width:26px;height:26px;top:72%;left:10%;animation-delay:-1s"></span>
+      <span class="blob" style="width:100px;height:100px;background:#e8d4ff;top:70%;right:8%;animation-delay:-7s"></span>
+    </div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="flProgress">Find!</div>
@@ -207,6 +270,7 @@ body{background:#1a2744;color:#1a1a2e}
     <div class="content">
       <div class="card">
         <div class="quiz-prompt">Find this letter:</div>
+        <div class="quiz-case-tag" id="flCaseTag">Big letter</div>
         <div class="quiz-target" id="flTarget">D</div>
         <div class="choices" id="flChoices"></div>
         <div class="feedback" id="flFeedback"></div>
@@ -220,6 +284,13 @@ body{background:#1a2744;color:#1a1a2e}
 
   <!-- NUMBERS -->
   <section id="numbers" class="screen bg-numbers">
+    <div class="floaties" aria-hidden="true">
+      <span class="bubble" style="width:20px;height:20px;top:14%;left:16%"></span>
+      <span class="bubble" style="width:32px;height:32px;top:60%;right:12%;animation-delay:-3s"></span>
+      <span class="cloud" style="top:6%;left:40%"></span>
+      <span class="star" style="top:22%;right:20%">🌟</span>
+      <span class="blob" style="width:85px;height:85px;background:#b8e8ff;top:76%;left:12%;animation-delay:-4s"></span>
+    </div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="numProgress">1 of 20</div>
@@ -228,8 +299,8 @@ body{background:#1a2744;color:#1a1a2e}
     <div class="content">
       <div class="card">
         <div class="huge-letter" id="numChar" style="color:#2e86de">1</div>
-        <div class="count-wrap" id="numDots" aria-label="counting symbols"></div>
-        <div class="theme-label" id="themeLabel">Count with: Dinosaurs</div>
+        <div class="count-pip-board" id="numDots" aria-label="counting symbols"></div>
+        <div class="theme-label" id="themeLabel">Count with: Dots (Mexican Train)</div>
         <div class="theme-bar" id="themeBar" role="group" aria-label="Counting theme"></div>
         <div class="nav-row">
           <button class="btn btn-nav" id="numPrev" aria-label="Previous">◀</button>
@@ -242,6 +313,12 @@ body{background:#1a2744;color:#1a1a2e}
 
   <!-- FIND NUMBER -->
   <section id="findNumber" class="screen bg-find-number">
+    <div class="floaties" aria-hidden="true">
+      <span class="star" style="top:12%;left:10%">⭐</span>
+      <span class="star" style="top:16%;right:14%;animation-delay:-1.8s">🌞</span>
+      <span class="bubble" style="width:24px;height:24px;top:68%;right:16%;animation-delay:-2s"></span>
+      <span class="blob" style="width:90px;height:90px;background:#ffd8b8;top:74%;left:10%;animation-delay:-6s"></span>
+    </div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="fnProgress">Find!</div>
@@ -263,6 +340,12 @@ body{background:#1a2744;color:#1a1a2e}
 
   <!-- TRACE -->
   <section id="trace" class="screen bg-trace">
+    <div class="floaties" aria-hidden="true">
+      <span class="cloud" style="top:6%;left:10%"></span>
+      <span class="bubble" style="width:18px;height:18px;top:55%;left:6%;animation-delay:-1s"></span>
+      <span class="bubble" style="width:28px;height:28px;top:62%;right:8%;animation-delay:-3s"></span>
+      <span class="star" style="top:14%;right:16%">✨</span>
+    </div>
     <div class="topbar">
       <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
       <div class="progress" id="traceProgress">Trace A</div>
@@ -270,11 +353,13 @@ body{background:#1a2744;color:#1a1a2e}
     </div>
     <div class="trace-wrap">
       <div class="trace-tabs">
-        <button class="trace-tab active" data-set="letters" id="tabLetters">A–Z</button>
+        <button class="trace-tab active" data-set="upper" id="tabUpper">A–Z</button>
+        <button class="trace-tab" data-set="lower" id="tabLower">a–z</button>
         <button class="trace-tab" data-set="digits" id="tabDigits">0–9</button>
       </div>
-      <div class="trace-hint">Trace with your finger! 👆</div>
+      <div class="trace-hint">Trace with your finger! 👆 Green flash when you finish a stroke</div>
       <div class="trace-canvas-box">
+        <div class="trace-flash" id="traceFlash" aria-hidden="true"></div>
         <canvas id="traceCanvas"></canvas>
       </div>
       <div class="trace-picker" id="tracePicker"></div>
@@ -317,8 +402,9 @@ var LETTERS = [
   {c:'Z',pics:[{w:'Zebra',e:'🦓'},{w:'Zoo',e:'🦒'},{w:'Zipper',e:'🧥'}]}
 ];
 
-/* Counting themes — especially fun for 1–10; also used for 11–20 */
+/* Counting themes — Dots default uses Mexican Train / dice pip layouts */
 var COUNT_THEMES = [
+  {id:'dots', name:'Dots', kind:'dot'},
   {id:'dino', name:'Dinosaurs', kind:'emoji', emoji:'🦕'},
   {id:'spider', name:'Spiders', kind:'emoji', emoji:'🕷️'},
   {id:'stars', name:'Stars', kind:'emoji', emoji:'⭐'},
@@ -326,9 +412,51 @@ var COUNT_THEMES = [
   {id:'balls', name:'Balls', kind:'emoji', emoji:'⚽'},
   {id:'hearts', name:'Hearts', kind:'emoji', emoji:'❤️'},
   {id:'rockets', name:'Rockets', kind:'emoji', emoji:'🚀'},
-  {id:'dashes', name:'Dashes', kind:'dash'},
-  {id:'dots', name:'Dots', kind:'dot'}
+  {id:'dashes', name:'Dashes', kind:'dash'}
 ];
+
+/* Mexican Train / dice / double-12 style cell maps on a 3x3 (or 3x4 for 8)
+   Cells numbered 0..8 left-to-right, top-to-bottom:
+     0 1 2
+     3 4 5
+     6 7 8
+   For tall tiles (8): 12 cells in 3x4
+*/
+var PIP_MAPS = {
+  0: [],
+  1: [4],
+  2: [0, 8],
+  3: [0, 4, 8],
+  4: [0, 2, 6, 8],
+  5: [0, 2, 4, 6, 8],
+  6: [0, 2, 3, 5, 6, 8],
+  7: [0, 2, 3, 4, 5, 6, 8],
+  8: 'tall8', // special 3x4
+  9: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+};
+var TALL8 = [0, 2, 3, 5, 6, 8, 9, 11]; // two columns of 4 on 3x4
+
+/* Split n into tile faces for readable grouping (Mexican Train style) */
+function splitFaces(n){
+  if(n <= 0) return [];
+  if(n <= 9) return [n];
+  if(n === 10) return [5, 5];
+  if(n === 11) return [5, 6];
+  if(n === 12) return [6, 6];
+  if(n === 13) return [6, 7];
+  if(n === 14) return [7, 7];
+  if(n === 15) return [5, 5, 5];
+  if(n === 16) return [8, 8];
+  if(n === 17) return [8, 9];
+  if(n === 18) return [9, 9];
+  if(n === 19) return [9, 5, 5];
+  if(n === 20) return [5, 5, 5, 5];
+  // fallback: groups of 5 then remainder
+  var faces = [];
+  while(n > 9){ faces.push(5); n -= 5; }
+  if(n) faces.push(n);
+  return faces;
+}
 
 /* ========== NAV ========== */
 function showScreen(id){
@@ -374,7 +502,9 @@ function burst(){
 
 /* ========== LETTERS LEARN ========== */
 var li = 0;
-var picIdx = 0; // picture index within current letter
+var picIdx = 0;
+var letterFocusLower = false; // which side of Aa is “emphasized” when speaking
+
 function currentPic(){
   var L = LETTERS[li];
   return L.pics[picIdx % L.pics.length];
@@ -383,11 +513,20 @@ function renderLetter(){
   var L = LETTERS[li];
   if(picIdx >= L.pics.length) picIdx = 0;
   var P = L.pics[picIdx];
-  document.getElementById('letterChar').textContent = L.c;
+  var up = L.c;
+  var lo = L.c.toLowerCase();
+  document.getElementById('letterUpper').textContent = up;
+  document.getElementById('letterLower').textContent = lo;
+  document.getElementById('letterCaseHint').textContent = 'Big ' + up + ' · little ' + lo;
+  document.getElementById('letterCaseToggle').textContent = letterFocusLower ? (lo + up) : (up + lo);
+  document.getElementById('letterUpper').style.opacity = letterFocusLower ? '0.55' : '1';
+  document.getElementById('letterLower').style.opacity = letterFocusLower ? '1' : '0.7';
+  document.getElementById('letterUpper').style.transform = letterFocusLower ? 'scale(0.92)' : 'scale(1)';
+  document.getElementById('letterLower').style.transform = letterFocusLower ? 'scale(1.05)' : 'scale(1)';
   document.getElementById('letterPic').textContent = P.e;
   document.getElementById('letterWord').textContent = P.w;
   document.getElementById('letterPicHint').textContent = (picIdx+1) + ' of ' + L.pics.length + ' · tap picture';
-  document.getElementById('letterProgress').textContent = L.c + '  ·  ' + (li+1) + ' of 26';
+  document.getElementById('letterProgress').textContent = up + lo + '  ·  ' + (li+1) + ' of 26';
 }
 function cyclePic(){
   var L = LETTERS[li];
@@ -405,15 +544,22 @@ document.getElementById('letterPic').style.cursor = 'pointer';
 document.getElementById('letterPic').addEventListener('click', cyclePic);
 document.getElementById('letterWord').style.cursor = 'pointer';
 document.getElementById('letterWord').addEventListener('click', cyclePic);
+document.getElementById('letterCaseToggle').addEventListener('click', function(){
+  letterFocusLower = !letterFocusLower;
+  renderLetter();
+  var L = LETTERS[li];
+  speak(letterFocusLower ? ('little ' + L.c.toLowerCase()) : ('big ' + L.c));
+});
 document.getElementById('letterSpeak').addEventListener('click', function(){
   var L = LETTERS[li];
   var P = currentPic();
-  speak(L.c + '. ' + P.w);
+  var focus = letterFocusLower ? L.c.toLowerCase() : L.c;
+  speak(focus + '. ' + P.w);
 });
 
 /* ========== FIND LETTER ========== */
 var flAnswer = 'A', flStreak = 0, flLocked = false;
-function weightedLetter(){
+function weightedLetterUpper(){
   // Prefer D–Z (index 3..25)
   if(Math.random() < 0.75){
     return LETTERS[3 + Math.floor(Math.random()*23)].c;
@@ -422,14 +568,32 @@ function weightedLetter(){
 }
 function newLetterQuiz(){
   flLocked = false;
-  flAnswer = weightedLetter();
+  var upper = weightedLetterUpper();
+  // ~50% lowercase prompts so Harlen practices both
+  var useLower = Math.random() < 0.5;
+  flAnswer = useLower ? upper.toLowerCase() : upper;
   document.getElementById('flTarget').textContent = flAnswer;
+  document.getElementById('flCaseTag').textContent = useLower ? 'Little letter' : 'Big letter';
   document.getElementById('flFeedback').textContent = '';
   document.getElementById('flProgress').textContent = 'Streak: ' + flStreak;
   var opts = [flAnswer];
+  var guard = 0;
+  while(opts.length < 4 && guard < 80){
+    guard++;
+    var base = LETTERS[Math.floor(Math.random()*26)].c;
+    // Mostly same case as the prompt so a 3yo is comparing like with like
+    var sameCase = Math.random() < 0.75;
+    var c = sameCase
+      ? (useLower ? base.toLowerCase() : base)
+      : (useLower ? base : base.toLowerCase());
+    if(opts.indexOf(c) !== -1) continue;
+    if(c.toLowerCase() === flAnswer.toLowerCase()) continue; // never two forms of same letter
+    opts.push(c);
+  }
   while(opts.length < 4){
-    var c = LETTERS[Math.floor(Math.random()*26)].c;
-    if(opts.indexOf(c)===-1) opts.push(c);
+    var b2 = LETTERS[Math.floor(Math.random()*26)].c;
+    var c2 = useLower ? b2.toLowerCase() : b2;
+    if(opts.indexOf(c2) === -1 && c2.toLowerCase() !== flAnswer.toLowerCase()) opts.push(c2);
   }
   shuffle(opts);
   var box = document.getElementById('flChoices');
@@ -459,7 +623,6 @@ function pickLetter(btn, c){
     document.getElementById('flFeedback').textContent = 'Try again — look for ' + flAnswer;
     document.getElementById('flStars').textContent = '';
     document.getElementById('flProgress').textContent = 'Streak: 0';
-    // highlight correct
     document.querySelectorAll('#flChoices .choice').forEach(function(el){
       if(el.textContent === flAnswer) el.classList.add('correct');
     });
@@ -471,7 +634,7 @@ document.getElementById('flSpeak').addEventListener('click', function(){ speak(f
 
 /* ========== NUMBERS LEARN ========== */
 var ni = 0; // 0..19 => numbers 1..20
-var themeIdx = 0;
+var themeIdx = 0; // dots first (Mexican Train)
 
 function buildThemeBar(){
   var bar = document.getElementById('themeBar');
@@ -487,29 +650,61 @@ function buildThemeBar(){
   });
 }
 
+function makeSym(theme, colorIdx){
+  var d = document.createElement('span');
+  if(theme.kind === 'emoji'){
+    d.className = 'count-sym';
+    d.textContent = theme.emoji;
+  } else if(theme.kind === 'dash'){
+    d.className = 'count-sym dash';
+    d.setAttribute('aria-hidden','true');
+  } else {
+    d.className = 'count-sym dot a' + (colorIdx % 5);
+    d.setAttribute('aria-hidden','true');
+  }
+  return d;
+}
+
+function makePipTile(face, theme, colorBase){
+  var tile = document.createElement('div');
+  var isTall = (face === 8);
+  tile.className = 'pip-tile' + (isTall ? ' tall' : '');
+  var cells = isTall ? 12 : 9;
+  var map = isTall ? TALL8 : (PIP_MAPS[face] || []);
+  var occupied = {};
+  for(var m=0;m<map.length;m++) occupied[map[m]] = true;
+  var placed = 0;
+  for(var i=0;i<cells;i++){
+    var cell = document.createElement('div');
+    cell.className = 'pip-cell';
+    if(occupied[i]){
+      cell.appendChild(makeSym(theme, colorBase + placed));
+      placed++;
+    }
+    tile.appendChild(cell);
+  }
+  return tile;
+}
+
 function renderNumber(){
   var n = ni + 1;
   var theme = COUNT_THEMES[themeIdx];
   document.getElementById('numChar').textContent = String(n);
   document.getElementById('numProgress').textContent = n + ' of 20';
-  document.getElementById('themeLabel').textContent = 'Count with: ' + theme.name;
+  var label = theme.name;
+  if(theme.kind === 'dot') label = 'Dots (Mexican Train)';
+  document.getElementById('themeLabel').textContent = 'Count with: ' + label;
   var box = document.getElementById('numDots');
   box.innerHTML = '';
-  for(var i=0;i<n;i++){
-    var d = document.createElement('span');
-    if(theme.kind === 'emoji'){
-      d.className = 'count-sym';
-      d.textContent = theme.emoji;
-    } else if(theme.kind === 'dash'){
-      d.className = 'count-sym dash';
-      d.setAttribute('aria-hidden','true');
-    } else {
-      d.className = 'count-sym dot a' + (i % 5);
-      d.setAttribute('aria-hidden','true');
-    }
-    box.appendChild(d);
-  }
-  // refresh active state on theme buttons
+
+  // Always use Mexican Train / dice-style pip tiles so kids can count in chunks
+  var faces = splitFaces(n);
+  var colorBase = 0;
+  faces.forEach(function(face){
+    box.appendChild(makePipTile(face, theme, colorBase));
+    colorBase += face;
+  });
+
   var btns = document.querySelectorAll('#themeBar .theme-btn');
   btns.forEach(function(b, idx){
     if(idx === themeIdx) b.classList.add('active'); else b.classList.remove('active');
@@ -533,7 +728,6 @@ buildThemeBar();
 /* ========== FIND NUMBER ========== */
 var fnAnswer = 11, fnStreak = 0, fnLocked = false;
 function weightedNumber(){
-  // Prefer 11–20
   if(Math.random() < 0.75){
     return 11 + Math.floor(Math.random()*10);
   }
@@ -591,16 +785,22 @@ document.getElementById('fnSpeak').addEventListener('click', function(){ speak(S
 var canvas = document.getElementById('traceCanvas');
 var ctx = canvas.getContext('2d');
 var tracing = false;
-var traceSet = 'letters'; // or digits
+var traceSet = 'upper'; // upper | lower | digits
 var traceChar = 'A';
 var lastX = 0, lastY = 0;
+var strokeDist = 0;
+var strokePoints = 0;
+
+function traceItems(){
+  if(traceSet === 'upper') return LETTERS.map(function(L){ return L.c; });
+  if(traceSet === 'lower') return LETTERS.map(function(L){ return L.c.toLowerCase(); });
+  return ['0','1','2','3','4','5','6','7','8','9'];
+}
 
 function setupTracePicker(){
   var picker = document.getElementById('tracePicker');
   picker.innerHTML = '';
-  var items = traceSet === 'letters'
-    ? LETTERS.map(function(L){ return L.c; })
-    : ['0','1','2','3','4','5','6','7','8','9'];
+  var items = traceItems();
   if(items.indexOf(traceChar) === -1) traceChar = items[0];
   items.forEach(function(ch){
     var b = document.createElement('button');
@@ -616,18 +816,19 @@ function setupTracePicker(){
   });
   document.getElementById('traceProgress').textContent = 'Trace ' + traceChar;
 }
-document.getElementById('tabLetters').addEventListener('click', function(){
-  traceSet = 'letters'; traceChar = 'A';
-  document.getElementById('tabLetters').classList.add('active');
-  document.getElementById('tabDigits').classList.remove('active');
-  setupTracePicker(); drawGuide();
-});
-document.getElementById('tabDigits').addEventListener('click', function(){
-  traceSet = 'digits'; traceChar = '0';
-  document.getElementById('tabDigits').classList.add('active');
-  document.getElementById('tabLetters').classList.remove('active');
-  setupTracePicker(); drawGuide();
-});
+
+function setTraceTab(setName, firstChar){
+  traceSet = setName;
+  traceChar = firstChar;
+  document.querySelectorAll('.trace-tab').forEach(function(t){
+    t.classList.toggle('active', t.getAttribute('data-set') === setName);
+  });
+  setupTracePicker();
+  drawGuide();
+}
+document.getElementById('tabUpper').addEventListener('click', function(){ setTraceTab('upper', 'A'); });
+document.getElementById('tabLower').addEventListener('click', function(){ setTraceTab('lower', 'a'); });
+document.getElementById('tabDigits').addEventListener('click', function(){ setTraceTab('digits', '0'); });
 
 function resizeCanvas(){
   var box = canvas.parentElement;
@@ -644,7 +845,6 @@ function drawGuide(){
   var h = canvas.parentElement.clientHeight;
   if(w < 10 || h < 10) return;
   ctx.clearRect(0, 0, w, h);
-  // soft guide letter
   ctx.save();
   ctx.fillStyle = 'rgba(91,141,239,0.18)';
   ctx.strokeStyle = 'rgba(91,141,239,0.35)';
@@ -654,7 +854,6 @@ function drawGuide(){
   ctx.textBaseline = 'middle';
   ctx.fillText(traceChar, w/2, h/2 + 4);
   ctx.strokeText(traceChar, w/2, h/2 + 4);
-  // dashed center guides
   ctx.setLineDash([8,8]);
   ctx.strokeStyle = 'rgba(0,0,0,0.06)';
   ctx.lineWidth = 1;
@@ -669,9 +868,20 @@ function getPos(e){
   var t = (e.touches && e.touches[0]) ? e.touches[0] : (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : e;
   return { x: t.clientX - r.left, y: t.clientY - r.top };
 }
+function flashGreen(){
+  var flash = document.getElementById('traceFlash');
+  flash.classList.remove('on');
+  // reflow so animation can replay
+  void flash.offsetWidth;
+  flash.classList.add('on');
+  setTimeout(function(){ flash.classList.remove('on'); }, 600);
+  try{ speak(traceChar); }catch(e){}
+}
 function startDraw(e){
   e.preventDefault();
   tracing = true;
+  strokeDist = 0;
+  strokePoints = 1;
   var p = getPos(e);
   lastX = p.x; lastY = p.y;
   ctx.beginPath();
@@ -683,6 +893,9 @@ function moveDraw(e){
   if(!tracing) return;
   e.preventDefault();
   var p = getPos(e);
+  var dx = p.x - lastX, dy = p.y - lastY;
+  strokeDist += Math.sqrt(dx*dx + dy*dy);
+  strokePoints++;
   ctx.beginPath();
   ctx.moveTo(lastX, lastY);
   ctx.lineTo(p.x, p.y);
@@ -695,7 +908,14 @@ function moveDraw(e){
 }
 function endDraw(e){
   if(e) e.preventDefault();
+  if(!tracing) return;
   tracing = false;
+  // Meaningful stroke: moved ~40px or several sample points
+  if(strokeDist >= 40 || strokePoints >= 8){
+    flashGreen();
+  }
+  strokeDist = 0;
+  strokePoints = 0;
 }
 canvas.addEventListener('mousedown', startDraw);
 canvas.addEventListener('mousemove', moveDraw);
@@ -727,7 +947,6 @@ function shuffle(a){
 renderLetter();
 renderNumber();
 
-// Prevent pull-to-refresh / overscroll on tablet while learning
 document.body.addEventListener('touchmove', function(e){
   if(e.target === canvas || canvas.contains(e.target)) return;
 }, {passive:true});
