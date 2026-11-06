@@ -164,6 +164,11 @@ body{background:#12102a;color:#f7f3e8}
 #letters.show-j .letter-frame{background-image:url("art/letters-j.png")}
 #letters.show-k .letter-frame{background-image:url("art/letters-k.png")}
 #letters.show-l .letter-frame{background-image:url("art/letters-l.png")}
+#letters.show-m .letter-frame{background-image:url("art/letters-m.png")}
+#letters.show-n .letter-frame{background-image:url("art/letters-n.png")}
+#letters.show-o .letter-frame{background-image:url("art/letters-o.png")}
+#letters.show-p .letter-frame{background-image:url("art/letters-p.png")}
+#letters.show-q .letter-frame{background-image:url("art/letters-q.png")}
 #letters .glow-pair{top:58%}
 #letters .glow-pair .upper{font-size:clamp(4.4rem,16vw,10.5rem)}
 #letters .glow-pair .lower{font-size:clamp(3.4rem,12vw,8rem);opacity:1}
@@ -913,8 +918,8 @@ function renderLetter(){
   document.getElementById('letterPicHint').textContent = 'tap a picture · '+(picIdx+1)+' of '+L.pics.length;
   document.getElementById('letterProgress').textContent = up+lo+'  ·  '+(li+1)+' of 26';
   var board = document.getElementById('letters');
-  var sceneClass = {A:'show-a',B:'show-b',C:'show-c',D:'show-d',E:'show-e',F:'show-f',G:'show-g',H:'show-h',I:'show-i',J:'show-j',K:'show-k',L:'show-l'}[up];
-  board.classList.remove('show-a','show-b','show-c','show-d','show-e','show-f','show-g','show-h','show-i','show-j','show-k','show-l','show-fallback','has-scene');
+  var sceneClass = {A:'show-a',B:'show-b',C:'show-c',D:'show-d',E:'show-e',F:'show-f',G:'show-g',H:'show-h',I:'show-i',J:'show-j',K:'show-k',L:'show-l',M:'show-m',N:'show-n',O:'show-o',P:'show-p',Q:'show-q'}[up];
+  board.classList.remove('show-a','show-b','show-c','show-d','show-e','show-f','show-g','show-h','show-i','show-j','show-k','show-l','show-m','show-n','show-o','show-p','show-q','show-fallback','has-scene');
   board.classList.add(sceneClass || 'show-fallback');
   if(sceneClass) board.classList.add('has-scene');
   var sndLabel = document.getElementById('letterSoundLabel');
