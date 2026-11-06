@@ -1338,13 +1338,13 @@ function startDraw(e){
   var p = getPos(e, canvas); lastX = p.x; lastY = p.y;
   var chalk = traceChalkWidth();
   ctx.beginPath(); ctx.arc(lastX,lastY,chalk/2,0,Math.PI*2);
-  ctx.fillStyle = '#fff6dc'; ctx.fill();
+  ctx.fillStyle = '#e34d3c'; ctx.fill();
 }
 function moveDraw(e){
   if(!tracing) return; e.preventDefault();
   var p = getPos(e, canvas);
   ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y);
-  ctx.strokeStyle = '#fff6dc'; ctx.lineWidth = traceChalkWidth(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  ctx.strokeStyle = '#e34d3c'; ctx.lineWidth = traceChalkWidth(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
   lastX = p.x; lastY = p.y;
 }
 function endDraw(e){ if(e) e.preventDefault(); tracing = false; }
