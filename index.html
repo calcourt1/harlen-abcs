@@ -1304,13 +1304,21 @@ function drawGuide(){
   ctx.clearRect(0,0,w,h);
   ctx.save();
   var size = Math.floor(Math.min(w, h) * 0.9);
-  ctx.fillStyle = 'rgba(255,246,220,0.55)';
-  ctx.strokeStyle = 'rgba(255,246,220,0.95)';
-  ctx.lineWidth = Math.max(8, Math.floor(size * 0.045));
-  ctx.lineJoin = 'round';
+  var ring = Math.max(8, Math.floor(size * 0.045));
   ctx.font = 'bold '+size+'px system-ui,sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.strokeText(traceChar, w/2, h/2);
+  /* Outline the filled glyph silhouette so crossing strokes (A bar, B bowls)
+     do not draw extra lines inside the letter the way strokeText does. */
+  ctx.fillStyle = 'rgba(255,246,220,0.95)';
+  var steps = 36;
+  for(var i=0;i<steps;i++){
+    var a = (Math.PI * 2 * i) / steps;
+    ctx.fillText(traceChar, w/2 + Math.cos(a)*ring, h/2 + Math.sin(a)*ring);
+  }
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillText(traceChar, w/2, h/2);
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = 'rgba(255,246,220,0.55)';
   ctx.fillText(traceChar, w/2, h/2);
   ctx.restore();
 }
