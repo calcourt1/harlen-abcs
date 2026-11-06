@@ -198,9 +198,6 @@ body{background:#12102a;color:#f7f3e8}
 .rim-home{left:6.2%;top:11%;width:8.4%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
 .rim-prev{left:6.2%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
 .rim-next{left:93.8%;top:90%;width:8%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:64px;min-height:64px}
-.rim-repeat{left:22%;top:11%;width:6.4%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:52px;min-height:52px}
-.rim-more{left:26%;top:78%;width:5.2%;aspect-ratio:1;transform:translate(-50%,-50%);min-width:44px;min-height:44px;z-index:7;
-  font-size:1.15rem;font-weight:900;color:#f4ead0}
 .rim-btn:active{filter:brightness(1.08)}
 .word-chip{position:absolute;left:4.2%;top:70%;z-index:6;min-width:14%;max-width:28%;
   display:flex;align-items:center;justify-content:center;padding:.4em .9em;
@@ -213,6 +210,13 @@ body{background:#12102a;color:#f7f3e8}
   border:4px solid #f0d48a;background:#2e2468;color:#f7f1e6;font-weight:900;
   font-size:clamp(.95rem,1.8vw,1.2rem);font-family:inherit;cursor:pointer;
   box-shadow:0 5px 0 rgba(0,0,0,.28);white-space:nowrap}
+@media (orientation:portrait) and (max-width:520px){
+  .rim-home,.rim-prev{left:9%;width:48px;min-width:48px;min-height:48px}
+  .rim-prev,.rim-next{top:82%}
+  .rim-next{left:91%;width:48px;min-width:48px;min-height:48px}
+  .word-chip{top:48%;max-width:46%}
+  .sound-pill{top:16%;font-size:.9rem;max-width:70%;min-height:44px;padding:6px 12px}
+}
 #letters .scene-hint{bottom:16%;color:rgba(255,248,230,.8)}
 .scene-hint{position:absolute;left:50%;bottom:1%;transform:translateX(-50%);font-size:.75rem;font-weight:700;
   color:rgba(220,210,255,.55);z-index:5}
@@ -373,7 +377,6 @@ body{background:#12102a;color:#f7f3e8}
   .letter-frame{width:100%;height:auto;flex:1 1 auto;min-height:0;max-height:none;aspect-ratio:auto;
     background-size:cover;background-position:center}
   .rim-home,.rim-prev,.rim-next{min-width:48px;min-height:48px;width:max(48px,12vh)}
-  .rim-repeat,.rim-more{min-width:44px;min-height:44px;width:max(44px,10vh)}
   .sound-pill{min-height:44px;padding:6px 12px;font-size:1rem}
   .word-chip{font-size:1rem;padding:.28em .7em;min-height:44px}
   .letter-progress{font-size:.75rem;top:2%}
@@ -454,11 +457,7 @@ body{background:#12102a;color:#f7f3e8}
       <button type="button" class="rim-btn rim-home" data-go="home" aria-label="Home">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M32 6 8 28h8v28h12V38h8v18h12V28h8z"/></svg>
       </button>
-      <button type="button" class="rim-btn rim-repeat" id="letterSpeak" aria-label="Repeat">
-        <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M10 26h12l12-12v36L22 38H10z"/><path fill="none" stroke="#f4ead0" stroke-width="5" stroke-linecap="round" d="M44 22c7 5 7 15 0 20M50 16c11 8 11 24 0 32"/></svg>
-      </button>
       <button type="button" class="word-chip" id="letterWord">Apple</button>
-      <button type="button" class="rim-btn rim-more" id="letterCycle" aria-label="More pictures">🔄</button>
       <button type="button" class="rim-btn rim-prev" id="letterPrev" aria-label="Previous">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
       </button>
@@ -1035,9 +1034,7 @@ document.getElementById('letterPrev').addEventListener('click', function(){
 document.getElementById('letterNext').addEventListener('click', function(){
   li = (li + 1) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
 });
-document.getElementById('letterCycle').addEventListener('click', cyclePic);
 document.getElementById('letterWord').addEventListener('click', cyclePic);
-document.getElementById('letterSpeak').addEventListener('click', function(){ repeatLastUtterance(); });
 document.getElementById('letterSoundBtn').addEventListener('click', function(){
   speakSoundFor(LETTERS[li].c);
 });
