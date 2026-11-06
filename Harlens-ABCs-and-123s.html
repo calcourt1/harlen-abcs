@@ -279,7 +279,7 @@ body{background:#12102a;color:#f7f3e8}
     <div class="sound-dock">
       <button class="btn btn-sound" id="letterSoundBtn" aria-label="Hear letter sound">
         <span class="snd-ico">🔊</span>
-        <span class="snd-txt" id="letterSoundLabel">A says ah</span>
+        <span class="snd-txt" id="letterSoundLabel">A is for apple</span>
       </button>
     </div>
     <div class="dock">
@@ -510,10 +510,11 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
   btn.addEventListener('click', function(){ showScreen(btn.getAttribute('data-go')); });
 });
 
-/* Warm adult-to-preschooler voice: never raise pitch; one natural sentence */
+/* Calm adult talking voice — like a person on a phone call, never sing-song */
 var preferredVoice = null;
-var CREEPY_VOICE = /zarvox|whisper|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|organ|superstar|trinoids|wobble|pipe organ|princess|junior|kathy|trinoid/i;
-var FRIENDLY_VOICE = /samantha|ava|zoe|nicky|allison|susan|karen|moira|tessa|google us english|siri|salli|joanna|kendra|kimberly/i;
+var CREEPY_VOICE = /zarvox|whisper|albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good news|hysterical|jester|organ|superstar|trinoids|wobble|pipe organ|princess|junior|kathy|trinoid|nicky|whisper/i;
+/* Prefer plain adult US/English speakers first (Aaron/Alex are less musical on iOS than phoneme-singing voices). */
+var VOICE_PREFERENCE = ['aaron','alex','allison','samantha','ava','susan','karen','moira','tessa','google us english','salli','joanna','kendra','kimberly'];
 
 function pickFriendlyVoice(){
   preferredVoice = null;
@@ -521,17 +522,23 @@ function pickFriendlyVoice(){
     if(!window.speechSynthesis) return;
     var voices = window.speechSynthesis.getVoices() || [];
     if(!voices.length) return;
-    var i, v, name, lang;
-    // 1) Preferred friendly English voices
+    var i, j, v, name, lang, english = [];
     for(i=0;i<voices.length;i++){
       v = voices[i]; name = v.name || ''; lang = (v.lang || '').toLowerCase();
       if(CREEPY_VOICE.test(name)) continue;
       if(!/^en([-_]|$)/i.test(lang) && !/english/i.test(name)) continue;
-      if(FRIENDLY_VOICE.test(name)){ preferredVoice = v; return; }
+      english.push(v);
     }
-    // 2) Any non-novelty en voice with "female" / compact / enhanced hints — still skip creepy
-    // Do NOT fall back to voices[0] or first en-US (iOS can return odd novelty voices).
-    // Leave preferredVoice null → system default.
+    for(j=0;j<VOICE_PREFERENCE.length;j++){
+      var want = VOICE_PREFERENCE[j];
+      for(i=0;i<english.length;i++){
+        if((english[i].name || '').toLowerCase().indexOf(want) !== -1){
+          preferredVoice = english[i];
+          return;
+        }
+      }
+    }
+    // Do NOT fall back to voices[0] (iOS can return odd novelty voices).
   }catch(e){ preferredVoice = null; }
 }
 if(typeof window !== 'undefined' && window.speechSynthesis){
@@ -546,11 +553,11 @@ function speak(text){
     if(!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(String(text));
-    u.rate = 0.9;
+    u.lang = 'en-US';
+    u.rate = 1.0; // normal talking speed — slower rates can sound sung
     u.pitch = 1.0; // never raise — raised pitch sounds creepy on Safari
     u.volume = 1;
     if(preferredVoice) u.voice = preferredVoice;
-    // If no preferred voice, do NOT assign utterance.voice (system default)
     window.speechSynthesis.speak(u);
   }catch(e){}
 }
@@ -610,20 +617,30 @@ function exampleWordFor(letter, pics){
   return prefer[0] || 'this';
 }
 
-/** One warm sentence: "A says ah, like apple." */
+/* Spoken letter NAMES (ay, bee, see…) — never the sound. Plain "A" is read as "uh/aw". */
+var LETTER_NAMES = {
+  A:'ay', B:'bee', C:'see', D:'dee', E:'ee', F:'eff', G:'jee',
+  H:'aych', I:'eye', J:'jay', K:'kay', L:'ell', M:'em', N:'en',
+  O:'oh', P:'pee', Q:'cue', R:'ar', S:'ess', T:'tee', U:'you',
+  V:'vee', W:'double you', X:'ex', Y:'why', Z:'zee'
+};
+function letterNameSay(letter){
+  var up = String(letter || 'A').toUpperCase();
+  return LETTER_NAMES[up] || up;
+}
+
+/** "This is ay, like apple." — letter name only, no sound. */
 function speakLetterLesson(letter, pics, opts){
   opts = opts || {};
   var up = String(letter).toUpperCase();
-  var meta = phonemeFor(up);
   var word = exampleWordFor(up, pics);
   var wordSay = String(word).toLowerCase();
-  speak(up + ' says ' + meta.soundSay + ', like ' + wordSay + '.');
+  speak('This is ' + letterNameSay(up) + ', like ' + wordSay + '.');
 }
 
 function soundButtonText(letter){
   var up = String(letter).toUpperCase();
-  var meta = phonemeFor(up);
-  return up + ' says ' + meta.soundLabel;
+  return up + ' is for ' + String(exampleWordFor(up, null)).toLowerCase();
 }
 
 function burst(){
@@ -775,7 +792,7 @@ function pickLetter(btn, c){
     document.querySelectorAll('#flChoices .choice').forEach(function(el){
       if(el.textContent === flAnswer) el.classList.add('correct');
     });
-    speak(flAnswer);
+    speak(letterNameSay(flAnswer));
   }
 }
 document.getElementById('flNext').addEventListener('click', newLetterQuiz);
