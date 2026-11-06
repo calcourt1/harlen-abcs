@@ -1395,22 +1395,82 @@ function traceChalkWidth(){
   var h = box ? box.clientHeight : 0;
   return Math.max(18, Math.floor(Math.min(w, h) * 0.055));
 }
+/* Manuscript single-story a: round bowl + right stem (no ascender / not a d). */
+function fillMsA(cx, cy, size){
+  var h = size * 0.52;
+  var stemW = Math.max(6, size * 0.105);
+  var r = h / 2;
+  var inner = Math.max(1, r - stemW);
+  var totalW = 2 * r + stemW * 0.55;
+  var bowlCx = cx - totalW / 2 + r;
+  var bowlCy = cy;
+  var top = bowlCy - r;
+  ctx.beginPath();
+  ctx.arc(bowlCx, bowlCy, r, 0, Math.PI * 2);
+  ctx.arc(bowlCx, bowlCy, inner, 0, Math.PI * 2, true);
+  ctx.fill('evenodd');
+  var stemLeft = bowlCx + r - stemW * 0.35;
+  ctx.fillRect(stemLeft, top, stemW * 0.9, h);
+}
+/* Manuscript single-story g: round bowl + open descending tail (not double-story). */
+function fillMsG(cx, cy, size){
+  var h = size * 0.52;
+  var stemW = Math.max(6, size * 0.105);
+  var r = h / 2;
+  var inner = Math.max(1, r - stemW);
+  var desc = size * 0.30;
+  var totalH = h + desc;
+  var bowlCy = cy - totalH / 2 + r;
+  var bowlCx = cx - stemW * 0.15;
+  ctx.beginPath();
+  ctx.arc(bowlCx, bowlCy, r, 0, Math.PI * 2);
+  ctx.arc(bowlCx, bowlCy, inner, 0, Math.PI * 2, true);
+  ctx.fill('evenodd');
+  var stemLeft = bowlCx + r - stemW * 0.35;
+  var stemTop = bowlCy - r * 0.15;
+  var stemBot = bowlCy + r + desc - stemW * 0.35;
+  ctx.fillRect(stemLeft, stemTop, stemW * 0.9, Math.max(stemW, stemBot - stemTop));
+  /* Open left-facing hook at the bottom (filled annular sector — not a closed bowl). */
+  var hookCx = stemLeft + stemW * 0.45;
+  var hookCy = stemBot - r * 0.55;
+  var outerR = r * 0.95;
+  var innerR = Math.max(1, outerR - stemW);
+  var a0 = 0.05 * Math.PI;
+  var a1 = 1.12 * Math.PI;
+  ctx.beginPath();
+  ctx.arc(hookCx, hookCy, outerR, a0, a1, false);
+  ctx.arc(hookCx, hookCy, innerR, a1, a0, true);
+  ctx.closePath();
+  ctx.fill();
+}
+function fillTraceGlyphShape(ch, cx, cy, size){
+  if(ch === 'a'){ fillMsA(cx, cy, size); return true; }
+  if(ch === 'g'){ fillMsG(cx, cy, size); return true; }
+  return false;
+}
 /* F-style silhouette outline (halo + destination-out) at a point. */
 function drawTraceGlyph(ch, cx, cy, size){
   var ring = Math.max(8, Math.floor(size * 0.045));
-  ctx.font = 'bold '+size+'px system-ui,sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  var useMs = (ch === 'a' || ch === 'g');
+  if(!useMs){
+    ctx.font = 'bold '+size+'px system-ui,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  }
+  function paint(ox, oy){
+    if(useMs) fillTraceGlyphShape(ch, cx + ox, cy + oy, size);
+    else ctx.fillText(ch, cx + ox, cy + oy);
+  }
   ctx.fillStyle = 'rgba(255,246,220,0.95)';
   var steps = 36;
   for(var i=0;i<steps;i++){
     var a = (Math.PI * 2 * i) / steps;
-    ctx.fillText(ch, cx + Math.cos(a)*ring, cy + Math.sin(a)*ring);
+    paint(Math.cos(a)*ring, Math.sin(a)*ring);
   }
   ctx.globalCompositeOperation = 'destination-out';
-  ctx.fillText(ch, cx, cy);
+  paint(0, 0);
   ctx.globalCompositeOperation = 'source-over';
   ctx.fillStyle = 'rgba(255,246,220,0.55)';
-  ctx.fillText(ch, cx, cy);
+  paint(0, 0);
 }
 function drawGuide(){
   var w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
