@@ -221,6 +221,15 @@ body{background:#12102a;color:#f7f3e8}
 #letters.has-scene .glow-pair,
 #letters.has-scene #letterSceneObjs,
 #letters.has-scene .scene-hint{display:none}
+.letter-feature{position:absolute;left:calc(env(safe-area-inset-left) + 18px);top:46%;
+  transform:translateY(-50%);z-index:7;width:max(104px,18vmin);height:max(104px,18vmin);
+  min-width:104px;min-height:104px;border-radius:50%;border:4px solid #f0d48a;padding:0;
+  background:radial-gradient(circle at 40% 32%, rgba(70,58,150,.94), rgba(22,16,56,.94) 74%);
+  color:#fff6d8;box-shadow:0 5px 0 rgba(0,0,0,.28),0 10px 18px rgba(0,0,0,.28);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
+.letter-feature span{font-size:clamp(3rem,11vmin,5.2rem);line-height:1;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));pointer-events:none}
+#letters.has-scene .letter-feature{display:flex}
 #letters .scene-obj.o0{left:14%;bottom:22%}
 #letters .scene-obj.o1{left:62%;top:42%}
 #letters .scene-obj.o2{right:14%;top:18%}
@@ -371,13 +380,13 @@ body{background:#12102a;color:#f7f3e8}
 .level-dot{width:56px;height:56px;min-width:56px;min-height:56px;border-radius:50%;border:3px solid rgba(255,220,140,.35);
   background:rgba(255,255,255,.1);color:#fff6d8;font-weight:900;font-size:1.15rem;cursor:pointer;touch-action:manipulation}
 .level-dot.active{background:rgba(255,220,140,.28);border-color:#ffe9a0;color:#ffe9a0}
-.memory-board{flex:1;min-height:0;display:grid;gap:10px;width:100%;max-width:720px;margin:0 auto;
-  padding:4px 12px 8px;grid-template-rows:repeat(2,minmax(72px,1fr));z-index:3}
+.memory-board{flex:1;min-height:0;display:grid;gap:14px;width:100%;max-width:1100px;margin:0 auto;
+  padding:6px 16px 10px;grid-template-rows:repeat(2,minmax(0,1fr));z-index:3}
 .memory-board.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .memory-board.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .memory-board.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .memory-board.cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}
-.mem-card{min-height:72px;height:100%;border-radius:22px;border:3px solid rgba(240,215,138,.5);
+.mem-card{min-height:0;height:100%;border-radius:26px;border:4px solid rgba(240,215,138,.55);
   background:linear-gradient(180deg,#2a2158,#16122e);color:#fff4c8;font-weight:900;cursor:pointer;
   touch-action:manipulation;box-shadow:0 6px 0 rgba(0,0,0,.35);
   display:flex;align-items:center;justify-content:center;padding:6px}
@@ -387,25 +396,28 @@ body{background:#12102a;color:#f7f3e8}
 .mem-face{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1}
 .mem-upper,.mem-lower{font-weight:900;opacity:1;color:#fff4c8;
   text-shadow:0 0 12px rgba(255,240,180,1),0 0 28px rgba(255,220,120,.9)}
-.mem-upper{font-size:clamp(1.7rem,7vw,3rem)}
-.mem-lower{font-size:clamp(1.35rem,5.5vw,2.4rem)}
-.mem-emoji{font-size:clamp(1.8rem,7vw,3rem);line-height:1}
-.mem-word{font-size:clamp(.72rem,2.5vw,1rem);font-weight:800;color:#fff6d8}
-.mem-back{font-size:clamp(1.6rem,6vw,2.4rem)}
+.mem-upper{font-size:clamp(2.2rem,9vw,4.4rem)}
+.mem-lower{font-size:clamp(1.7rem,7vw,3.4rem)}
+.mem-emoji{font-size:clamp(2.4rem,10vw,4.6rem);line-height:1}
+.mem-word{font-size:clamp(.9rem,3vw,1.35rem);font-weight:800;color:#fff6d8}
+.mem-back{font-size:clamp(2.2rem,8vw,3.6rem)}
 .memory-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:4px 12px 12px;z-index:5}
 .memory-actions[hidden]{display:none}
 
 /* Trace, paint, and memory sit on the Flyer Press scenes. The painted slate, easel, and table are scenery. */
 #trace .trace-wrap{position:relative;flex:1;display:flex;flex-direction:column;min-height:0;width:100%;
   pointer-events:none;padding:0 12px 8px;z-index:3}
-#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker{pointer-events:auto;position:relative;z-index:5;flex-shrink:0}
+#trace .trace-tabs,#trace .trace-hint,#trace .trace-picker,#trace .trace-nav,#trace .trace-picker-wrap,#trace .trace-step{pointer-events:auto;position:relative;z-index:5;flex-shrink:0}
 #trace .trace-canvas-box{position:relative;left:auto;top:auto;flex:1 1 auto;width:100%;max-width:none;height:auto;
   min-height:0;margin:6px 0;z-index:4;pointer-events:auto;
   background:rgba(8,12,28,.62);border-color:rgba(240,212,138,.7);border-width:4px;border-radius:28px}
 #trace .trace-hint{color:#f7f1e4;text-shadow:0 2px 8px rgba(0,0,0,.6);margin:2px 0}
 /* Trace picker: one swipeable row on iPhone/iPad. Own horizontal scroller (pan-x), chips never shrink,
    and it sits outside the canvas box, so the canvas touch-action:none / touch handlers never see these swipes. */
-#trace .trace-picker-wrap{position:relative;flex-shrink:0;width:100%;margin-top:4px;pointer-events:auto;z-index:5}
+#trace .trace-nav{display:flex;align-items:center;gap:10px;width:100%;margin-top:6px;flex-shrink:0;pointer-events:auto;z-index:5}
+#trace .trace-step{position:relative;left:auto;top:auto;transform:none;flex:0 0 auto;
+  width:max(76px,12vmin);height:max(76px,12vmin);min-width:76px;min-height:76px}
+#trace .trace-picker-wrap{position:relative;flex:1 1 auto;flex-shrink:1;width:auto;min-width:0;margin-top:0;pointer-events:auto;z-index:5}
 #trace .trace-picker-wrap::before,#trace .trace-picker-wrap::after{content:"";position:absolute;top:0;bottom:0;width:26px;
   pointer-events:none;z-index:2}
 #trace .trace-picker-wrap::before{left:0;background:linear-gradient(90deg,rgba(12,10,32,.9),rgba(12,10,32,0))}
@@ -422,10 +434,10 @@ body{background:#12102a;color:#f7f3e8}
   background:#fffaf0;border:4px solid rgba(240,212,138,.7);border-radius:28px;box-shadow:0 12px 36px rgba(0,0,0,.35)}
 #paint .paint-dock{position:relative;left:auto;right:auto;bottom:auto;flex-shrink:0;z-index:5;
   background:rgba(16,12,36,.55);padding:8px 8px 10px;pointer-events:auto}
-#memory .memory-board{position:absolute;left:50%;top:67%;transform:translate(-50%,-42%);
-  width:min(680px,72%);height:min(300px,38%);z-index:4;margin:0}
-#memory .level-dots{position:relative;z-index:5}
-#memory .memory-actions{position:absolute;left:0;right:0;bottom:10px;z-index:6}
+#memory .memory-board{position:relative;left:auto;top:auto;transform:none;
+  flex:1 1 auto;width:calc(100% - 12px);max-width:1180px;height:auto;min-height:0;z-index:4;margin:0 auto}
+#memory .level-dots{position:relative;z-index:5;flex-shrink:0}
+#memory .memory-actions{position:relative;left:auto;right:auto;bottom:auto;flex-shrink:0;z-index:6}
 
 /* Short landscape (and wide short windows): use the width, shrink chrome, keep 44px targets. */
 @media (orientation:landscape), (max-height:520px) and (min-width:700px){
@@ -458,10 +470,12 @@ body{background:#12102a;color:#f7f3e8}
   .theme-bar{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
   .theme-btn{min-height:44px;flex:0 0 auto}
   .level-dot{width:44px;height:44px;min-width:44px;min-height:44px}
-  #memory .memory-board{top:56%;height:min(200px,48%);width:min(900px,82%)}
-  .mem-card{min-height:44px}
+  #memory .memory-board{position:relative;left:auto;top:auto;transform:none;
+    height:auto;width:calc(100% - 16px);max-width:1200px;flex:1 1 auto;min-height:0}
+  #memory .mem-card{min-height:0}
   #trace .trace-wrap{padding:0 10px 6px}
-  #trace .trace-tabs,#trace .trace-hint,#trace .trace-picker{position:relative;top:auto;bottom:auto;left:auto;right:auto}
+  #trace .trace-tabs,#trace .trace-hint,#trace .trace-picker,#trace .trace-nav{position:relative;top:auto;bottom:auto;left:auto;right:auto}
+  #trace .trace-step{width:max(72px,11vmin);height:max(72px,11vmin);min-width:72px;min-height:72px}
   #trace .trace-canvas-box{position:relative;left:auto;top:auto;width:100%;height:auto;flex:1 1 auto;min-height:0}
   #trace .trace-picker{padding:2px 24px}
   .trace-tab{min-height:44px;padding:6px 12px}
@@ -524,6 +538,7 @@ body{background:#12102a;color:#f7f3e8}
         <button type="button" class="word-chip" id="letterWord">Apple</button>
         <div class="scene-hint" id="letterPicHint">tap a picture · 1 of 3</div>
       </div>
+      <button type="button" class="letter-feature" id="letterFeature" aria-label="Apple"><span id="letterFeatureEmoji">🍎</span></button>
       <div class="letter-progress" id="letterProgress">Aa · 1 of 26</div>
       <button type="button" class="rim-btn rim-home" data-go="home" aria-label="Home">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M32 6 8 28h8v28h12V38h8v18h12V28h8z"/></svg>
@@ -661,7 +676,15 @@ body{background:#12102a;color:#f7f3e8}
       <div class="trace-canvas-box">
         <canvas id="traceCanvas"></canvas>
       </div>
-      <div class="trace-picker-wrap"><div class="trace-picker" id="tracePicker"></div></div>
+      <div class="trace-nav">
+        <button type="button" class="rim-btn trace-step" id="tracePrev" aria-label="Previous letter">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
+        </button>
+        <div class="trace-picker-wrap"><div class="trace-picker" id="tracePicker"></div></div>
+        <button type="button" class="rim-btn trace-step" id="traceNext" aria-label="Next letter">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -1007,6 +1030,10 @@ function renderLetter(){
   document.getElementById('letterLower').textContent = lo;
   document.getElementById('letterWord').textContent = P.w;
   document.getElementById('letterPicHint').textContent = 'tap a picture · '+(picIdx+1)+' of '+L.pics.length;
+  var feat = document.getElementById('letterFeature');
+  var featE = document.getElementById('letterFeatureEmoji');
+  if(featE) featE.textContent = P.e || '';
+  if(feat) feat.setAttribute('aria-label', P.w);
   document.getElementById('letterProgress').textContent = up+lo+'  ·  '+(li+1)+' of 26';
   var board = document.getElementById('letters');
   var sceneClass = {A:'show-a',B:'show-b',C:'show-c',D:'show-d',E:'show-e',F:'show-f',G:'show-g',H:'show-h',I:'show-i',J:'show-j',K:'show-k',L:'show-l',M:'show-m',N:'show-n',O:'show-o',P:'show-p',Q:'show-q',R:'show-r',S:'show-s',T:'show-t',U:'show-u',V:'show-v',W:'show-w',X:'show-x',Y:'show-y',Z:'show-z'}[up];
@@ -1057,6 +1084,9 @@ document.getElementById('letterNext').addEventListener('click', function(){
   li = (li + 1) % 26; picIdx = 0; renderLetter(); teachCurrentLetter();
 });
 document.getElementById('letterWord').addEventListener('click', cyclePic);
+document.getElementById('letterFeature').addEventListener('click', function(){
+  speakLetterLesson(LETTERS[li].c, [currentPic()]);
+});
 document.getElementById('letterHit').addEventListener('click', function(){ teachCurrentLetter(); });
 document.getElementById('letterPair').addEventListener('click', function(){ teachCurrentLetter(); });
 document.getElementById('letterPair').setAttribute('role','button');
@@ -1287,6 +1317,20 @@ function setupTracePicker(){
     b.classList.toggle('active', b.getAttribute('data-ch') === traceChar);
   });
   document.getElementById('traceProgress').textContent = 'Trace ' + traceChar;
+  var activePick = picker.querySelector('.trace-pick.active');
+  if(activePick && activePick.scrollIntoView){
+    activePick.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+  }
+}
+function stepTrace(dir){
+  var items = traceItems();
+  var i = items.indexOf(traceChar);
+  if(i < 0) i = 0;
+  i = (i + dir + items.length) % items.length;
+  traceChar = items[i];
+  setupTracePicker();
+  drawGuide();
+  speakTrace();
 }
 function setTraceTab(setName, firstChar){
   traceSet = setName; traceChar = firstChar;
@@ -1305,6 +1349,8 @@ function speakTrace(prefix){
 document.getElementById('tabUpper').addEventListener('click', function(){ setTraceTab('upper','A'); });
 document.getElementById('tabLower').addEventListener('click', function(){ setTraceTab('lower','a'); });
 document.getElementById('tabDigits').addEventListener('click', function(){ setTraceTab('digits','0'); });
+document.getElementById('tracePrev').addEventListener('click', function(){ stepTrace(-1); });
+document.getElementById('traceNext').addEventListener('click', function(){ stepTrace(1); });
 
 function resizeTrace(){
   var box = canvas.parentElement;
