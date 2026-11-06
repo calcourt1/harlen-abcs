@@ -181,6 +181,37 @@ body{background:#12102a;color:#f7f3e8}
   .shape-card .shape-name{font-size:.92rem}
   .shape-card .card-scrim{padding:18px 5px 6px}
 }
+
+/* Letter picker — big Aa gold-rim tiles between Home and letter scene */
+.letter-picker-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
+.letter-picker-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
+  text-shadow:0 2px 0 rgba(0,0,0,.35);flex-shrink:0}
+.letter-picker-grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 2px 14px;align-content:start;align-items:start;
+  grid-auto-rows:max-content}
+.letter-pick-tile{appearance:none;-webkit-appearance:none;border:3px solid rgba(240,215,138,.65);border-radius:22px;
+  background:linear-gradient(180deg,rgba(50,34,92,.82),rgba(18,12,40,.92));color:#fff6e8;
+  padding:14px 10px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 6px 0 rgba(0,0,0,.35),0 10px 22px rgba(0,0,0,.28);touch-action:manipulation;font-family:inherit;
+  min-height:108px;min-width:0}
+.letter-pick-tile:active{transform:translateY(2px)}
+.letter-pick-tile .pair{display:flex;align-items:baseline;justify-content:center;gap:.12em;line-height:1;
+  filter:drop-shadow(0 0 14px rgba(255,220,140,.45)) drop-shadow(0 3px 0 rgba(0,0,0,.35))}
+.letter-pick-tile .pair .u{font-size:clamp(2.6rem,14vw,3.8rem);font-weight:900;color:#fff6d0}
+.letter-pick-tile .pair .l{font-size:clamp(2rem,11vw,3rem);font-weight:900;color:#fff6d0;opacity:.95}
+@media (orientation:landscape){
+  .letter-picker-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .letter-pick-tile{min-height:96px;padding:10px 6px}
+  .letter-pick-tile .pair .u{font-size:clamp(2.2rem,9vh,3.2rem)}
+  .letter-pick-tile .pair .l{font-size:clamp(1.7rem,7vh,2.5rem)}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .letter-picker-hint{font-size:.85rem}
+  .letter-pick-tile{min-height:84px;padding:8px 4px}
+  .letter-pick-tile .pair .u{font-size:clamp(1.9rem,8vh,2.6rem)}
+  .letter-pick-tile .pair .l{font-size:clamp(1.5rem,6.5vh,2.1rem)}
+}
+
 /* Signs tab — list of word tiles + large one-sign detail (no jumble overlay) */
 .signs-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 12px;gap:8px}
 .signs-hint{text-align:center;color:#ffe9a0;font-weight:800;font-size:clamp(.95rem,2.8vw,1.15rem);
@@ -739,7 +770,7 @@ body{background:#12102a;color:#f7f3e8}
         <div class="home-section" aria-label="Learn">
           <div class="home-section-label">📚 Learn</div>
           <div class="activity-grid cols-3">
-            <button type="button" class="activity-tile" data-go="letters" data-cue="Letters"><span class="emoji">🔤</span><span class="title">Letters</span></button>
+            <button type="button" class="activity-tile" data-go="letterPicker" data-cue="Letters"><span class="emoji">🔤</span><span class="title">Letters</span></button>
             <button type="button" class="activity-tile" data-go="numbers" data-cue="Numbers"><span class="emoji">🔢</span><span class="title">Numbers</span></button>
             <button type="button" class="activity-tile" data-go="trace" data-cue="Trace"><span class="emoji">✍️</span><span class="title">Trace</span></button>
           </div>
@@ -768,6 +799,25 @@ body{background:#12102a;color:#f7f3e8}
     </div>
   </section>
 
+  <!-- LETTER PICKER -->
+  <section id="letterPicker" class="screen">
+    <div class="sky"></div>
+    <div class="stars" id="starsLetterPicker"></div>
+    <div class="cloud-soft" style="top:14%;left:16%"></div>
+    <div class="moon crescent" aria-hidden="true"></div>
+    <div class="mountains" aria-hidden="true"></div>
+    <div class="hill"></div>
+    <div class="topbar">
+      <button class="btn btn-home" data-go="home" aria-label="Home">🏠</button>
+      <div class="progress" id="letterPickerProgress">Letters</div>
+      <button class="btn btn-speak" id="letterPickerSpeak" aria-label="Repeat">🔊</button>
+    </div>
+    <div class="letter-picker-wrap">
+      <div class="letter-picker-hint">Tap a letter ✨</div>
+      <div class="letter-picker-grid" id="letterPickerGrid" role="list"></div>
+    </div>
+  </section>
+
   <!-- LETTERS -->
   <section id="letters" class="screen show-a has-scene">
     <div class="sky"></div>
@@ -786,7 +836,7 @@ body{background:#12102a;color:#f7f3e8}
       <button type="button" class="letter-feature" id="letterFeature" aria-label="Apple"><span id="letterFeatureEmoji">🍎</span></button>
       <button type="button" class="word-chip" id="letterWord">Apple</button>
       <div class="letter-progress" id="letterProgress">Aa · 1 of 26</div>
-      <button type="button" class="rim-btn rim-home" data-go="home" aria-label="Home">
+      <button type="button" class="rim-btn rim-home" data-go="letterPicker" aria-label="Back to letters">
         <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M32 6 8 28h8v28h12V38h8v18h12V28h8z"/></svg>
       </button>
       <button type="button" class="rim-btn rim-prev" id="letterPrev" aria-label="Previous">
@@ -1090,7 +1140,7 @@ function sprinkleStars(id, count){
     box.appendChild(s);
   }
 }
-['starsHome','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint','starsAnimals','starsSigns','starsShapes'].forEach(function(id){
+['starsHome','starsLetterPicker','starsLetters','starsFL','starsMemory','starsNum','starsFN','starsTrace','starsPaint','starsAnimals','starsSigns','starsShapes'].forEach(function(id){
   sprinkleStars(id, 28);
 });
 
@@ -1104,6 +1154,7 @@ function showScreen(id, cue){
     if(typeof stopAnimalSfx === 'function') stopAnimalSfx();
     return;
   }
+  if(id==='letterPicker'){ renderLetterPicker(cue); }
   if(id==='letters'){ renderLetter(); teachCurrentLetter(cue); }
   if(id==='findLetter') newLetterQuiz(cue);
   if(id==='memory') dealMemory(cue);
@@ -1326,6 +1377,55 @@ function burst(){
     box.appendChild(s);
     (function(el){ setTimeout(function(){ el.remove(); }, 1500); })(s);
   }
+}
+
+/* ========== LETTER PICKER ========== */
+var letterPickerBuilt = false;
+var lastLetterPickerSay = 'Letters.';
+
+function openLetterFromPicker(index){
+  li = index;
+  picIdx = 0;
+  showScreen('letters');
+}
+
+function buildLetterPicker(){
+  var grid = document.getElementById('letterPickerGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  LETTERS.forEach(function(L, idx){
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'letter-pick-tile';
+    btn.setAttribute('role', 'listitem');
+    btn.setAttribute('aria-label', 'Letter ' + L.c);
+    btn.dataset.letterIndex = String(idx);
+    var pair = document.createElement('span');
+    pair.className = 'pair';
+    var u = document.createElement('span'); u.className = 'u'; u.textContent = L.c;
+    var l = document.createElement('span'); l.className = 'l'; l.textContent = L.c.toLowerCase();
+    pair.appendChild(u); pair.appendChild(l);
+    btn.appendChild(pair);
+    btn.addEventListener('click', function(){ openLetterFromPicker(idx); });
+    grid.appendChild(btn);
+  });
+}
+
+function renderLetterPicker(cue){
+  var grid = document.getElementById('letterPickerGrid');
+  if(!grid) return;
+  if(!letterPickerBuilt){
+    letterPickerBuilt = true;
+    buildLetterPicker();
+    var speakBtn = document.getElementById('letterPickerSpeak');
+    if(speakBtn) speakBtn.addEventListener('click', function(){
+      speakParts([lastLetterPickerSay]);
+    });
+  } else if(!grid.children.length){
+    buildLetterPicker();
+  }
+  lastLetterPickerSay = cue || 'Letters.';
+  speakParts([cue || 'Letters.']);
 }
 
 /* ========== LETTERS ========== */
