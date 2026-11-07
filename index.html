@@ -655,6 +655,44 @@ body{background:#12102a;color:#f7f3e8}
   .dots-hint{font-size:.9rem}
 }
 /* ---- paint ---- */
+#paint .paint-dock.paint-dock-one{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:center;gap:12px;padding:6px 8px 8px}
+.paint-dd-btn{appearance:none;-webkit-appearance:none;width:64px;height:64px;min-width:56px;min-height:56px;border-radius:50%;
+  border:4px solid #f0d78a;background:radial-gradient(circle at 35% 30%,#4a3a7a,#2a1c4a 70%);cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;font-size:2rem;line-height:1;padding:0;touch-action:manipulation;
+  box-shadow:0 0 0 3px rgba(255,230,160,.35),0 6px 0 rgba(0,0,0,.4)}
+.paint-dd-btn[aria-expanded="true"]{box-shadow:0 0 0 5px rgba(255,233,160,.8),0 6px 0 rgba(0,0,0,.4)}
+.paint-color-chip{display:block;width:40px;height:40px;border-radius:50%;border:3px solid #fff6d8;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25)}
+.paint-overlay{position:fixed;inset:0;z-index:200;background:rgba(8,6,22,.55);display:flex;align-items:flex-end;justify-content:center;
+  padding:12px 12px max(12px,env(safe-area-inset-bottom))}
+.paint-overlay[hidden],.paint-panel[hidden]{display:none !important}
+.paint-panel{width:min(640px,100%);max-height:min(78vh,560px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:linear-gradient(180deg,#2e2260,#17112f);border:4px solid #f0d78a;border-radius:28px;padding:14px 14px 18px;
+  box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.paint-panel-title{color:#ffe9a0;font-weight:900;font-size:1.2rem;margin:2px 4px 10px;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.paint-panel-grid{display:grid;gap:12px;margin-bottom:12px}
+.paint-colors-grid{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}
+.paint-colors-grid .swatch{width:60px;height:60px;min-width:60px;min-height:60px;justify-self:center}
+.paint-sizes{display:flex;gap:18px;justify-content:center;padding:4px 0}
+.paint-sizes .size-dot{width:64px;height:64px;min-width:64px;min-height:64px;padding:0;appearance:none;-webkit-appearance:none}
+.paint-sticker-grid{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}
+.paint-sticker-grid .stamp{width:64px;height:64px;min-width:64px;font-size:2.1rem;justify-self:center}
+@media (orientation:landscape){
+  .paint-overlay{align-items:center}
+  .paint-panel{max-height:88vh}
+  #paint .paint-dock.paint-dock-one{padding:3px 6px 4px;gap:14px}
+  #paint .paint-dock.paint-dock-one .paint-dd-btn,#paint .paint-dock.paint-dock-one .btn-tool{width:52px;height:52px;min-width:52px;min-height:52px;font-size:1.6rem}
+  .paint-color-chip{width:32px;height:32px}
+}
+/* Signs detail prev/next */
+.signs-detail-stage{flex:1 1 auto;min-height:0;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px}
+.signs-detail-stage .signs-detail-pic-wrap{height:100%}
+.signs-nav{position:relative !important;left:auto;right:auto;top:auto;bottom:auto;transform:none;flex:0 0 auto;width:64px;height:64px;min-width:56px;min-height:56px}
+.signs-nav svg{width:60%;height:60%}
+@media (orientation:landscape){
+  .signs-detail-stage{flex:1.35 1 0}
+  .signs-nav{width:56px;height:56px}
+}
+
 .paint-wrap{flex:1;display:flex;flex-direction:column;min-height:0;z-index:3;padding:0 10px 10px}
 .paint-canvas-box{flex:1;min-height:0;border-radius:24px;overflow:hidden;touch-action:none;
   background:#fffaf0;border:3px solid rgba(255,220,140,.45);box-shadow:0 12px 36px rgba(0,0,0,.4);position:relative}
@@ -1081,16 +1119,27 @@ body{background:#12102a;color:#f7f3e8}
       <div class="paint-canvas-box">
         <canvas id="paintCanvas"></canvas>
       </div>
-      <div class="paint-dock">
-        <div class="paint-row" id="paintColors" role="group" aria-label="Colors"></div>
-        <div class="paint-row">
-          <button class="btn btn-tool" id="paintBrush" aria-label="Brush">🖌️</button>
-          <button class="btn btn-tool" id="paintEraser" aria-label="Eraser">🧽</button>
-          <span class="size-dot" data-size="10" title="Thin"><i style="width:8px;height:8px"></i></span>
-          <span class="size-dot active" data-size="22" title="Medium"><i style="width:14px;height:14px"></i></span>
-          <span class="size-dot" data-size="36" title="Thick"><i style="width:22px;height:22px"></i></span>
+      <div class="paint-dock paint-dock-one">
+        <button type="button" class="paint-dd-btn paint-color-btn" id="paintColorBtn" aria-label="Colors and sizes" aria-haspopup="dialog" aria-expanded="false"><span class="paint-color-chip" id="paintColorChip"></span></button>
+        <button class="btn btn-tool" id="paintBrush" aria-label="Brush">🖌️</button>
+        <button class="btn btn-tool" id="paintEraser" aria-label="Eraser">🧽</button>
+        <button type="button" class="paint-dd-btn paint-sticker-btn" id="paintStickerBtn" aria-label="Stickers" aria-haspopup="dialog" aria-expanded="false"><span id="paintStickerFace">⭐</span></button>
+      </div>
+    </div>
+    <div class="paint-overlay" id="paintOverlay" hidden>
+      <div class="paint-panel" id="paintColorPanel" role="dialog" aria-label="Colors and sizes" hidden>
+        <div class="paint-panel-title">Colors</div>
+        <div class="paint-panel-grid paint-colors-grid" id="paintColors" role="group" aria-label="Colors"></div>
+        <div class="paint-panel-title">Sizes</div>
+        <div class="paint-sizes" role="group" aria-label="Brush sizes">
+          <button type="button" class="size-dot" data-size="10" aria-label="Thin"><i style="width:10px;height:10px"></i></button>
+          <button type="button" class="size-dot active" data-size="22" aria-label="Medium"><i style="width:20px;height:20px"></i></button>
+          <button type="button" class="size-dot" data-size="36" aria-label="Thick"><i style="width:32px;height:32px"></i></button>
         </div>
-        <div class="paint-row" id="paintStamps" aria-label="Stamps"></div>
+      </div>
+      <div class="paint-panel" id="paintStickerPanel" role="dialog" aria-label="Stickers" hidden>
+        <div class="paint-panel-title">Stickers</div>
+        <div class="paint-panel-grid paint-sticker-grid" id="paintStamps" role="group" aria-label="Stickers"></div>
       </div>
     </div>
   </section>
@@ -1136,9 +1185,17 @@ body{background:#12102a;color:#f7f3e8}
       <div class="signs-detail-pane" id="signsDetailPane" hidden>
         <button type="button" class="signs-back" id="signsBackList" aria-label="Back to all signs">← All signs</button>
         <div class="signs-detail-body">
+          <div class="signs-detail-stage">
+          <button type="button" class="rim-btn signs-nav" id="signsPrev" aria-label="Previous sign">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
+          </button>
           <div class="signs-detail-pic-wrap is-tappable" id="signsDetailPic" role="button" tabindex="0" aria-label="Say the sign again">
             <img class="signs-detail-img" id="signsDetailImg" alt="" decoding="async">
             <div class="signs-motion-cue" id="signsMotionCue" aria-hidden="true"></div>
+          </div>
+          <button type="button" class="rim-btn signs-nav" id="signsNext" aria-label="Next sign">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
+          </button>
           </div>
           <div class="signs-detail-copy">
             <div class="signs-detail-name" id="signsDetailName"></div>
@@ -1256,6 +1313,7 @@ function showScreen(id, cue){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   var el = document.getElementById(id);
   if(el) el.classList.add('active');
+  if(typeof closePaintPanels === 'function') closePaintPanels();
   if(id==='home'){
     speakGen++;
     stopVoice();
@@ -2316,35 +2374,70 @@ var undoStack = [];
 var COLORS = ['#e74c3c','#ff9f43','#feca57','#7ed957','#54a0ff','#5f27cd','#ff9ff3','#2d3436','#ffffff'];
 var paintUIBuilt = false;
 
+/* Fixed preschool sticker set (emoji stamps). */
+var PAINT_STICKERS = ['⭐','❤️','🌙','🌟','🌈','☀️','☁️','🌸','🌳','🍎','🍊','🍉','🍪','🍦','🍕','⚽','🎈','🧸','🚗','🚌','🚂','🚲','🏠','🐶','🐱','🐻','🐰','🦁','🐯','🐘','🐒','🐸','🐟','🐧','🦋','🦕'];
+var paintOpenPanel = null;
+function closePaintPanels(){
+  var ov = document.getElementById('paintOverlay');
+  if(ov) ov.hidden = true;
+  ['paintColorPanel','paintStickerPanel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.hidden = true; });
+  ['paintColorBtn','paintStickerBtn'].forEach(function(id){ var el=document.getElementById(id); if(el) el.setAttribute('aria-expanded','false'); });
+  paintOpenPanel = null;
+}
+function togglePaintPanel(which){
+  if(paintOpenPanel === which){ closePaintPanels(); return; }
+  closePaintPanels();
+  var panel = document.getElementById(which === 'colors' ? 'paintColorPanel' : 'paintStickerPanel');
+  var btn = document.getElementById(which === 'colors' ? 'paintColorBtn' : 'paintStickerBtn');
+  document.getElementById('paintOverlay').hidden = false;
+  panel.hidden = false;
+  btn.setAttribute('aria-expanded','true');
+  paintOpenPanel = which;
+}
+function updatePaintButtons(){
+  var chip = document.getElementById('paintColorChip');
+  if(chip) chip.style.background = paintColor;
+  var face = document.getElementById('paintStickerFace');
+  if(face) face.textContent = stampEmoji;
+  var sb = document.getElementById('paintStickerBtn');
+  if(sb) sb.style.boxShadow = paintMode === 'stamp' ? '0 0 0 5px #ffe9a0,0 6px 0 rgba(0,0,0,.4)' : '';
+}
 function rebuildStamps(){
   var stamps = document.getElementById('paintStamps');
-  stamps.innerHTML = '';
-  var stampSet = ['⭐','❤️','🌙','🌟'];
-  LETTERS[li].pics.forEach(function(p){ if(stampSet.indexOf(p.e)===-1) stampSet.push(p.e); });
-  stampSet.slice(0,8).forEach(function(em){
+  if(stamps.children.length) return;
+  PAINT_STICKERS.forEach(function(em){
     var b = document.createElement('button');
+    b.type = 'button';
     b.className = 'stamp';
     b.textContent = em;
+    b.setAttribute('aria-label', 'Sticker ' + em);
     b.addEventListener('click', function(){
       stampEmoji = em; paintMode = 'stamp';
       document.querySelectorAll('.stamp').forEach(function(s){ s.classList.remove('active'); });
       b.classList.add('active');
       document.getElementById('paintBrush').style.outline = 'none';
       document.getElementById('paintEraser').style.outline = 'none';
+      updatePaintButtons();
+      closePaintPanels();
     });
     stamps.appendChild(b);
   });
 }
 function buildPaintUI(){
   rebuildStamps();
+  updatePaintButtons();
   if(paintUIBuilt) return;
+  document.getElementById('paintColorBtn').addEventListener('click', function(){ togglePaintPanel('colors'); });
+  document.getElementById('paintStickerBtn').addEventListener('click', function(){ togglePaintPanel('stickers'); });
+  document.getElementById('paintOverlay').addEventListener('click', function(e){ if(e.target === this) closePaintPanels(); });
   paintUIBuilt = true;
   var row = document.getElementById('paintColors');
   COLORS.forEach(function(c){
     var b = document.createElement('button');
     b.className = 'swatch' + (c===paintColor?' active':'');
     b.style.background = c;
-    b.setAttribute('aria-label', c);
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Color ' + ({'#e74c3c':'red','#ff9f43':'orange','#feca57':'yellow','#7ed957':'green','#54a0ff':'blue','#5f27cd':'purple','#ff9ff3':'pink','#2d3436':'black','#ffffff':'white'}[c] || c));
     b.addEventListener('click', function(){
       paintColor = c; paintMode = 'brush';
       document.querySelectorAll('.swatch').forEach(function(s){ s.classList.remove('active'); });
@@ -2352,6 +2445,8 @@ function buildPaintUI(){
       document.getElementById('paintBrush').style.outline = '3px solid #ffe9a0';
       document.getElementById('paintEraser').style.outline = 'none';
       document.querySelectorAll('.stamp').forEach(function(s){ s.classList.remove('active'); });
+      updatePaintButtons();
+      closePaintPanels();
     });
     row.appendChild(b);
   });
@@ -2360,6 +2455,7 @@ function buildPaintUI(){
       paintSize = parseInt(dot.getAttribute('data-size'),10);
       document.querySelectorAll('.size-dot').forEach(function(d){ d.classList.remove('active'); });
       dot.classList.add('active');
+      closePaintPanels();
     });
   });
   document.getElementById('paintBrush').addEventListener('click', function(){
@@ -2367,12 +2463,14 @@ function buildPaintUI(){
     this.style.outline = '3px solid #ffe9a0';
     document.getElementById('paintEraser').style.outline = 'none';
     document.querySelectorAll('.stamp').forEach(function(s){ s.classList.remove('active'); });
+    updatePaintButtons();
   });
   document.getElementById('paintEraser').addEventListener('click', function(){
     paintMode = 'eraser';
     this.style.outline = '3px solid #ffe9a0';
     document.getElementById('paintBrush').style.outline = 'none';
     document.querySelectorAll('.stamp').forEach(function(s){ s.classList.remove('active'); });
+    updatePaintButtons();
   });
   document.getElementById('paintBrush').style.outline = '3px solid #ffe9a0';
 }
@@ -2947,6 +3045,16 @@ function openSignDetail(sign){
   if(prog) prog.textContent = sign.label;
   applySignMotion(sign);
   speakSignWord(sign);
+  var list2 = signsInCategory(signsCategory);
+  var one = list2.length < 2;
+  ['signsPrev','signsNext'].forEach(function(id){ var el=document.getElementById(id); if(el) el.hidden = one; });
+}
+function stepSignDetail(dir){
+  var list = signsInCategory(signsCategory);
+  if(!currentSign || list.length < 2) return;
+  var i = list.indexOf(currentSign);
+  if(i < 0) i = 0;
+  openSignDetail(list[(i + dir + list.length) % list.length]);
 }
 
 function renderSignsChips(){
@@ -3025,6 +3133,8 @@ function renderSigns(cue){
       renderSignsChips();
       renderSignsList();
     });
+    document.getElementById('signsPrev').addEventListener('click', function(){ stepSignDetail(-1); });
+    document.getElementById('signsNext').addEventListener('click', function(){ stepSignDetail(1); });
     var detailSpeak = document.getElementById('signsDetailSpeak');
     if(detailSpeak) detailSpeak.addEventListener('click', function(){
       if(currentSign) speakSignWord(currentSign);
