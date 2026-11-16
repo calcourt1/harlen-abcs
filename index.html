@@ -12,10 +12,10 @@
 <meta name="theme-color" content="#1a1440">
 <title>Harlen's ABCs &amp; 123s</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-drag:none}
 [hidden]{display:none !important}
 html,body{height:100%;overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  touch-action:manipulation;user-select:none;-webkit-user-select:none}
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-user-drag:none}
 body{background:#12102a;color:#f7f3e8}
 
 #app{height:100%;width:100%;display:flex;flex-direction:column;position:relative}
@@ -207,10 +207,11 @@ body{background:#12102a;color:#f7f3e8}
   .letter-pick-tile .pair .l{font-size:clamp(1.7rem,7vh,2.5rem)}
 }
 @media (orientation:landscape) and (max-height:520px){
-  .letter-picker-hint{font-size:.85rem}
-  .letter-pick-tile{min-height:84px;padding:8px 4px}
-  .letter-pick-tile .pair .u{font-size:clamp(1.9rem,8vh,2.6rem)}
-  .letter-pick-tile .pair .l{font-size:clamp(1.5rem,6.5vh,2.1rem)}
+  .letter-picker-hint{font-size:.8rem}
+  .letter-picker-grid{grid-template-columns:repeat(9,minmax(0,1fr));gap:6px}
+  .letter-pick-tile{min-height:52px;padding:4px 2px}
+  .letter-pick-tile .pair .u{font-size:clamp(1.35rem,7vh,1.9rem)}
+  .letter-pick-tile .pair .l{font-size:clamp(1.1rem,5.5vh,1.55rem)}
 }
 
 /* Signs tab — list of word tiles + large one-sign detail (no jumble overlay) */
@@ -941,7 +942,7 @@ body{background:#12102a;color:#f7f3e8}
     <div class="letter-frame" id="letterStage">
       <div class="stars" id="starsLetters"></div>
       <div class="letter-art" id="letterArt">
-        <img class="letter-scene-img" id="letterSceneImg" src="art/letters-a.png" alt="" aria-hidden="true">
+        <img class="letter-scene-img" id="letterSceneImg" src="art/letters-a.png" alt="" aria-hidden="true" draggable="false">
         <div class="glow-pair" id="letterPair">
           <span class="upper" id="letterUpper">A</span>
           <span class="lower" id="letterLower">a</span>
@@ -1084,7 +1085,7 @@ body{background:#12102a;color:#f7f3e8}
             <canvas id="traceCanvas"></canvas>
           </div>
           <div class="trace-clue" id="traceClue" hidden>
-            <img id="traceClueImg" alt="" decoding="async">
+            <img id="traceClueImg" alt="" decoding="async" draggable="false">
           </div>
         </div>
       </div>
@@ -1194,7 +1195,7 @@ body{background:#12102a;color:#f7f3e8}
           </button>
           <div class="signs-detail-main">
           <div class="signs-detail-pic-wrap is-tappable" id="signsDetailPic" role="button" tabindex="0" aria-label="Say the sign again">
-            <img class="signs-detail-img" id="signsDetailImg" alt="" decoding="async">
+            <img class="signs-detail-img" id="signsDetailImg" alt="" decoding="async" draggable="false">
             <div class="signs-motion-cue" id="signsMotionCue" aria-hidden="true"></div>
           </div>
           <div class="signs-detail-copy">
@@ -1228,7 +1229,7 @@ body{background:#12102a;color:#f7f3e8}
       <div class="dots-hint" id="dotsHint">Tap the numbers in order! ✨</div>
       <div class="dots-stage">
         <canvas id="dotsCanvas"></canvas>
-        <img id="dotsReveal" class="dots-reveal" alt="" hidden>
+        <img id="dotsReveal" class="dots-reveal" alt="" hidden draggable="false">
       </div>
       <div class="dots-dock">
         <button type="button" class="btn btn-nav" id="dotsPrev" aria-label="Previous">◀</button>
@@ -1344,6 +1345,63 @@ document.querySelectorAll('[data-go]').forEach(function(btn){
     showScreen(btn.getAttribute('data-go'), btn.getAttribute('data-cue'));
   });
 });
+
+/* In-app back: the device/browser back button goes to the previous screen (or Signs list), not straight out of the app. */
+var navFromPop = false;
+function pushNavState(){
+  if(navFromPop) return;
+  var id = 'home';
+  var el = document.querySelector('.screen.active');
+  if(el && el.id) id = el.id;
+  var state = {screen:id};
+  if(id==='letters') state.letter = li;
+  var detail = document.getElementById('signsDetailPane');
+  if(id==='signs' && detail && !detail.hidden && currentSign) state.sign = currentSign.id || currentSign.label;
+  try{
+    var url = '#'+id+(state.sign ? '/' + encodeURIComponent(state.sign) : '');
+    if(!history.state || !history.state.screen) history.replaceState({screen:'home'}, '', '#home');
+    var cur = history.state || {};
+    if(cur.screen === state.screen && cur.sign === state.sign && cur.letter === state.letter) return;
+    history.pushState(state, '', url);
+  }catch(e){}
+}
+var _showScreen = showScreen;
+showScreen = function(id, cue, fromPop){
+  navFromPop = !!fromPop;
+  _showScreen(id, cue);
+  if(!fromPop) pushNavState();
+  navFromPop = false;
+};
+function closeSignsDetail(){
+  var list = document.getElementById('signsListPane');
+  var detail = document.getElementById('signsDetailPane');
+  if(detail) detail.hidden = true;
+  if(list) list.hidden = false;
+}
+window.addEventListener('popstate', function(e){
+  var st = (e && e.state) || {};
+  var id = st.screen || 'home';
+  var detail = document.getElementById('signsDetailPane');
+  if(id==='signs'){
+    _showScreen('signs', null);
+    if(st.sign){
+      var match = null;
+      if(typeof SIGNS!=='undefined'){
+        for(var i=0;i<SIGNS.length;i++){
+          if((SIGNS[i].id||SIGNS[i].label)===st.sign && SIGNS[i].hasArt) match = SIGNS[i];
+        }
+      }
+      if(match && typeof openSignDetail==='function') openSignDetail(match);
+      else closeSignsDetail();
+    } else {
+      closeSignsDetail();
+    }
+    return;
+  }
+  if(id==='letters' && typeof st.letter==='number') li = st.letter;
+  _showScreen(id, null);
+});
+try{ history.replaceState({screen:'home'}, '', '#home'); }catch(e){}
 
 /* Recorded voice: every kid-facing line is a pre-generated Kokoro-82M clip (voice af_bella) in audio/.
    No system text-to-speech. A missing clip is logged and skipped, never read by the phone's voice. */
@@ -1653,7 +1711,7 @@ function renderLetter(){
   var featImg = document.getElementById('letterFeatureImg');
   var wordPic = WORD_PICS[P.w];
   if(wordPic){
-    if(!featImg){ featImg = document.createElement('img'); featImg.id = 'letterFeatureImg'; featImg.alt = ''; featImg.setAttribute('aria-hidden','true'); feat.appendChild(featImg); }
+    if(!featImg){ featImg = document.createElement('img'); featImg.id = 'letterFeatureImg'; featImg.alt = ''; featImg.setAttribute('aria-hidden','true'); featImg.setAttribute('draggable','false'); feat.appendChild(featImg); }
     featImg.src = 'art/words/' + wordPic;
     featImg.style.display = 'block';
     if(featE){ featE.textContent = ''; featE.style.display = 'none'; }
@@ -1990,7 +2048,7 @@ function setupTracePicker(){
       b.setAttribute('aria-label', traceSet==='shapes' ? ('Shape ' + traceLabel(ch)) : (/^[A-Za-z]$/.test(ch) ? ('Letter ' + String(ch).toUpperCase()) : ('Number ' + ch)));
       b.addEventListener('click', function(){
         traceChar = ch;
-        setupTracePicker(); drawGuide(); speakTrace();
+        setupTracePicker(); refreshTraceLayout(); speakTrace();
       });
       picker.appendChild(b);
     });
@@ -2011,7 +2069,7 @@ function stepTrace(dir){
   i = (i + dir + items.length) % items.length;
   traceChar = items[i];
   setupTracePicker();
-  drawGuide();
+  refreshTraceLayout();
   speakTrace();
 }
 function setTraceTab(setName, firstChar){
@@ -2019,7 +2077,9 @@ function setTraceTab(setName, firstChar){
   document.querySelectorAll('.trace-tab').forEach(function(t){
     t.classList.toggle('active', t.getAttribute('data-set')===setName);
   });
-  setupTracePicker(); drawGuide(); speakTrace();
+  setupTracePicker();
+  refreshTraceLayout();
+  speakTrace();
 }
 function speakTrace(prefix){
   var line = 'Trace.';
@@ -2037,11 +2097,26 @@ document.getElementById('tabShapes').addEventListener('click', function(){ setTr
 document.getElementById('tracePrev').addEventListener('click', function(){ stepTrace(-1); });
 document.getElementById('traceNext').addEventListener('click', function(){ stepTrace(1); });
 
+var traceDpr = 1, paintDpr = 1, dotsDpr = 1;
+var traceBoxes = [];
+var traceClipBox = null;
+function canvasUserPos(e, el, dpr){
+  var r = el.getBoundingClientRect();
+  var t = (e.touches&&e.touches[0]) ? e.touches[0] : (e.changedTouches&&e.changedTouches[0]) ? e.changedTouches[0] : e;
+  var d = dpr || 1;
+  var rw = r.width || 1, rh = r.height || 1;
+  return {
+    x: (t.clientX - r.left) * (el.width / rw) / d,
+    y: (t.clientY - r.top) * (el.height / rh) / d
+  };
+}
 function resizeTrace(){
   var box = canvas.parentElement;
+  if(!box) return;
   var dpr = Math.min(window.devicePixelRatio||1, 2);
   var w = box.clientWidth, h = box.clientHeight;
   if(w<10||h<10) return;
+  traceDpr = dpr;
   canvas.width = Math.floor(w*dpr); canvas.height = Math.floor(h*dpr);
   ctx.setTransform(dpr,0,0,dpr,0,0);
 }
@@ -2149,7 +2224,10 @@ function updateTraceClue(){
   if(!clue){ wrap.hidden = true; return; }
   var src = 'art/words/' + clue.file;
   img.alt = clue.word;
-  if(img.getAttribute('src') !== src) img.src = src;
+  if(img.getAttribute('src') !== src){
+    img.onload = function(){ refreshTraceLayout(); };
+    img.src = src;
+  }
   wrap.hidden = false;
   wrap.setAttribute('aria-label', clue.word);
 }
@@ -2249,9 +2327,9 @@ function drawTraceGlyph(ch, cx, cy, size){
 /* Ink bounds of one glyph at `size`, relative to its center (cx,cy). */
 function measureTraceGlyph(ch, size){
   var ring = Math.max(8, Math.floor(size * 0.045));
-  var pad = Math.ceil(ring + size * 0.12) + 6;
-  var tw = Math.max(32, Math.ceil(size * 2.4 + pad * 2));
-  var th = Math.max(32, Math.ceil(size * 2.6 + pad * 2));
+  var pad = Math.ceil(ring + size * 0.25) + 8;
+  var tw = Math.max(32, Math.ceil(size * 3.2 + pad * 2));
+  var th = Math.max(32, Math.ceil(size * 3.4 + pad * 2));
   var oc = document.createElement('canvas');
   oc.width = tw; oc.height = th;
   var octx = oc.getContext('2d');
@@ -2293,25 +2371,27 @@ function drawGuide(){
   ctx.clearRect(0,0,w,h);
   updateTraceClue();
   ctx.save();
+  traceBoxes = [];
   if(traceSet === 'letters' && /^[A-Za-z]$/.test(traceChar)){
-    /* Always-on uppercase + lowercase: measure ink and pack with a clear gap. */
+    /* Always-on uppercase + lowercase: pack by measured ink with a clear gap, then blit
+       each glyph from its own layer so a hollow punch can never eat its neighbor. */
     var up = String(traceChar).toUpperCase();
     var lo = String(traceChar).toLowerCase();
+    var chalk = traceChalkWidth();
     var pad = Math.max(12, Math.floor(Math.min(w, h) * 0.045));
-    var minGap = Math.max(56, Math.floor(w * 0.16));
+    var minGap = Math.max(chalk + 28, Math.floor(w * 0.14), 40);
     var probe = 120;
     var bu = measureTraceGlyph(up, probe);
     var bl = measureTraceGlyph(lo, probe);
     var scaleW = (w - pad * 2 - minGap) / (bu.w + bl.w);
     var scaleH = (h - pad * 2) / Math.max(bu.h, bl.h);
     var size = Math.floor(probe * Math.min(scaleW, scaleH, 1.85));
-    size = Math.max(48, Math.min(size, Math.floor(Math.min(w, h) * 0.70)));
+    size = Math.max(48, Math.min(size, Math.floor(Math.min(w, h) * 0.62)));
     bu = measureTraceGlyph(up, size);
     bl = measureTraceGlyph(lo, size);
-    /* If still cramped (font metrics shifted), shrink until gap fits. */
     var guard = 0;
-    while(guard < 8 && (bu.w + bl.w + minGap > w - pad * 2 || Math.max(bu.h, bl.h) > h - pad * 2)){
-      size = Math.floor(size * 0.92);
+    while(guard < 10 && (bu.w + bl.w + minGap > w - pad * 2 || Math.max(bu.h, bl.h) > h - pad * 2)){
+      size = Math.floor(size * 0.9);
       bu = measureTraceGlyph(up, size);
       bl = measureTraceGlyph(lo, size);
       guard++;
@@ -2322,42 +2402,117 @@ function drawGuide(){
     var rightCx = startX + bu.w + minGap - bl.left;
     var cyUp = h / 2 - (bu.top + bu.bottom) / 2;
     var cyLo = h / 2 - (bl.top + bl.bottom) / 2;
-    drawTraceGlyph(up, leftCx, cyUp, size);
-    drawTraceGlyph(lo, rightCx, cyLo, size);
+    var boxPad = Math.ceil(chalk / 2) + 2;
+    function inkBox(b, cx, cy){
+      return {x0: cx + b.left - boxPad, y0: cy + b.top - boxPad, x1: cx + b.right + boxPad, y1: cy + b.bottom + boxPad};
+    }
+    var boxU = inkBox(bu, leftCx, cyUp), boxL = inkBox(bl, rightCx, cyLo);
+    /* Keep shrinking until clip boxes do not overlap. */
+    var shrink = 0;
+    while(shrink < 8 && boxU.x1 > boxL.x0){
+      size = Math.floor(size * 0.88);
+      bu = measureTraceGlyph(up, size); bl = measureTraceGlyph(lo, size);
+      totalW = bu.w + bl.w + minGap;
+      startX = Math.max(pad, (w - totalW) / 2);
+      leftCx = startX - bu.left; rightCx = startX + bu.w + minGap - bl.left;
+      cyUp = h / 2 - (bu.top + bu.bottom) / 2; cyLo = h / 2 - (bl.top + bl.bottom) / 2;
+      boxU = inkBox(bu, leftCx, cyUp); boxL = inkBox(bl, rightCx, cyLo);
+      shrink++;
+    }
+    /* Clip boxes meet at the midpoint of the gap, so ink can never cross into the neighbor. */
+    if(boxU.x1 <= boxL.x0){
+      var mid = (boxU.x1 + boxL.x0) / 2;
+      boxU.x1 = mid - 0.5;
+      boxL.x0 = mid + 0.5;
+    } else {
+      var mid2 = (boxU.x1 + boxL.x0) / 2;
+      boxU.x1 = mid2 - 0.5;
+      boxL.x0 = mid2 + 0.5;
+    }
+    function blitGlyph(ch, cx, cy, sz){
+      var layer = document.createElement('canvas');
+      layer.width = canvas.width; layer.height = canvas.height;
+      var lctx = layer.getContext('2d');
+      lctx.setTransform(traceDpr,0,0,traceDpr,0,0);
+      drawTraceGlyphOn(lctx, ch, cx, cy, sz);
+      ctx.drawImage(layer, 0, 0, w, h);
+    }
+    blitGlyph(up, leftCx, cyUp, size);
+    blitGlyph(lo, rightCx, cyLo, size);
+    traceBoxes = [boxU, boxL];
   } else if(traceSet === 'shapes'){
     var sizeS = Math.floor(Math.min(w, h) * 0.78);
     drawTraceShapeOn(ctx, traceChar, w/2, h/2, sizeS);
+    traceBoxes = [{x0:0,y0:0,x1:w,y1:h}];
   } else {
     var size1 = Math.floor(Math.min(w, h) * 0.82);
     var bm = measureTraceGlyph(traceChar, size1);
     var s2 = size1;
     if(bm.w > w * 0.9 || bm.h > h * 0.9){
       s2 = Math.floor(size1 * Math.min((w * 0.86) / bm.w, (h * 0.86) / bm.h));
+      bm = measureTraceGlyph(traceChar, s2);
     }
     drawTraceGlyph(traceChar, w/2, h/2, s2);
+    var p2 = Math.ceil(traceChalkWidth()/2)+2;
+    traceBoxes = [{x0:w/2+bm.left-p2, y0:h/2+bm.top-p2, x1:w/2+bm.right+p2, y1:h/2+bm.bottom+p2}];
   }
   ctx.restore();
 }
 function getPos(e, el){
-  var r = el.getBoundingClientRect();
-  var t = (e.touches&&e.touches[0]) ? e.touches[0] : (e.changedTouches&&e.changedTouches[0]) ? e.changedTouches[0] : e;
-  return {x:t.clientX-r.left, y:t.clientY-r.top};
+  if(el === canvas) return canvasUserPos(e, el, traceDpr);
+  if(el === paintCanvas) return canvasUserPos(e, el, paintDpr);
+  return canvasUserPos(e, el, 1);
+}
+function boxContaining(x, y){
+  var i, b, best=null, bestD=Infinity, cx, cy, d;
+  for(i=0;i<traceBoxes.length;i++){
+    b = traceBoxes[i];
+    if(x>=b.x0 && x<=b.x1 && y>=b.y0 && y<=b.y1) return b;
+  }
+  /* Start just outside a box: pick the nearest so a fat finger still traces that letter, never both. */
+  for(i=0;i<traceBoxes.length;i++){
+    b = traceBoxes[i];
+    cx = Math.max(b.x0, Math.min(x, b.x1));
+    cy = Math.max(b.y0, Math.min(y, b.y1));
+    d = (cx-x)*(cx-x)+(cy-y)*(cy-y);
+    if(d<bestD){ bestD=d; best=b; }
+  }
+  return bestD <= (traceChalkWidth()*traceChalkWidth()) ? best : null;
+}
+function withTraceClip(fn){
+  ctx.save();
+  if(traceClipBox){
+    ctx.beginPath();
+    ctx.rect(traceClipBox.x0, traceClipBox.y0, traceClipBox.x1-traceClipBox.x0, traceClipBox.y1-traceClipBox.y0);
+    ctx.clip();
+  }
+  fn();
+  ctx.restore();
 }
 function startDraw(e){
-  e.preventDefault(); tracing = true;
-  var p = getPos(e, canvas); lastX = p.x; lastY = p.y;
+  if(e.touches && e.touches.length>1) return;
+  e.preventDefault();
+  var p = getPos(e, canvas);
+  traceClipBox = boxContaining(p.x, p.y);
+  if(traceBoxes.length && !traceClipBox){ tracing = false; return; }
+  tracing = true;
+  lastX = p.x; lastY = p.y;
   var chalk = traceChalkWidth();
-  ctx.beginPath(); ctx.arc(lastX,lastY,chalk/2,0,Math.PI*2);
-  ctx.fillStyle = '#e34d3c'; ctx.fill();
+  withTraceClip(function(){
+    ctx.beginPath(); ctx.arc(lastX,lastY,chalk/2,0,Math.PI*2);
+    ctx.fillStyle = '#e34d3c'; ctx.fill();
+  });
 }
 function moveDraw(e){
   if(!tracing) return; e.preventDefault();
   var p = getPos(e, canvas);
-  ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y);
-  ctx.strokeStyle = '#e34d3c'; ctx.lineWidth = traceChalkWidth(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  withTraceClip(function(){
+    ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y);
+    ctx.strokeStyle = '#e34d3c'; ctx.lineWidth = traceChalkWidth(); ctx.lineCap='round'; ctx.lineJoin='round'; ctx.stroke();
+  });
   lastX = p.x; lastY = p.y;
 }
-function endDraw(e){ if(e) e.preventDefault(); tracing = false; }
+function endDraw(e){ if(e) e.preventDefault(); tracing = false; traceClipBox = null; }
 canvas.addEventListener('mousedown', startDraw);
 canvas.addEventListener('mousemove', moveDraw);
 canvas.addEventListener('mouseup', endDraw);
@@ -2486,6 +2641,7 @@ function resizePaint(){
   var dpr = Math.min(window.devicePixelRatio||1, 2);
   var w = box.clientWidth, h = box.clientHeight;
   if(w<10||h<10) return;
+  paintDpr = dpr;
   var needW = Math.floor(w*dpr), needH = Math.floor(h*dpr);
   if(paintCanvas.width === needW && paintCanvas.height === needH) return;
   // preserve drawing
@@ -2557,6 +2713,8 @@ document.getElementById('paintUndo').addEventListener('click', function(){
 
 function refreshTraceLayout(){
   if(!document.getElementById('trace').classList.contains('active')) return;
+  /* Hide/show the letter clue FIRST so the stage size is right, then rebuild the backing store. */
+  updateTraceClue();
   resizeTrace(); drawGuide();
   requestAnimationFrame(function(){ resizeTrace(); drawGuide(); });
 }
@@ -2564,12 +2722,40 @@ window.addEventListener('resize', function(){
   refreshTraceLayout();
   if(document.getElementById('paint').classList.contains('active')){ resizePaint(); }
 });
-window.addEventListener('orientationchange', function(){ refreshTraceLayout(); });
+function refreshAllCanvases(){
+  refreshTraceLayout();
+  if(document.getElementById('paint').classList.contains('active')) resizePaint();
+  if(document.getElementById('dots').classList.contains('active')){
+    resizeDots(); drawDotsBoard();
+  }
+}
+window.addEventListener('orientationchange', function(){
+  refreshAllCanvases();
+  setTimeout(refreshAllCanvases, 60);
+  setTimeout(refreshAllCanvases, 250);
+});
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', function(){ refreshAllCanvases(); });
+}
 if(window.ResizeObserver){
   new ResizeObserver(function(){
     if(document.getElementById('paint').classList.contains('active')) resizePaint();
   }).observe(paintCanvas.parentElement);
+  if(canvas && canvas.parentElement){
+    new ResizeObserver(function(){
+      if(document.getElementById('trace').classList.contains('active')) refreshTraceLayout();
+    }).observe(canvas.parentElement);
+  }
+  var dotsBox = document.getElementById('dotsCanvas');
+  if(dotsBox && dotsBox.parentElement){
+    new ResizeObserver(function(){
+      if(document.getElementById('dots').classList.contains('active')){ resizeDots(); drawDotsBoard(); }
+    }).observe(dotsBox.parentElement);
+  }
 }
+document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+document.addEventListener('dragstart', function(e){ if(e.target && e.target.tagName==='IMG') e.preventDefault(); });
+document.querySelectorAll('img').forEach(function(im){ im.setAttribute('draggable','false'); });
 
 /* ========== MEMORY (letter ↔ picture, no timer, no score) ========== */
 var MEMORY_LEVELS = [
@@ -2784,6 +2970,7 @@ function renderAnimals(cue){
       var img = document.createElement('img');
       img.src = 'art/animals/' + animal.file;
       img.alt = '';
+      img.setAttribute('draggable','false');
       img.decoding = 'async';
       img.loading = 'eager';
       var scrim = document.createElement('span');
@@ -3056,6 +3243,14 @@ function openSignDetail(sign){
   var list2 = signsInCategory(signsCategory);
   var one = list2.length < 2;
   ['signsPrev','signsNext'].forEach(function(id){ var el=document.getElementById(id); if(el) el.hidden = one; });
+  if(!navFromPop && typeof pushNavState === 'function'){
+    var already = history.state && history.state.screen==='signs' && history.state.sign;
+    if(already){
+      try{ history.replaceState({screen:'signs', sign:sign.id}, '', '#signs/' + encodeURIComponent(sign.id)); }catch(e){}
+    } else {
+      pushNavState();
+    }
+  }
 }
 function stepSignDetail(dir){
   var list = signsInCategory(signsCategory);
@@ -3110,6 +3305,7 @@ function renderSignsList(){
     var img = document.createElement('img');
     img.src = 'art/signs/' + sign.file;
     img.alt = '';
+    img.setAttribute('draggable','false');
     img.decoding = 'async';
     img.loading = 'eager';
     thumb.appendChild(img);
@@ -3135,6 +3331,7 @@ function renderSigns(cue){
     });
     var backBtn = document.getElementById('signsBackList');
     if(backBtn) backBtn.addEventListener('click', function(){
+      if(history.state && history.state.sign){ history.back(); return; }
       showSignsList();
       lastSignSay = 'Signs.';
       /* Keep the active category filter when returning to the list. */
@@ -3273,12 +3470,14 @@ function resizeDots(){
   var dpr = Math.min(window.devicePixelRatio||1, 2);
   var w = box.clientWidth, h = box.clientHeight;
   if(w<10||h<10) return;
+  dotsDpr = dpr;
   dotsCanvas.width = Math.floor(w*dpr); dotsCanvas.height = Math.floor(h*dpr);
   dctx.setTransform(dpr,0,0,dpr,0,0);
 }
 
 function dotsPoint(p, w, h){
-  var pad = Math.min(w, h) * 0.1;
+  var r = Math.max(16, Math.min(w,h)*0.045);
+  var pad = Math.max(r + 16, Math.min(w, h) * 0.1);
   return {x: pad + (p[0]/100) * (w - pad*2), y: pad + (p[1]/100) * (h - pad*2)};
 }
 
@@ -3341,8 +3540,10 @@ function drawDotsBoard(){
   }
 }
 
+var lastDotsAt = 0, lastDotsX = -9999, lastDotsY = -9999;
 function resetDotsPuzzle(){
   dotsNext = 0; dotsDone = false;
+  lastDotsAt = 0; lastDotsX = -9999; lastDotsY = -9999;
   var P = currentDotPuzzle();
   document.getElementById('dotsProgress').textContent = P.name;
   document.getElementById('dotsHint').textContent = 'Tap 1, then 2, then 3… ✨';
@@ -3392,12 +3593,7 @@ function setupDots(cue){
   if(!dotsCanvas) return;
   if(!dotsBuilt){
     dotsBuilt = true;
-    function pos(e){
-      var r = dotsCanvas.getBoundingClientRect();
-      var t = (e.touches&&e.touches[0]) ? e.touches[0] : (e.changedTouches&&e.changedTouches[0]) ? e.changedTouches[0] : e;
-      return {x:t.clientX-r.left, y:t.clientY-r.top};
-    }
-    var lastDotsAt = 0, lastDotsX = -9999, lastDotsY = -9999;
+    function pos(e){ return canvasUserPos(e, dotsCanvas, dotsDpr); }
     function onDotsTap(e){
       if(e.cancelable) e.preventDefault();
       var p = pos(e);
