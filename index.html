@@ -251,7 +251,7 @@ body{background:#12102a;color:#f7f3e8}
   min-height:56px;cursor:pointer;touch-action:manipulation;
   box-shadow:0 4px 0 rgba(0,0,0,.35);flex-shrink:0}
 .signs-back:active{transform:translateY(2px)}
-.signs-detail-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.signs-detail-body{flex:1;min-height:0;display:flex;flex-direction:row;gap:8px;align-items:center}
 .signs-detail-pic-wrap{position:relative;flex:1 1 auto;min-height:0;border:3px solid rgba(240,215,138,.6);
   border-radius:24px;background:rgba(10,8,24,.55);overflow:hidden;
   box-shadow:0 8px 0 rgba(0,0,0,.3),0 14px 28px rgba(0,0,0,.28);
@@ -351,7 +351,8 @@ body{background:#12102a;color:#f7f3e8}
   .sign-tile{min-height:100px;padding:10px 8px;gap:8px}
   .sign-tile-thumb{width:56px;height:56px;border-radius:16px}
   .sign-tile-name{font-size:clamp(1.05rem,2.3vw,1.25rem)}
-  .signs-detail-body{flex-direction:row;align-items:stretch;gap:14px}
+  .signs-detail-body{flex-direction:row;align-items:stretch;gap:10px}
+  .signs-detail-main{flex-direction:row;align-items:stretch;gap:14px}
   .signs-detail-pic-wrap{flex:1.35 1 0;min-width:0}
   .signs-detail-copy{flex:0 0 34%;max-width:320px;justify-content:center;align-items:flex-start;text-align:left;padding:8px 4px}
   .signs-detail-name,.signs-detail-hint{text-align:left}
@@ -663,8 +664,10 @@ body{background:#12102a;color:#f7f3e8}
   box-shadow:0 0 0 3px rgba(255,230,160,.35),0 6px 0 rgba(0,0,0,.4)}
 .paint-dd-btn[aria-expanded="true"]{box-shadow:0 0 0 5px rgba(255,233,160,.8),0 6px 0 rgba(0,0,0,.4)}
 .paint-color-chip{display:block;width:40px;height:40px;border-radius:50%;border:3px solid #fff6d8;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25)}
-.paint-overlay{position:fixed;inset:0;z-index:200;background:rgba(8,6,22,.55);display:flex;align-items:flex-end;justify-content:center;
-  padding:12px 12px max(12px,env(safe-area-inset-bottom))}
+.paint-canvas-box{position:relative}
+.paint-overlay{position:absolute;inset:0;z-index:8;background:rgba(8,6,22,.55);display:flex;align-items:flex-end;justify-content:center;
+  padding:8px;border-radius:inherit}
+.paint-overlay,.paint-panel,.paint-panel-grid{touch-action:pan-y}
 .paint-overlay[hidden],.paint-panel[hidden]{display:none !important}
 .paint-panel{width:min(640px,100%);max-height:min(78vh,560px);overflow-y:auto;-webkit-overflow-scrolling:touch;
   background:linear-gradient(180deg,#2e2260,#17112f);border:4px solid #f0d78a;border-radius:28px;padding:14px 14px 18px;
@@ -685,12 +688,12 @@ body{background:#12102a;color:#f7f3e8}
   .paint-color-chip{width:32px;height:32px}
 }
 /* Signs detail prev/next */
-.signs-detail-stage{flex:1 1 auto;min-height:0;min-width:0;display:flex;flex-direction:row;align-items:center;gap:8px}
-.signs-detail-stage .signs-detail-pic-wrap{height:100%}
+.signs-detail-main{flex:1 1 auto;min-height:0;min-width:0;display:flex;flex-direction:column;gap:10px;align-items:stretch;height:100%}
+.signs-detail-main .signs-detail-pic-wrap{flex:1 1 auto;min-height:0}
 .signs-nav{position:relative !important;left:auto;right:auto;top:auto;bottom:auto;transform:none;flex:0 0 auto;width:64px;height:64px;min-width:56px;min-height:56px}
 .signs-nav svg{width:60%;height:60%}
 @media (orientation:landscape){
-  .signs-detail-stage{flex:1.35 1 0}
+  .signs-detail-main{flex-direction:row;align-items:stretch;gap:14px}
   .signs-nav{width:56px;height:56px}
 }
 
@@ -901,7 +904,7 @@ body{background:#12102a;color:#f7f3e8}
         <div class="home-section" aria-label="Explore">
           <div class="home-section-label">🌙 Explore</div>
           <div class="activity-grid">
-            <button type="button" class="activity-tile" data-go="animals" data-cue="Animals"><span class="emoji">🦌</span><span class="title">Animals</span></button>
+            <button type="button" class="activity-tile" data-go="animals" data-cue="Animals"><span class="emoji">🦁</span><span class="title">Animals</span></button>
             <button type="button" class="activity-tile" data-go="signs" data-cue="Signs"><span class="emoji">🤟</span><span class="title">Signs</span></button>
             <button type="button" class="activity-tile" data-go="shapes" data-cue="Shapes"><span class="emoji">⬡</span><span class="title">Shapes</span></button>
           </div>
@@ -1119,15 +1122,7 @@ body{background:#12102a;color:#f7f3e8}
     <div class="paint-wrap">
       <div class="paint-canvas-box">
         <canvas id="paintCanvas"></canvas>
-      </div>
-      <div class="paint-dock paint-dock-one">
-        <button type="button" class="paint-dd-btn paint-color-btn" id="paintColorBtn" aria-label="Colors and sizes" aria-haspopup="dialog" aria-expanded="false"><span class="paint-color-chip" id="paintColorChip"></span></button>
-        <button class="btn btn-tool" id="paintBrush" aria-label="Brush">🖌️</button>
-        <button class="btn btn-tool" id="paintEraser" aria-label="Eraser">🧽</button>
-        <button type="button" class="paint-dd-btn paint-sticker-btn" id="paintStickerBtn" aria-label="Stickers" aria-haspopup="dialog" aria-expanded="false"><span id="paintStickerFace">⭐</span></button>
-      </div>
-    </div>
-    <div class="paint-overlay" id="paintOverlay" hidden>
+        <div class="paint-overlay" id="paintOverlay" hidden>
       <div class="paint-panel" id="paintColorPanel" role="dialog" aria-label="Colors and sizes" hidden>
         <div class="paint-panel-title">Colors</div>
         <div class="paint-panel-grid paint-colors-grid" id="paintColors" role="group" aria-label="Colors"></div>
@@ -1141,6 +1136,14 @@ body{background:#12102a;color:#f7f3e8}
       <div class="paint-panel" id="paintStickerPanel" role="dialog" aria-label="Stickers" hidden>
         <div class="paint-panel-title">Stickers</div>
         <div class="paint-panel-grid paint-sticker-grid" id="paintStamps" role="group" aria-label="Stickers"></div>
+      </div>
+        </div>
+      </div>
+      <div class="paint-dock paint-dock-one">
+        <button type="button" class="paint-dd-btn paint-color-btn" id="paintColorBtn" aria-label="Colors and sizes" aria-haspopup="dialog" aria-expanded="false"><span class="paint-color-chip" id="paintColorChip"></span></button>
+        <button class="btn btn-tool" id="paintBrush" aria-label="Brush">🖌️</button>
+        <button class="btn btn-tool" id="paintEraser" aria-label="Eraser">🧽</button>
+        <button type="button" class="paint-dd-btn paint-sticker-btn" id="paintStickerBtn" aria-label="Stickers" aria-haspopup="dialog" aria-expanded="false"><span id="paintStickerFace">⭐</span></button>
       </div>
     </div>
   </section>
@@ -1186,23 +1189,23 @@ body{background:#12102a;color:#f7f3e8}
       <div class="signs-detail-pane" id="signsDetailPane" hidden>
         <button type="button" class="signs-back" id="signsBackList" aria-label="Back to all signs">← All signs</button>
         <div class="signs-detail-body">
-          <div class="signs-detail-stage">
           <button type="button" class="rim-btn signs-nav" id="signsPrev" aria-label="Previous sign">
             <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M42 10 16 32l26 22V42H54V22H42z"/></svg>
           </button>
+          <div class="signs-detail-main">
           <div class="signs-detail-pic-wrap is-tappable" id="signsDetailPic" role="button" tabindex="0" aria-label="Say the sign again">
             <img class="signs-detail-img" id="signsDetailImg" alt="" decoding="async">
             <div class="signs-motion-cue" id="signsMotionCue" aria-hidden="true"></div>
-          </div>
-          <button type="button" class="rim-btn signs-nav" id="signsNext" aria-label="Next sign">
-            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
-          </button>
           </div>
           <div class="signs-detail-copy">
             <div class="signs-detail-name" id="signsDetailName"></div>
             <div class="signs-detail-hint" id="signsDetailHint"></div>
             <button type="button" class="signs-detail-speak" id="signsDetailSpeak" aria-label="Say it again">🔊 Say it again</button>
           </div>
+          </div>
+          <button type="button" class="rim-btn signs-nav" id="signsNext" aria-label="Next sign">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path fill="#f4ead0" d="M22 10 48 32 22 54V42H10V22h12z"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -1315,10 +1318,12 @@ function showScreen(id, cue){
   var el = document.getElementById(id);
   if(el) el.classList.add('active');
   if(typeof closePaintPanels === 'function') closePaintPanels();
+  if(typeof clearFlAdvance === 'function') clearFlAdvance();
+  if(typeof clearFnAdvance === 'function') clearFnAdvance();
+  if(id !== 'animals' && typeof stopAnimalSfx === 'function') stopAnimalSfx();
   if(id==='home'){
     speakGen++;
     stopVoice();
-    if(typeof stopAnimalSfx === 'function') stopAnimalSfx();
     return;
   }
   if(id==='letterPicker'){ renderLetterPicker(cue); }
@@ -3360,18 +3365,24 @@ function hitDots(x, y){
   var P = currentDotPuzzle();
   var pts = P.dots.map(function(p){ return dotsPoint(p, w, h); });
   var r = Math.max(28, Math.min(w,h)*0.08);
-  var i, best = -1, bestD = r*r;
+  var r2 = r*r;
+  var i, inRange = [];
   for(i=0;i<pts.length;i++){
     var dx = pts[i].x - x, dy = pts[i].y - y, d = dx*dx+dy*dy;
-    if(d <= bestD){ bestD = d; best = i; }
+    if(d <= r2) inRange.push({i:i, d:d});
   }
-  if(best < 0) return;
-  if(best === dotsNext){
+  if(!inRange.length) return;
+  /* Prefer the next correct dot when its target overlaps a neighbor so close ear/fin dots cannot stall the puzzle. */
+  var hitNext = false;
+  for(i=0;i<inRange.length;i++){ if(inRange[i].i === dotsNext){ hitNext = true; break; } }
+  if(hitNext){
     dotsNext++;
     if(dotsNext >= pts.length) finishDotsPuzzle();
     else drawDotsBoard();
-  } else if(best > dotsNext){
-    speakParts(['Try again.']);
+    return;
+  }
+  for(i=0;i<inRange.length;i++){
+    if(inRange[i].i > dotsNext){ speakParts(['Try again.']); return; }
   }
 }
 
@@ -3384,8 +3395,19 @@ function setupDots(cue){
       var t = (e.touches&&e.touches[0]) ? e.touches[0] : (e.changedTouches&&e.changedTouches[0]) ? e.changedTouches[0] : e;
       return {x:t.clientX-r.left, y:t.clientY-r.top};
     }
-    dotsCanvas.addEventListener('click', function(e){ var p=pos(e); hitDots(p.x,p.y); });
-    dotsCanvas.addEventListener('touchend', function(e){ e.preventDefault(); var p=pos(e); hitDots(p.x,p.y); }, {passive:false});
+    var lastDotsAt = 0, lastDotsX = -9999, lastDotsY = -9999;
+    function onDotsTap(e){
+      if(e.cancelable) e.preventDefault();
+      var p = pos(e);
+      var now = Date.now();
+      /* Swallow the leftover click after a touch on the same spot, but allow a quick tap on the next dot. */
+      if(now - lastDotsAt < 500 && Math.abs(p.x - lastDotsX) < 14 && Math.abs(p.y - lastDotsY) < 14) return;
+      lastDotsAt = now; lastDotsX = p.x; lastDotsY = p.y;
+      hitDots(p.x, p.y);
+    }
+    dotsCanvas.addEventListener('pointerup', onDotsTap);
+    dotsCanvas.addEventListener('click', onDotsTap);
+    dotsCanvas.addEventListener('touchend', onDotsTap, {passive:false});
     document.getElementById('dotsPrev').addEventListener('click', function(){
       dotsIdx = (dotsIdx - 1 + DOT_PUZZLES.length) % DOT_PUZZLES.length;
       resetDotsPuzzle(); speakParts([currentDotPuzzle().name + '.']);
