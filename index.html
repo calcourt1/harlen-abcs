@@ -1444,7 +1444,8 @@ function repeatLastUtterance(){
   speakParts(lastParts.slice());
 }
 
-document.addEventListener('visibilitychange', function(){ if(document.hidden) stopVoice(); });
+document.addEventListener('visibilitychange', function(){ if(document.hidden){ stopVoice(); if(typeof stopAnimalSfx === 'function') stopAnimalSfx(); } });
+window.addEventListener('pagehide', function(){ stopVoice(); if(typeof stopAnimalSfx === 'function') stopAnimalSfx(); });
 
 /* Prefer-words and author IPA notes only. No soundSay — chopped phonemes are never spoken. */
 var LETTER_META = {
@@ -2738,6 +2739,7 @@ var ANIMALS = [
   {id:'monkey', file:'monkey.png', label:'Monkey', sound:'monkey.mp3'}
 ];
 var animalSfxEl = null;
+var ANIMAL_SFX_VERSION = '2'; /* bump when animal sound files change so phones skip old cached clips */
 var animalsBuilt = false;
 var lastAnimalSay = 'Animals.';
 
@@ -2760,7 +2762,7 @@ function playAnimalTap(animal){
   stopVoice();
   stopAnimalSfx();
   var el = getAnimalSfxEl();
-  el.src = 'audio/animals/' + animal.sound;
+  el.src = 'audio/animals/' + animal.sound + '?v=' + ANIMAL_SFX_VERSION;
   var p = null;
   try{ p = el.play(); }catch(e){}
   if(p && p.catch) p.catch(function(){});
@@ -2798,7 +2800,7 @@ function renderAnimals(cue){
     });
     animalsBuilt = true;
     var speakBtn = document.getElementById('animalsSpeak');
-    if(speakBtn) speakBtn.addEventListener('click', function(){ speakParts([lastAnimalSay]); });
+    if(speakBtn) speakBtn.addEventListener('click', function(){ stopAnimalSfx(); speakParts([lastAnimalSay]); });
   }
   var prog = document.getElementById('animalsProgress');
   if(prog) prog.textContent = 'Animals';
